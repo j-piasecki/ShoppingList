@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.firestore.Exclude
 import java.util.*
+import kotlin.collections.ArrayList
 
 @Entity(tableName = "shopping_lists")
 data class ShoppingList(
@@ -14,10 +15,10 @@ data class ShoppingList(
     var owner: String? = null,
     var currency: String? = null,
     @get:Exclude
-    var items: MutableList<Item> = mutableListOf(),
+    var items: ArrayList<Item> = ArrayList(),
     @get:Exclude
-    var users: MutableList<String> = mutableListOf(),
-    var banned: MutableList<String> = mutableListOf(),
+    var users: ArrayList<String> = ArrayList(),
+    var banned: ArrayList<String> = ArrayList(),
     var timestamp: Long = Calendar.getInstance().timeInMillis,
 
     @get:Exclude

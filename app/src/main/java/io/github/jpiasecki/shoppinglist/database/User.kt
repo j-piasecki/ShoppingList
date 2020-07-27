@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.firebase.firestore.Exclude
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Entity(tableName = "users")
 data class User(
@@ -14,7 +16,10 @@ data class User(
     var name: String? = null,
 
     @get:Exclude
-    var lists: List<String> = emptyList(),
+    var lists: ArrayList<String> = ArrayList(),
+
+    @get:Exclude
+    var timestamp: Long = Calendar.getInstance().timeInMillis,
 
     @Ignore
     @get:Exclude

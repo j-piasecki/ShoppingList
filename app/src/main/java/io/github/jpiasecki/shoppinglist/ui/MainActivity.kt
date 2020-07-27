@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.room.Room
 import com.firebase.ui.auth.AuthUI
 import com.google.android.gms.auth.api.Auth
@@ -15,6 +16,8 @@ import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.database.*
 import io.github.jpiasecki.shoppinglist.remote.ShoppingListsRemoteSource
 import io.github.jpiasecki.shoppinglist.remote.UsersRemoteSource
+import io.github.jpiasecki.shoppinglist.repositories.ShoppingListsRepository
+import io.github.jpiasecki.shoppinglist.repositories.UsersRepository
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -28,6 +31,11 @@ class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var usersRemoteSource: UsersRemoteSource
     @Inject lateinit var shoppingListsRemoteSource: ShoppingListsRemoteSource
+
+    @Inject lateinit var usersRepository: UsersRepository
+    @Inject lateinit var shoppingListsRepository: ShoppingListsRepository
+
+    @Inject lateinit var shoppingListsDao: ShoppingListsDao
 
     private val RC_SIGN_IN = 0
 
@@ -45,105 +53,8 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        var listId = UUID.randomUUID().toString()
-        var milkId = ""
-        var sugarId = ""
-        var appleId = ""
+        button.setOnClickListener {
 
-        button_create_list.setOnClickListener {
-            GlobalScope.launch(Dispatchers.Main) {
-                Toast.makeText(this@MainActivity,
-                    shoppingListsRemoteSource
-                        .setList(
-                            ShoppingList(
-                                listId,
-                                "nazwa listy",
-                                FirebaseAuth.getInstance().currentUser?.uid,
-                                "pln"
-                            )
-                        )
-                        .toString()
-                    , Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        button_add_milk.setOnClickListener {
-            GlobalScope.launch(Dispatchers.Main) {
-                val item = Item("milk", "nice milk", FirebaseAuth.getInstance().currentUser?.uid, quantity = 1)
-                milkId = item.id
-
-                Toast.makeText(
-                    this@MainActivity,
-                    shoppingListsRemoteSource.addItemToList(listId, item).toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
-        button_add_sugar.setOnClickListener {
-            GlobalScope.launch(Dispatchers.Main) {
-                val item = Item("sugar", "best sugar", FirebaseAuth.getInstance().currentUser?.uid, quantity = 3)
-                sugarId = item.id
-
-                Toast.makeText(
-                    this@MainActivity,
-                    shoppingListsRemoteSource.addItemToList(listId, item).toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
-        button_add_apples.setOnClickListener {
-            GlobalScope.launch(Dispatchers.Main) {
-                val item = Item("apple", "pog apples", FirebaseAuth.getInstance().currentUser?.uid, quantity = 6)
-                appleId = item.id
-
-                Toast.makeText(
-                    this@MainActivity,
-                    shoppingListsRemoteSource.addItemToList(listId, item).toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
-        button_update_milk.setOnClickListener {
-            GlobalScope.launch(Dispatchers.Main) {
-                val item = Item("milk", "got milk", FirebaseAuth.getInstance().currentUser?.uid, "p1", true, quantity = 3, id = milkId)
-
-                Toast.makeText(
-                    this@MainActivity,
-                    shoppingListsRemoteSource.addItemToList(listId, item).toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
-        button_update_apples.setOnClickListener {
-            GlobalScope.launch(Dispatchers.Main) {
-                val item = Item("apple", "not enough", FirebaseAuth.getInstance().currentUser?.uid, "p2", true, quantity = 3, id = appleId)
-
-                Toast.makeText(
-                    this@MainActivity,
-                    shoppingListsRemoteSource.addItemToList(listId, item).toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
-        button_delete_milk.setOnClickListener {
-            GlobalScope.launch(Dispatchers.Main) {
-                Toast.makeText(
-                    this@MainActivity,
-                    shoppingListsRemoteSource.removeItemFromList(listId, milkId).toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
-        button_delete_list.setOnClickListener {
-            GlobalScope.launch(Dispatchers.Main) {
-                Toast.makeText(this@MainActivity, shoppingListsRemoteSource.deleteList(listId).toString(), Toast.LENGTH_SHORT).show()
-            }
         }
     }
 

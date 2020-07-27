@@ -12,8 +12,8 @@ class Converters {
     fun itemListToJson(list: List<Item>) = Gson().toJson(list)
 
     @TypeConverter
-    fun jsonToStringList(json: String) = Gson().fromJson(json, Array<String>::class.java).toList()
+    fun jsonToStringList(json: String) = ArrayList(Gson().fromJson(json, Array<String>::class.java).toList())
 
     @TypeConverter
-    fun jsonToItemList(json: String) = Gson().fromJson(json, Array<Item>::class.java).toList()
+    fun jsonToItemList(json: String) = ArrayList(Gson().fromJson(json, Array<Item>::class.java).toList())
 }
