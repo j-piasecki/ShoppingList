@@ -8,13 +8,15 @@ import com.google.firebase.firestore.Exclude
 
 @Entity(tableName = "users")
 data class User(
-    @Exclude
+    @get:Exclude
     @PrimaryKey(autoGenerate = false)
     var id: String = "",
     var name: String? = null,
+
+    @get:Exclude
     var lists: List<String> = emptyList(),
 
     @Ignore
-    @Exclude
+    @get:Exclude
     var profilePicture: Bitmap? = null
 )

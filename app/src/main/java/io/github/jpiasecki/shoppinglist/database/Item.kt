@@ -1,7 +1,9 @@
 package io.github.jpiasecki.shoppinglist.database
 
+import com.google.firebase.firestore.Exclude
 import io.github.jpiasecki.shoppinglist.consts.Icons
 import io.github.jpiasecki.shoppinglist.consts.Units
+import java.util.*
 
 
 data class Item(
@@ -13,5 +15,8 @@ data class Item(
     val quantity: Int = 0,
     val unit: Int = Units.NO_UNIT,
     val price: Double = 0.0,
-    val icon: Int = Icons.DEFAULT
+    val icon: Int = Icons.DEFAULT,
+
+    @get:Exclude
+    val id: String = UUID.randomUUID().toString()
 )

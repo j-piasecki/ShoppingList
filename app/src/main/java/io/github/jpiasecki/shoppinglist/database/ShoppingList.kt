@@ -7,17 +7,19 @@ import java.util.*
 
 @Entity(tableName = "shopping_lists")
 data class ShoppingList(
-    @Exclude
+    @get:Exclude
     @PrimaryKey(autoGenerate = false)
     var id: String = UUID.randomUUID().toString(),
     var name: String? = null,
     var owner: String? = null,
     var currency: String? = null,
-    var items: List<Item> = emptyList(),
-    var users: List<String> = emptyList(),
-    var banned: List<String> = emptyList(),
-    var timestamp: Long = 0,
+    @get:Exclude
+    var items: MutableList<Item> = mutableListOf(),
+    @get:Exclude
+    var users: MutableList<String> = mutableListOf(),
+    var banned: MutableList<String> = mutableListOf(),
+    var timestamp: Long = Calendar.getInstance().timeInMillis,
 
-    @Exclude
+    @get:Exclude
     var keepInSync: Boolean = true
 )
