@@ -34,6 +34,9 @@ interface ShoppingListsDao {
     @Query("UPDATE shopping_lists SET name = (:name) WHERE id = (:id)")
     fun rename(id: String, name: String)
 
+    @Query("UPDATE shopping_lists SET note = (:note) WHERE id = (:id)")
+    fun changeNote(id: String, note: String)
+
     @Query("UPDATE shopping_lists SET owner = (:owner) WHERE id = (:id)")
     fun changeOwner(id: String, owner: String?)
 

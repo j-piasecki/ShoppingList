@@ -146,6 +146,32 @@ class ShoppingListsRepository @Inject constructor(
         return result
     }
 
+    fun changeListNote(listId: String, note: String): LiveData<Boolean?> {
+        val result = MutableLiveData<Boolean?>(null)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val list = shoppingListsDao.getByIdPlain(listId)
+
+            if (list != null) {
+                if (list.keepInSync) {
+                    if (shoppingListsRemoteSource.changeListNote(listId, note)) {
+                        shoppingListsDao.updateTimestamp(listId)
+                        shoppingListsDao.changeNote(listId, note)
+                        result.postValue(true)
+                    } else {
+                        result.postValue(false)
+                    }
+                } else {
+                    shoppingListsDao.updateTimestamp(listId)
+                    shoppingListsDao.changeNote(listId, note)
+                    result.postValue(true)
+                }
+            }
+        }
+
+        return result
+    }
+
     fun addUserToList(listId: String, userId: String): LiveData<Boolean?> {
         val result = MutableLiveData<Boolean?>(null)
 
@@ -410,6 +436,35 @@ class ShoppingListsRepository @Inject constructor(
         return result
     }
 
+    fun syncAllListsMetadata(): LiveData<Boolean?> {
+        val result = MutableLiveData<Boolean?>(null)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val allLists = shoppingListsDao.getAllIds()
+
+            for (id in allLists) {
+                if (shoppingListsDao.isSynced(id)) {
+                    val list = shoppingListsRemoteSource.getListMetadata(id)
+
+                    if (list != null && shoppingListsDao.getTimestamp(id) < list.timestamp) {
+                        val localList = shoppingListsDao.getByIdPlain(id)
+
+                        if (localList != null) {
+                            list.items = localList.items
+                            list.users = localList.users
+
+                            shoppingListsDao.insert(list)
+                        }
+                    }
+                }
+            }
+
+            result.postValue(true)
+        }
+
+        return result
+    }
+
     fun syncAllLists(): LiveData<Boolean?> {
         val result = MutableLiveData<Boolean?>(null)
 
@@ -439,6 +494,41 @@ class ShoppingListsRepository @Inject constructor(
 
                             shoppingListsDao.insert(list)
                         }
+                    }
+                }
+            }
+
+            result.postValue(true)
+        }
+
+        return result
+    }
+
+    fun syncList(listId: String): LiveData<Boolean?> {
+        val result = MutableLiveData<Boolean?>(null)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            if (shoppingListsDao.isSynced(listId)) {
+                val list = shoppingListsRemoteSource.getListMetadata(listId)
+
+                if (list != null && shoppingListsDao.getTimestamp(listId) < list.timestamp) {
+                    val localList = shoppingListsDao.getByIdPlain(listId)
+
+                    if (localList != null) {
+                        list.items = localList.items
+                        list.users = localList.users
+
+                        for (item in shoppingListsRemoteSource.getUpdatedItems(listId, localList.timestamp)) {
+                            val index = list.items.indexOfFirst { it.id == item.id }
+
+                            if (index == -1) {
+                                list.items.add(item)
+                            } else {
+                                list.items[index] = item
+                            }
+                        }
+
+                        shoppingListsDao.insert(list)
                     }
                 }
             }

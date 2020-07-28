@@ -14,6 +14,7 @@ data class ShoppingList(
     var name: String? = null,
     var owner: String? = null,
     var currency: String? = null,
+    var note: String? = null,
     @get:Exclude
     var items: ArrayList<Item> = ArrayList(),
     @get:Exclude

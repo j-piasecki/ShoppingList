@@ -272,6 +272,26 @@ class ShoppingListsRemoteSource(private val context: Context) {
         return success
     }
 
+    suspend fun changeListNote(id: String, newNote: String): Boolean {
+        var success = false
+
+        try {
+            Firebase.firestore
+                .collection("lists")
+                .document(id)
+                .update("note", newNote)
+                .addOnSuccessListener {
+                    success = true
+                }.await()
+
+            updateListTimestamp(id)
+        } catch (e: FirebaseFirestoreException) {
+            handleFirestoreException(e)
+        }
+
+        return success
+    }
+
     suspend fun updateListTimestamp(id: String): Boolean {
         var success = false
 
