@@ -26,9 +26,13 @@ class UsersRepository @Inject constructor(
     private val usersRemoteSource: UsersRemoteSource,
     private val usersDao: UsersDao
 ) {
+    private val allUsers = usersDao.getAllUsers()
+
+    fun getAllUsers() = allUsers
+
     fun updateProfilePicture() = usersRemoteSource.updateProfilePicture()
 
-    fun getUser(id: String, fetchLists: Boolean = true): LiveData<User> {
+    fun getUser(id: String, fetchLists: Boolean = false): LiveData<User> {
         val liveData = MutableLiveData<User>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -44,12 +48,12 @@ class UsersRepository @Inject constructor(
 
                     usersDao.insert(remoteUser)
 
-                    loadProfileImage(remoteUser) {
+                    remoteUser.loadProfileImage(context) {
                         liveData.postValue(remoteUser)
                     }
                 }
             } else {
-                loadProfileImage(localUser) {
+                localUser.loadProfileImage(context) {
                     liveData.postValue(localUser)
                 }
             }
@@ -97,6 +101,30 @@ class UsersRepository @Inject constructor(
         return result
     }
 
+    fun isUserUpToDate(id: String): Boolean {
+        val user = usersDao.getById(id) ?: return false
+
+        return Calendar.getInstance().timeInMillis - user.timestamp > 24 * 60 * 60 * 1000
+    }
+
+    fun setupUser() {
+        GlobalScope.launch(Dispatchers.IO) {
+            setUserNameIfNotSet()
+
+            usersRemoteSource.createDataIfNotExists()
+        }
+    }
+
+    suspend fun updateUser(id: String?) {
+        if (!isUserUpToDate(id ?: return)) {
+            val remoteUser = usersRemoteSource.getUser(id, false)
+
+            if (remoteUser != null) {
+                usersDao.insert(remoteUser)
+            }
+        }
+    }
+
     suspend fun setUserNameIfNotSet() = usersRemoteSource.setUserNameIfNotSet()
 
     suspend fun addListToUser(id: String) = usersRemoteSource.addListToUser(id)
@@ -104,21 +132,4 @@ class UsersRepository @Inject constructor(
     suspend fun removeListFromUser(id: String) = usersRemoteSource.removeListFromUser(id)
 
     suspend fun getRemoteLists() = usersRemoteSource.getUserShoppingListIds()
-
-    private fun loadProfileImage(user: User, callback: () -> Unit) {
-        val ref = Firebase.storage.reference.child("profile_pics/${user.id}")
-
-        // if profile picture file exists, load it
-        ref.metadata.addOnSuccessListener {
-            GlideApp.with(context).asBitmap().circleCrop().load(ref).into(object : CustomTarget<Bitmap>() {
-                override fun onLoadCleared(placeholder: Drawable?) {}
-
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    user.profilePicture = resource
-
-                    callback()
-                }
-            })
-        }
-    }
 }

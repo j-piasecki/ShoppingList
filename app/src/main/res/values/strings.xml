@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Shopping List</string>
     <string name="unknown_name">Unknown</string>
+    <string name="shopping_list_last_update">Last update: %1$s</string>
+    <string name="menu_import_list">Import list</string>
+    <string name="menu_share">Share</string>
 </resources>

@@ -22,12 +22,17 @@ class ShoppingListsRepository @Inject constructor(
 
     fun getAllLists() = allShoppingLists
 
-    fun createList(name: String, currency: String): LiveData<String?> {
+    fun getAllListsPlain() = shoppingListsDao.getAllPlain()
+
+    fun getList(listId: String) = shoppingListsDao.getById(listId)
+
+    fun createList(name: String, note: String, currency: String): LiveData<String?> {
         val result = MutableLiveData<String?>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
             val list = ShoppingList(
                 name = name,
+                note = note,
                 currency = currency,
                 owner = FirebaseAuth.getInstance().currentUser?.uid,
                 keepInSync = false

@@ -128,6 +128,37 @@ class UsersRemoteSource(private val context: Context) {
         return success
     }
 
+    suspend fun createDataIfNotExists(): Boolean {
+        var success = false
+
+        try {
+            FirebaseAuth.getInstance().currentUser?.apply {
+                val ref = Firebase.firestore
+                    .collection("users")
+                    .document(this.uid)
+                    .collection("data")
+                    .document("private")
+
+                val userData = ref.get(defaultSource).await()
+
+                if (!userData.contains("lists")) {
+                    ref.set(
+                        mapOf(
+                            "lists" to emptyList<String>()
+                        ),
+                        SetOptions.merge()
+                    ).addOnSuccessListener {
+                        success = true
+                    }.await()
+                }
+            }
+        } catch (e: FirebaseFirestoreException) {
+            handleFirestoreException(e)
+        }
+
+        return success
+    }
+
     // change user name
     suspend fun setUserName(name: String): Boolean {
         var success = false

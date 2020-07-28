@@ -22,6 +22,9 @@ interface ShoppingListsDao {
     @Query("SELECT * FROM shopping_lists ORDER BY timestamp DESC")
     fun getAll(): LiveData<List<ShoppingList>>
 
+    @Query("SELECT * FROM shopping_lists ORDER BY timestamp DESC")
+    fun getAllPlain(): List<ShoppingList>
+
     @Query("SELECT * FROM shopping_lists WHERE id=(:id)")
     fun getById(id: String): LiveData<ShoppingList>
 

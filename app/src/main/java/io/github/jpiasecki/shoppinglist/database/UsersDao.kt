@@ -1,5 +1,6 @@
 package io.github.jpiasecki.shoppinglist.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import java.util.*
 
@@ -14,6 +15,9 @@ interface UsersDao {
 
     @Update
     fun update(user: User)
+
+    @Query("SELECT * FROM users")
+    fun getAllUsers(): LiveData<List<User>>
 
     @Query("SELECT * FROM users WHERE id = (:id)")
     fun getById(id: String): User?

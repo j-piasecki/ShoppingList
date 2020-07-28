@@ -1,10 +1,17 @@
 package io.github.jpiasecki.shoppinglist.database
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.firestore.Exclude
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import io.github.jpiasecki.shoppinglist.other.GlideApp
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -24,4 +31,21 @@ data class User(
     @Ignore
     @get:Exclude
     var profilePicture: Bitmap? = null
-)
+) {
+    fun loadProfileImage(context: Context, callback: () -> Unit) {
+        val ref = Firebase.storage.reference.child("profile_pics/${id}")
+
+        // if profile picture file exists, load it
+        ref.metadata.addOnSuccessListener {
+            GlideApp.with(context).asBitmap().circleCrop().load(ref).into(object : CustomTarget<Bitmap>() {
+                override fun onLoadCleared(placeholder: Drawable?) {}
+
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    profilePicture = resource
+
+                    callback()
+                }
+            })
+        }
+    }
+}
