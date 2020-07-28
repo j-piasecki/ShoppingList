@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -28,6 +29,18 @@ import kotlin.collections.ArrayList
 
 class UsersRemoteSource(private val context: Context) {
 
+    private var defaultSource = Source.DEFAULT
+    
+    private fun handleFirestoreException(e: FirebaseFirestoreException) {
+        Log.w("UsersRemote", "Firestore error: ${e.code}")
+
+        if (e.code == FirebaseFirestoreException.Code.RESOURCE_EXHAUSTED) {
+            Log.w("UsersRemote", "Quota exceeded, switching to cache only")
+
+            defaultSource = Source.CACHE
+        }
+    }
+    
     // update user profile picture if logged in
     fun updateProfilePicture() {
         // if the user is logged in
@@ -63,12 +76,12 @@ class UsersRemoteSource(private val context: Context) {
         Firebase.firestore
             .collection("users")
             .document(id)
-            .get()
+            .get(defaultSource)
             .addOnSuccessListener {
                 result = it.exists()
             }.await()
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return result
@@ -77,13 +90,13 @@ class UsersRemoteSource(private val context: Context) {
     // get user name by id
     suspend fun getUserName(id: String): String {
         try {
-            val data = Firebase.firestore.collection("users").document(id).get().await()
+            val data = Firebase.firestore.collection("users").document(id).get(defaultSource).await()
 
             if (data.contains("name")) {
                 return data["name"] as String
             }
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return context.getString(R.string.unknown_name)
@@ -96,7 +109,7 @@ class UsersRemoteSource(private val context: Context) {
         try {
             FirebaseAuth.getInstance().currentUser?.apply {
                 val ref = Firebase.firestore.collection("users").document(this.uid)
-                val userData = ref.get().await()
+                val userData = ref.get(defaultSource).await()
 
                 if (!userData.contains("name")) {
                     ref.set(
@@ -110,7 +123,7 @@ class UsersRemoteSource(private val context: Context) {
                 }
             }
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return success
@@ -132,7 +145,7 @@ class UsersRemoteSource(private val context: Context) {
                 }.await()
             }
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return success
@@ -146,14 +159,14 @@ class UsersRemoteSource(private val context: Context) {
                 .document(id)
                 .collection("data")
                 .document("private")
-                .get()
+                .get(defaultSource)
                 .await()
 
             if (data.contains("lists")) {
                 return data["lists"] as ArrayList<String>
             }
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return ArrayList()
@@ -201,7 +214,7 @@ class UsersRemoteSource(private val context: Context) {
                     success = true
                 }.await()
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return success
@@ -230,7 +243,7 @@ class UsersRemoteSource(private val context: Context) {
 
             setName.await()
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
 
             success = false
         }
@@ -253,7 +266,7 @@ class UsersRemoteSource(private val context: Context) {
                     success = true
                 }.await()
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return success
@@ -274,7 +287,7 @@ class UsersRemoteSource(private val context: Context) {
                     success = true
                 }.await()
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return success

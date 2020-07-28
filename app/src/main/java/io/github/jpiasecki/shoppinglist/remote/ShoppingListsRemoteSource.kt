@@ -2,11 +2,14 @@ package io.github.jpiasecki.shoppinglist.remote
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -22,6 +25,22 @@ import kotlin.collections.ArrayList
 
 class ShoppingListsRemoteSource(private val context: Context) {
 
+    private var defaultSource = Source.DEFAULT
+    private val workingOnlineLiveData = MutableLiveData<Boolean>(true)
+    
+    private fun handleFirestoreException(e: FirebaseFirestoreException) {
+        Log.w("ShoppingListsRemote", "Firestore error: ${e.code}")
+
+        if (e.code == FirebaseFirestoreException.Code.RESOURCE_EXHAUSTED) {
+            Log.w("ShoppingListsRemote", "Quota exceeded, switching to cache only")
+
+            defaultSource = Source.CACHE
+            workingOnlineLiveData.postValue(false)
+        }
+    }
+
+    fun getOnlineStatus(): LiveData<Boolean> = workingOnlineLiveData
+    
     suspend fun setList(list: ShoppingList): Boolean {
         var success = true
 
@@ -72,7 +91,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
                 }
             }
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
 
             success = false
         }
@@ -90,7 +109,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
 
             // delete all items from list
             val itemsRef = Firebase.firestore.collection("lists").document(id).collection("items")
-            val itemsCollection = itemsRef.get().await()
+            val itemsCollection = itemsRef.get(defaultSource).await()
 
             for (item in itemsCollection.documents) {
                 // add tasks to list
@@ -99,7 +118,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
 
             // delete all users from list
             val usersRef = Firebase.firestore.collection("lists").document(id).collection("users")
-            val usersCollection = usersRef.get().await()
+            val usersCollection = usersRef.get(defaultSource).await()
 
             for (user in usersCollection.documents) {
                 // add tasks to list
@@ -126,7 +145,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
                     success = true
                 }.await()
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
 
             success = false
         }
@@ -136,13 +155,13 @@ class ShoppingListsRemoteSource(private val context: Context) {
 
     suspend fun getListMetadata(id: String): ShoppingList? {
         try {
-            val data = Firebase.firestore.collection("lists").document(id).get().await()
+            val data = Firebase.firestore.collection("lists").document(id).get(defaultSource).await()
 
             return data.toObject<ShoppingList>()?.apply {
                 this.id = id
             }
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return null
@@ -152,7 +171,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
         try {
             // get all items
             val itemsCollection =
-                Firebase.firestore.collection("lists").document(list.id).collection("items").whereEqualTo("deleted", false).get()
+                Firebase.firestore.collection("lists").document(list.id).collection("items").whereEqualTo("deleted", false).get(defaultSource)
                     .await()
             for (itemDoc in itemsCollection.documents) {
                 val item = itemDoc.toObject<Item>()
@@ -169,7 +188,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
 
             return list
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return null
@@ -186,12 +205,12 @@ class ShoppingListsRemoteSource(private val context: Context) {
             Firebase.firestore
                 .collection("lists")
                 .document(id)
-                .get()
+                .get(defaultSource)
                 .addOnSuccessListener {
                     result = it.exists()
                 }.await()
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return result
@@ -201,13 +220,13 @@ class ShoppingListsRemoteSource(private val context: Context) {
         var result = Calendar.getInstance().timeInMillis
 
         try {
-            val data = Firebase.firestore.collection("lists").document(id).get().await()
+            val data = Firebase.firestore.collection("lists").document(id).get(defaultSource).await()
 
             if (data.contains("timestamp")) {
                 result = data["timestamp"] as Long
             }
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return result
@@ -227,7 +246,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
 
             updateListTimestamp(id)
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return success
@@ -247,7 +266,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
 
             updateListTimestamp(id)
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return success
@@ -265,7 +284,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
                     success = true
                 }.await()
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return success
@@ -287,7 +306,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
 
             updateListTimestamp(listId)
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return success
@@ -309,7 +328,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
 
             updateListTimestamp(listId)
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return success
@@ -319,13 +338,13 @@ class ShoppingListsRemoteSource(private val context: Context) {
         val result = ArrayList<String>()
 
         try {
-            val data = Firebase.firestore.collection("lists").document(listId).collection("users").get().await()
+            val data = Firebase.firestore.collection("lists").document(listId).collection("users").get(defaultSource).await()
 
             for (user in data.documents) {
                 result.add(user.id)
             }
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return result
@@ -348,7 +367,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
 
             updateListTimestamp(listId)
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return success
@@ -368,7 +387,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
 
             updateListTimestamp(listId)
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return success
@@ -394,7 +413,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
 
             updateListTimestamp(listId)
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return success
@@ -423,7 +442,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
 
             updateListTimestamp(listId)
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return success
@@ -445,7 +464,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
 
             updateListTimestamp(listId)
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return success
@@ -456,7 +475,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
 
         try {
             val itemsCollection =
-                Firebase.firestore.collection("lists").document(listId).collection("items").whereGreaterThan("timestamp", since).get()
+                Firebase.firestore.collection("lists").document(listId).collection("items").whereGreaterThan("timestamp", since).get(defaultSource)
                     .await()
 
             for (itemDoc in itemsCollection.documents) {
@@ -467,7 +486,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
                 }
             }
         } catch (e: FirebaseFirestoreException) {
-            Log.w("A", "Error: ${e.code}")
+            handleFirestoreException(e)
         }
 
         return result
