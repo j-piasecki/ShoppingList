@@ -13,14 +13,13 @@ import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import io.github.jpiasecki.shoppinglist.consts.Ids
+import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.Item
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.*
-import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class ShoppingListsRemoteSource(private val context: Context) {
@@ -82,7 +81,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
                     Firebase.firestore
                         .collection("users")
                         .document(
-                            FirebaseAuth.getInstance().currentUser?.uid ?: Ids.USER_ID_NOT_FOUND
+                            FirebaseAuth.getInstance().currentUser?.uid ?: Values.USER_ID_NOT_FOUND
                         )
                         .collection("data")
                         .document("private")
@@ -128,7 +127,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
             // remove entry from user profile
             Firebase.firestore
                 .collection("users")
-                .document(FirebaseAuth.getInstance().currentUser?.uid ?: Ids.USER_ID_NOT_FOUND)
+                .document(FirebaseAuth.getInstance().currentUser?.uid ?: Values.USER_ID_NOT_FOUND)
                 .collection("data")
                 .document("private")
                 .update("lists", FieldValue.arrayRemove(id))

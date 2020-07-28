@@ -16,7 +16,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import io.github.jpiasecki.shoppinglist.R
-import io.github.jpiasecki.shoppinglist.consts.Ids
+import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -24,7 +24,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.io.ByteArrayOutputStream
-import java.util.*
 import kotlin.collections.ArrayList
 
 class UsersRemoteSource(private val context: Context) {
@@ -152,7 +151,7 @@ class UsersRemoteSource(private val context: Context) {
     }
 
     // get ids of lists saved remotely by user id
-    suspend fun getUserShoppingListIds(id: String = FirebaseAuth.getInstance().currentUser?.uid ?: Ids.USER_ID_NOT_FOUND): ArrayList<String> {
+    suspend fun getUserShoppingListIds(id: String = FirebaseAuth.getInstance().currentUser?.uid ?: Values.USER_ID_NOT_FOUND): ArrayList<String> {
         try {
             val data = Firebase.firestore
                 .collection("users")
@@ -173,7 +172,7 @@ class UsersRemoteSource(private val context: Context) {
     }
 
     // get user object by id
-    suspend fun getUser(id: String = FirebaseAuth.getInstance().currentUser?.uid ?: Ids.USER_ID_NOT_FOUND, fetchLists: Boolean = true): User? {
+    suspend fun getUser(id: String = FirebaseAuth.getInstance().currentUser?.uid ?: Values.USER_ID_NOT_FOUND, fetchLists: Boolean = true): User? {
         if (!exists(id))
             return null
 
@@ -196,7 +195,7 @@ class UsersRemoteSource(private val context: Context) {
     // set ids of lists saved remotely
     suspend fun setUserShoppingListIds(user: User) = setUserShoppingListIds(user.id, user.lists)
 
-    suspend fun setUserShoppingListIds(id: String = FirebaseAuth.getInstance().currentUser?.uid ?: Ids.USER_ID_NOT_FOUND, lists: List<String>): Boolean {
+    suspend fun setUserShoppingListIds(id: String = FirebaseAuth.getInstance().currentUser?.uid ?: Values.USER_ID_NOT_FOUND, lists: List<String>): Boolean {
         var success = false
 
         try {
@@ -252,7 +251,7 @@ class UsersRemoteSource(private val context: Context) {
     }
 
     suspend fun addListToUser(list: String): Boolean {
-        val id = FirebaseAuth.getInstance().currentUser?.uid ?: Ids.USER_ID_NOT_FOUND
+        val id = FirebaseAuth.getInstance().currentUser?.uid ?: Values.USER_ID_NOT_FOUND
         var success = false
 
         try {
@@ -273,7 +272,7 @@ class UsersRemoteSource(private val context: Context) {
     }
 
     suspend fun removeListFromUser(list: String): Boolean {
-        val id = FirebaseAuth.getInstance().currentUser?.uid ?: Ids.USER_ID_NOT_FOUND
+        val id = FirebaseAuth.getInstance().currentUser?.uid ?: Values.USER_ID_NOT_FOUND
         var success = false
 
         try {

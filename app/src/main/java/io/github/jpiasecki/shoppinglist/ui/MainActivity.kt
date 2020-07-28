@@ -13,6 +13,7 @@ import com.google.android.gms.auth.api.Auth
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
+import io.github.jpiasecki.shoppinglist.consts.Values.RC_SIGN_IN
 import io.github.jpiasecki.shoppinglist.database.*
 import io.github.jpiasecki.shoppinglist.remote.ShoppingListsRemoteSource
 import io.github.jpiasecki.shoppinglist.remote.UsersRemoteSource
@@ -29,33 +30,11 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    @Inject lateinit var usersRemoteSource: UsersRemoteSource
-    @Inject lateinit var shoppingListsRemoteSource: ShoppingListsRemoteSource
-
-    @Inject lateinit var usersRepository: UsersRepository
-    @Inject lateinit var shoppingListsRepository: ShoppingListsRepository
-
-    @Inject lateinit var shoppingListsDao: ShoppingListsDao
-
-    private val RC_SIGN_IN = 0
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        button_login.setOnClickListener {
-            startActivityForResult(
-                AuthUI.getInstance()
-                    .createSignInIntentBuilder()
-                    .setAvailableProviders(listOf(AuthUI.IdpConfig.GoogleBuilder().build()))
-                    .build(),
-                RC_SIGN_IN
-            )
-        }
 
-        button.setOnClickListener {
-
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
