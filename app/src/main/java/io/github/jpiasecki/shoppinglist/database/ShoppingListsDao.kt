@@ -2,6 +2,7 @@ package io.github.jpiasecki.shoppinglist.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import java.util.*
 
 @Dao
 interface ShoppingListsDao {
@@ -41,4 +42,10 @@ interface ShoppingListsDao {
 
     @Query("SELECT keepInSync FROM shopping_lists WHERE id = (:id)")
     fun isSynced(id: String): Boolean
+
+    @Query("SELECT timestamp from shopping_lists WHERE id = (:id)")
+    fun getTimestamp(id: String): Long
+
+    @Query("UPDATE shopping_lists SET timestamp = (:timestamp) WHERE id = (:id)")
+    fun updateTimestamp(id: String, timestamp: Long = Calendar.getInstance().timeInMillis)
 }

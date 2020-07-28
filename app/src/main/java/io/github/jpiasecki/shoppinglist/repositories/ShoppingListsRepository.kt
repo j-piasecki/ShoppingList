@@ -1,5 +1,6 @@
 package io.github.jpiasecki.shoppinglist.repositories
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
@@ -10,6 +11,7 @@ import io.github.jpiasecki.shoppinglist.remote.ShoppingListsRemoteSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
 class ShoppingListsRepository @Inject constructor(
@@ -107,6 +109,7 @@ class ShoppingListsRepository @Inject constructor(
 
         GlobalScope.launch(Dispatchers.IO) {
             if (shoppingListsRemoteSource.changeListOwner(listId, ownerId)) {
+                shoppingListsDao.updateTimestamp(listId)
                 shoppingListsDao.changeOwner(listId, ownerId)
                 result.postValue(true)
             } else {
@@ -126,12 +129,14 @@ class ShoppingListsRepository @Inject constructor(
             if (list != null) {
                 if (list.keepInSync) {
                     if (shoppingListsRemoteSource.changeListName(listId, name)) {
+                        shoppingListsDao.updateTimestamp(listId)
                         shoppingListsDao.rename(listId, name)
                         result.postValue(true)
                     } else {
                         result.postValue(false)
                     }
                 } else {
+                    shoppingListsDao.updateTimestamp(listId)
                     shoppingListsDao.rename(listId, name)
                     result.postValue(true)
                 }
@@ -148,6 +153,7 @@ class ShoppingListsRepository @Inject constructor(
             if (shoppingListsRemoteSource.addUserToList(listId, userId)) {
                 shoppingListsDao.getByIdPlain(listId)?.apply {
                     users.add(userId)
+                    timestamp = Calendar.getInstance().timeInMillis
 
                     shoppingListsDao.insert(this)
                 }
@@ -168,6 +174,7 @@ class ShoppingListsRepository @Inject constructor(
             if (shoppingListsRemoteSource.removeUserFromList(listId, userId)) {
                 shoppingListsDao.getByIdPlain(listId)?.apply {
                     users.remove(userId)
+                    timestamp = Calendar.getInstance().timeInMillis
 
                     shoppingListsDao.insert(this)
                 }
@@ -188,6 +195,7 @@ class ShoppingListsRepository @Inject constructor(
             if (shoppingListsRemoteSource.banUserFromList(listId, userId)) {
                 shoppingListsDao.getByIdPlain(listId)?.apply {
                     banned.add(userId)
+                    timestamp = Calendar.getInstance().timeInMillis
 
                     shoppingListsDao.insert(this)
                 }
@@ -208,6 +216,7 @@ class ShoppingListsRepository @Inject constructor(
             if (shoppingListsRemoteSource.unBanUserFromList(listId, userId)) {
                 shoppingListsDao.getByIdPlain(listId)?.apply {
                     banned.remove(userId)
+                    timestamp = Calendar.getInstance().timeInMillis
 
                     shoppingListsDao.insert(this)
                 }
@@ -221,6 +230,16 @@ class ShoppingListsRepository @Inject constructor(
         return result
     }
 
+    fun getListUsers(listId: String): LiveData<List<String>?> {
+        val result = MutableLiveData<List<String>?>(null)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            result.postValue(shoppingListsRemoteSource.getUsers(listId))
+        }
+
+        return result
+    }
+
     fun addItemToList(listId: String, item: Item): LiveData<Boolean?> {
         val result = MutableLiveData<Boolean?>(null)
 
@@ -229,13 +248,16 @@ class ShoppingListsRepository @Inject constructor(
 
             if (list != null) {
                 val index = list.items.indexOfFirst { it.id == item.id }
+                val updatedItem = item.copy(timestamp = Calendar.getInstance().timeInMillis)
 
                 if (list.keepInSync) {
-                    if (shoppingListsRemoteSource.addItemToList(listId, item, false)) {
+                    if (shoppingListsRemoteSource.addItemToList(listId, updatedItem, false)) {
                         if (index == -1)
-                            list.items.add(item)
+                            list.items.add(updatedItem)
                         else
-                            list.items[index] = item
+                            list.items[index] = updatedItem
+
+                        list.timestamp = Calendar.getInstance().timeInMillis
 
                         shoppingListsDao.insert(list)
                         result.postValue(true)
@@ -244,9 +266,11 @@ class ShoppingListsRepository @Inject constructor(
                     }
                 } else {
                     if (index == -1)
-                        list.items.add(item)
+                        list.items.add(updatedItem)
                     else
-                        list.items[index] = item
+                        list.items[index] = updatedItem
+
+                    list.timestamp = Calendar.getInstance().timeInMillis
 
                     shoppingListsDao.insert(list)
                     result.postValue(true)
@@ -267,9 +291,12 @@ class ShoppingListsRepository @Inject constructor(
                 val index = list.items.indexOfFirst { it.id == item.id }
 
                 if (index != -1) {
+                    val updatedItem = item.copy(deleted = true, timestamp = Calendar.getInstance().timeInMillis)
+
                     if (list.keepInSync) {
                         if (shoppingListsRemoteSource.removeItemFromList(listId, item)) {
-                            list.items.removeAt(index)
+                            list.items[index] = updatedItem
+                            list.timestamp = Calendar.getInstance().timeInMillis
 
                             shoppingListsDao.insert(list)
                             result.postValue(true)
@@ -277,7 +304,8 @@ class ShoppingListsRepository @Inject constructor(
                             result.postValue(false)
                         }
                     } else {
-                        list.items.removeAt(index)
+                        list.items[index] = updatedItem
+                        list.timestamp = Calendar.getInstance().timeInMillis
 
                         shoppingListsDao.insert(list)
                         result.postValue(true)
@@ -291,6 +319,25 @@ class ShoppingListsRepository @Inject constructor(
         return result
     }
 
+    fun deleteUnusedItems(listId: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            shoppingListsDao.getByIdPlain(listId)?.let {
+                val iterator = it.items.listIterator()
+
+                while (iterator.hasNext()) {
+                    val item = iterator.next()
+
+                    if (item.deleted && Calendar.getInstance().timeInMillis - item.timestamp >= 5 * 24 * 60 * 60 * 1000) {
+                        shoppingListsRemoteSource.deleteItemFromList(listId, item.id)
+                        iterator.remove()
+                    }
+                }
+
+                shoppingListsDao.insert(it)
+            }
+        }
+    }
+
     fun setItemCompleted(listId: String, itemId: String): LiveData<Boolean?> {
         val result = MutableLiveData<Boolean?>(null)
 
@@ -302,15 +349,18 @@ class ShoppingListsRepository @Inject constructor(
 
                 if (index != -1) {
                     if (list.keepInSync) {
-                        val item = list.items[index].copy(isCompleted = true, completedBy = FirebaseAuth.getInstance().currentUser?.uid)
+                        val item = list.items[index].copy(isCompleted = true, completedBy = FirebaseAuth.getInstance().currentUser?.uid, timestamp = Calendar.getInstance().timeInMillis)
 
                         if (shoppingListsRemoteSource.addItemToList(listId, item)) {
                             list.items[index] = item
+                            list.timestamp = Calendar.getInstance().timeInMillis
+
                             shoppingListsDao.insert(list)
                             result.postValue(true)
                         }
                     } else {
-                        list.items[index] = list.items[index].copy(isCompleted = true, completedBy = FirebaseAuth.getInstance().currentUser?.uid)
+                        list.items[index] = list.items[index].copy(isCompleted = true, completedBy = FirebaseAuth.getInstance().currentUser?.uid, timestamp = Calendar.getInstance().timeInMillis)
+                        list.timestamp = Calendar.getInstance().timeInMillis
 
                         shoppingListsDao.insert(list)
                         result.postValue(true)
@@ -335,15 +385,18 @@ class ShoppingListsRepository @Inject constructor(
 
                 if (index != -1) {
                     if (list.keepInSync) {
-                        val item = list.items[index].copy(isCompleted = false, completedBy = null)
+                        val item = list.items[index].copy(isCompleted = false, completedBy = null, timestamp = Calendar.getInstance().timeInMillis)
 
                         if (shoppingListsRemoteSource.addItemToList(listId, item)) {
                             list.items[index] = item
+                            list.timestamp = Calendar.getInstance().timeInMillis
+
                             shoppingListsDao.insert(list)
                             result.postValue(true)
                         }
                     } else {
-                        list.items[index] = list.items[index].copy(isCompleted = false, completedBy = null)
+                        list.items[index] = list.items[index].copy(isCompleted = false, completedBy = null, timestamp = Calendar.getInstance().timeInMillis)
+                        list.timestamp = Calendar.getInstance().timeInMillis
 
                         shoppingListsDao.insert(list)
                         result.postValue(true)
@@ -365,10 +418,27 @@ class ShoppingListsRepository @Inject constructor(
 
             for (id in allLists) {
                 if (shoppingListsDao.isSynced(id)) {
-                    val list = shoppingListsRemoteSource.getList(id)
+                    val list = shoppingListsRemoteSource.getListMetadata(id)
 
-                    if (list != null) {
-                        shoppingListsDao.insert(list)
+                    if (list != null && shoppingListsDao.getTimestamp(id) < list.timestamp) {
+                        val localList = shoppingListsDao.getByIdPlain(id)
+
+                        if (localList != null) {
+                            list.items = localList.items
+                            list.users = localList.users
+
+                            for (item in shoppingListsRemoteSource.getUpdatedItems(id, localList.timestamp)) {
+                                val index = list.items.indexOfFirst { it.id == item.id }
+
+                                if (index == -1) {
+                                    list.items.add(item)
+                                } else {
+                                    list.items[index] = item
+                                }
+                            }
+
+                            shoppingListsDao.insert(list)
+                        }
                     }
                 }
             }

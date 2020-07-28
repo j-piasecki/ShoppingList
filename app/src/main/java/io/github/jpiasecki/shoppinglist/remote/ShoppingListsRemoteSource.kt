@@ -134,15 +134,25 @@ class ShoppingListsRemoteSource(private val context: Context) {
         return success
     }
 
-    suspend fun getList(id: String): ShoppingList? {
+    suspend fun getListMetadata(id: String): ShoppingList? {
         try {
             val data = Firebase.firestore.collection("lists").document(id).get().await()
-            val list =
-                data.toObject<ShoppingList>() ?: return ShoppingList(Ids.SHOPPING_LIST_ID_NOT_FOUND)
 
+            return data.toObject<ShoppingList>()?.apply {
+                this.id = id
+            }
+        } catch (e: FirebaseFirestoreException) {
+            Log.w("A", "Error: ${e.code}")
+        }
+
+        return null
+    }
+
+    suspend fun getListContent(list: ShoppingList): ShoppingList? {
+        try {
             // get all items
             val itemsCollection =
-                Firebase.firestore.collection("lists").document(id).collection("items").get()
+                Firebase.firestore.collection("lists").document(list.id).collection("items").whereEqualTo("deleted", false).get()
                     .await()
             for (itemDoc in itemsCollection.documents) {
                 val item = itemDoc.toObject<Item>()
@@ -153,11 +163,8 @@ class ShoppingListsRemoteSource(private val context: Context) {
             }
 
             // get all users
-            val usersCollection =
-                Firebase.firestore.collection("lists").document(id).collection("users").get()
-                    .await()
-            for (userDoc in usersCollection.documents) {
-                list.users.add(userDoc.id)
+            if (list.owner == FirebaseAuth.getInstance().currentUser?.uid) {
+                list.users = getUsers(list.id) as ArrayList<String>
             }
 
             return list
@@ -166,6 +173,10 @@ class ShoppingListsRemoteSource(private val context: Context) {
         }
 
         return null
+    }
+
+    suspend fun getList(id: String): ShoppingList? {
+        return getListContent(getListMetadata(id) ?: return null)
     }
 
     suspend fun exists(id: String): Boolean {
@@ -400,6 +411,33 @@ class ShoppingListsRemoteSource(private val context: Context) {
                 .document(listId)
                 .collection("items")
                 .document(itemId)
+                .update(
+                    mapOf(
+                        "deleted" to true,
+                        "timestamp" to Calendar.getInstance().timeInMillis
+                    )
+                )
+                .addOnSuccessListener {
+                    success = true
+                }.await()
+
+            updateListTimestamp(listId)
+        } catch (e: FirebaseFirestoreException) {
+            Log.w("A", "Error: ${e.code}")
+        }
+
+        return success
+    }
+
+    suspend fun deleteItemFromList(listId: String, itemId: String): Boolean {
+        var success = false
+
+        try {
+            Firebase.firestore
+                .collection("lists")
+                .document(listId)
+                .collection("items")
+                .document(itemId)
                 .delete()
                 .addOnSuccessListener {
                     success = true
@@ -411,5 +449,27 @@ class ShoppingListsRemoteSource(private val context: Context) {
         }
 
         return success
+    }
+
+    suspend fun getUpdatedItems(listId: String, since: Long): MutableList<Item> {
+        val result = ArrayList<Item>()
+
+        try {
+            val itemsCollection =
+                Firebase.firestore.collection("lists").document(listId).collection("items").whereGreaterThan("timestamp", since).get()
+                    .await()
+
+            for (itemDoc in itemsCollection.documents) {
+                val item = itemDoc.toObject<Item>()
+
+                if (item != null) {
+                    result.add(item)
+                }
+            }
+        } catch (e: FirebaseFirestoreException) {
+            Log.w("A", "Error: ${e.code}")
+        }
+
+        return result
     }
 }

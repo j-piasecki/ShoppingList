@@ -16,6 +16,8 @@ data class Item(
     val unit: Int = Units.NO_UNIT,
     val price: Double = 0.0,
     val icon: Int = Icons.DEFAULT,
+    val timestamp: Long = Calendar.getInstance().timeInMillis,
+    val deleted: Boolean = false,
 
     @get:Exclude
     val id: String = UUID.randomUUID().toString()
