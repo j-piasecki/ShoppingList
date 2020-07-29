@@ -25,6 +25,8 @@ class MainViewModel @ViewModelInject constructor(
 
     fun setupUser() = usersRepository.setupUser()
 
+    fun trySettingOwner() = shoppingListsRepository.trySettingOwner()
+
     fun createList() = shoppingListsRepository.createList("list name ${Random.nextInt(100)}", "list note number ${Random.nextInt(1000)}", "pln")
 
     fun deleteList(list: ShoppingList) {

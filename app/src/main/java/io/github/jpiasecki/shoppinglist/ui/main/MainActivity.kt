@@ -183,6 +183,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "logged in ${FirebaseAuth.getInstance().currentUser?.displayName}", Toast.LENGTH_SHORT).show()
 
             viewModel.setupUser()
+            viewModel.trySettingOwner()
             viewModel.downloadRemoteLists()
 
             loadUserProfilePicture()

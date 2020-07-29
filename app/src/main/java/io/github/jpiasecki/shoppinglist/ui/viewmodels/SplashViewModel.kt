@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.ArrayList
 
 class SplashViewModel @ViewModelInject constructor(
     private val usersRepository: UsersRepository,
@@ -31,12 +32,24 @@ class SplashViewModel @ViewModelInject constructor(
         }
 
         GlobalScope.launch(Dispatchers.IO) {
+            val updated = ArrayList<String?>()
+
             for (list in shoppingListsRepository.getAllListsPlain()) {
-                usersRepository.updateUser(list.owner)
+                if (list.owner !in updated) {
+                    usersRepository.updateUser(list.owner)
+                    updated.add(list.owner)
+                }
 
                 for (item in list.items) {
-                    usersRepository.updateUser(item.addedBy)
-                    usersRepository.updateUser(item.completedBy)
+                    if (item.addedBy !in updated) {
+                        usersRepository.updateUser(item.addedBy)
+                        updated.add(item.addedBy)
+                    }
+
+                    if (item.completedBy !in updated) {
+                        usersRepository.updateUser(item.completedBy)
+                        updated.add(item.completedBy)
+                    }
                 }
             }
         }

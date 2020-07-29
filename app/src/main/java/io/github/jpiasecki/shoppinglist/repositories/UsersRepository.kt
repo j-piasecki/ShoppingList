@@ -104,7 +104,7 @@ class UsersRepository @Inject constructor(
     fun isUserUpToDate(id: String): Boolean {
         val user = usersDao.getById(id) ?: return false
 
-        return Calendar.getInstance().timeInMillis - user.timestamp > 24 * 60 * 60 * 1000
+        return Calendar.getInstance().timeInMillis - user.timestamp < 24 * 60 * 60 * 1000
     }
 
     fun setupUser() {

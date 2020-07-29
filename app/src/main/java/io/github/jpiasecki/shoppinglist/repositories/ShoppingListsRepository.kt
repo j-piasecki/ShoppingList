@@ -554,6 +554,25 @@ class ShoppingListsRepository @Inject constructor(
         return result
     }
 
+    fun trySettingOwner(): LiveData<Boolean?> {
+        val result = MutableLiveData<Boolean?>(null)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val uid = FirebaseAuth.getInstance().currentUser?.uid
+
+            if (uid != null) {
+                for (list in shoppingListsDao.getAllPlain()) {
+                    if (list.owner == null)
+                        shoppingListsDao.changeOwner(list.id, uid)
+                }
+            }
+
+            result.postValue(true)
+        }
+
+        return result
+    }
+
     suspend fun syncListBlocking(listId: String): Boolean {
         if (shoppingListsDao.isSynced(listId)) {
             val list = shoppingListsRemoteSource.getListMetadata(listId)
