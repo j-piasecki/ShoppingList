@@ -4,4 +4,4 @@
     android:animation="@anim/row_recycler_view_enter"
     android:interpolator="@android:interpolator/decelerate_cubic"
     android:animationOrder="normal"
-    android:delay="15%"/>
+    android:delay="10%"/>

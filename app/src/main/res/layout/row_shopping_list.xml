@@ -37,8 +37,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@id/row_shopping_list_icon"
+            android:layout_toStartOf="@id/row_shopping_list_synced_icon"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="32dp"/>
+            android:layout_marginEnd="8dp"/>
 
         <ImageView
             android:id="@+id/row_shopping_list_synced_icon"

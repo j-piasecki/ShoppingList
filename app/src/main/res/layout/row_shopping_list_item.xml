@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
@@ -10,43 +12,137 @@
 
     <RelativeLayout
         android:id="@+id/row_shopping_list_item_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:background="?android:attr/selectableItemBackground">
+        android:background="?android:attr/selectableItemBackground"
+        android:padding="12dp">
+
+        <ImageView
+            android:id="@+id/row_shopping_list_item_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_item_default_24"
+            android:tint="?android:attr/textColorPrimary"
+            android:tintMode="multiply" />
 
         <TextView
             android:id="@+id/row_shopping_list_item_name"
-            android:text="Name"
-            android:textSize="18sp"
-            android:textColor="?android:attr/textColorPrimary"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/row_shopping_list_item_note"
-            android:text="Note"
-            android:textSize="14sp"
-            android:textColor="?android:attr/textColorSecondary"
-            android:maxLines="1"
-            android:ellipsize="end"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/row_shopping_list_item_name"/>
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Name"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="20sp"
+            android:gravity="center_vertical"
+            android:layout_toEndOf="@id/row_shopping_list_item_icon"
+            android:layout_alignTop="@id/row_shopping_list_item_icon"
+            android:layout_alignBottom="@id/row_shopping_list_item_icon"
+            android:layout_toStartOf="@id/row_shopping_list_item_added_by_icon"/>
+
+        <ImageView
+            android:id="@+id/row_shopping_list_item_added_by_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_person_24"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@id/row_shopping_list_item_name"
+            android:layout_alignBottom="@id/row_shopping_list_item_name"/>
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/row_shopping_list_item_completed_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/row_shopping_list_item_icon"/>
 
         <TextView
             android:id="@+id/row_shopping_list_item_quantity"
-            android:text="Quantity"
-            android:textSize="14sp"
-            android:textColor="?android:attr/textColorSecondary"
-            android:maxLines="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
             android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Quantity"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="16sp"
+            android:gravity="center_vertical"
+            android:layout_alignTop="@id/row_shopping_list_item_completed_check_box"
+            android:layout_alignBottom="@id/row_shopping_list_item_completed_check_box"
+            android:layout_toEndOf="@id/row_shopping_list_item_completed_check_box"
+            android:layout_toStartOf="@id/row_shopping_list_item_price"/>
+
+        <TextView
+            android:id="@+id/row_shopping_list_item_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            android:ellipsize="end"
+            android:maxWidth="100dp"
+            android:maxLines="1"
+            android:text="Price"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="16sp"
+            android:gravity="center_vertical"
+            android:layout_alignTop="@id/row_shopping_list_item_completed_check_box"
+            android:layout_alignBottom="@id/row_shopping_list_item_completed_check_box"
+            android:layout_alignParentEnd="true"/>
+
+        <TextView
+            android:id="@+id/row_shopping_list_item_note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/row_shopping_list_item_note"/>
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Note"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="14sp"
+            android:layout_alignStart="@id/row_shopping_list_item_quantity"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/row_shopping_list_item_quantity" />
+
+        <TextView
+            android:id="@+id/row_shopping_list_item_last_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="Last update"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="12sp"
+            android:layout_below="@id/row_shopping_list_item_note"
+            android:layout_alignParentEnd="true"/>
+
+        <ImageView
+            android:id="@+id/row_shopping_list_item_completed_by_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="6dp"
+            android:src="@drawable/ic_person_24"
+            app:layout_constraintDimensionRatio="1:1"
+            android:layout_alignStart="@id/row_shopping_list_item_completed_check_box"
+            android:layout_below="@id/row_shopping_list_item_completed_check_box" />
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/row_shopping_list_item_completed_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/itemCompletedOverlay"
+        android:elevation="4dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true" />
 
 </androidx.cardview.widget.CardView>

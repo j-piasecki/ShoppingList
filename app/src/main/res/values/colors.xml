@@ -5,4 +5,5 @@
     <color name="colorAccent">#03DAC5</color>
 
     <color name="userProfilePictureTransparentTint">#ccffffff</color>
+    <color name="itemCompletedOverlay">#66000000</color>
 </resources>

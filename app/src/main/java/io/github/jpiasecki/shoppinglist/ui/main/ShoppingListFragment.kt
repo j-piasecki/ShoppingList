@@ -5,10 +5,12 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -21,6 +23,7 @@ import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.ui.AddEditItemActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
+import kotlin.math.sign
 
 @AndroidEntryPoint
 class ShoppingListFragment : Fragment() {
@@ -39,17 +42,15 @@ class ShoppingListFragment : Fragment() {
         val listId = arguments?.getString(Values.SHOPPING_LIST_ID)
 
         val adapter =
-            ShoppingListItemsAdapter(
-                { id ->
-                    startActivity(
-                        Intent(
-                            context,
-                            AddEditItemActivity::class.java
-                        ).putExtra(Values.ITEM_ID, id)
-                            .putExtra(Values.SHOPPING_LIST_ID, listId)
-                    )
-                }
-            )
+            ShoppingListItemsAdapter { id ->
+                startActivity(
+                    Intent(
+                        context,
+                        AddEditItemActivity::class.java
+                    ).putExtra(Values.ITEM_ID, id)
+                        .putExtra(Values.SHOPPING_LIST_ID, listId)
+                )
+            }
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.fragment_shopping_list_recycler_view)
         recyclerView.adapter = adapter
@@ -65,7 +66,19 @@ class ShoppingListFragment : Fragment() {
             viewModel.updateItems(listId)
 
             viewModel.getShoppingList(listId).observe(viewLifecycleOwner, Observer {
-                adapter.submitList(it.items)
+                it.items.sortWith(Comparator { o1, o2 ->
+                    if ((o1.isCompleted && o2.isCompleted) || (!o1.isCompleted && !o2.isCompleted)) {
+                        (o2.timestamp - o1.timestamp).sign
+                    } else if (o1.isCompleted && !o2.isCompleted) {
+                        1
+                    } else {
+                        -1
+                    }
+                })
+
+                adapter.setList(it)
+                if (currentList == null)
+                    recyclerView.layoutAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.recycler_view_animation)
 
                 currentList = it
             })
@@ -76,6 +89,10 @@ class ShoppingListFragment : Fragment() {
         }
 
         return view
+    }
+
+    override fun onStart() {
+        super.onStart()
     }
 
     fun shareCurrentList() {
