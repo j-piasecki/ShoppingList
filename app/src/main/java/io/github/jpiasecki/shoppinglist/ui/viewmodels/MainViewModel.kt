@@ -51,4 +51,16 @@ class MainViewModel @ViewModelInject constructor(
 
         return result
     }
+
+    fun downloadRemoteLists() {
+        GlobalScope.launch(Dispatchers.IO) {
+            val remoteLists = usersRepository.getRemoteLists()
+
+            for (listId in remoteLists) {
+                if (!shoppingListsRepository.downloadOrSyncList(listId)) {
+                    usersRepository.removeListFromUser(listId)
+                }
+            }
+        }
+    }
 }

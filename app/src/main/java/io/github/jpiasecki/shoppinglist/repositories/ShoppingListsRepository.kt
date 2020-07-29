@@ -1,6 +1,5 @@
 package io.github.jpiasecki.shoppinglist.repositories
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
@@ -96,13 +95,21 @@ class ShoppingListsRepository @Inject constructor(
         val result = MutableLiveData<Boolean?>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
-            val list = shoppingListsRemoteSource.getList(listId)
+            val localList = shoppingListsDao.getByIdPlain(listId)
 
-            if (list != null) {
-                shoppingListsDao.insert(list)
+            if (localList != null) {
+                syncListBlocking(listId)
+
                 result.postValue(true)
             } else {
-                result.postValue(false)
+                val list = shoppingListsRemoteSource.getList(listId)
+
+                if (list != null) {
+                    shoppingListsDao.insert(list)
+                    result.postValue(true)
+                } else {
+                    result.postValue(false)
+                }
             }
         }
 
@@ -513,30 +520,7 @@ class ShoppingListsRepository @Inject constructor(
         val result = MutableLiveData<Boolean?>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
-            if (shoppingListsDao.isSynced(listId)) {
-                val list = shoppingListsRemoteSource.getListMetadata(listId)
-
-                if (list != null && shoppingListsDao.getTimestamp(listId) < list.timestamp) {
-                    val localList = shoppingListsDao.getByIdPlain(listId)
-
-                    if (localList != null) {
-                        list.items = localList.items
-                        list.users = localList.users
-
-                        for (item in shoppingListsRemoteSource.getUpdatedItems(listId, localList.timestamp)) {
-                            val index = list.items.indexOfFirst { it.id == item.id }
-
-                            if (index == -1) {
-                                list.items.add(item)
-                            } else {
-                                list.items[index] = item
-                            }
-                        }
-
-                        shoppingListsDao.insert(list)
-                    }
-                }
-            }
+            syncListBlocking(listId)
 
             result.postValue(true)
         }
@@ -544,9 +528,61 @@ class ShoppingListsRepository @Inject constructor(
         return result
     }
 
+    suspend fun syncListBlocking(listId: String): Boolean {
+        if (shoppingListsDao.isSynced(listId)) {
+            val list = shoppingListsRemoteSource.getListMetadata(listId)
+
+            if (list != null && shoppingListsDao.getTimestamp(listId) < list.timestamp) {
+                val localList = shoppingListsDao.getByIdPlain(listId)
+
+                if (localList != null) {
+                    list.items = localList.items
+                    list.users = localList.users
+
+                    for (item in shoppingListsRemoteSource.getUpdatedItems(listId, localList.timestamp)) {
+                        val index = list.items.indexOfFirst { it.id == item.id }
+
+                        if (index == -1) {
+                            list.items.add(item)
+                        } else {
+                            list.items[index] = item
+                        }
+                    }
+
+                    shoppingListsDao.insert(list)
+
+                    return true
+                }
+            }
+        }
+
+        return false
+    }
+
     suspend fun getRemoteTimestamp(listId: String) = shoppingListsRemoteSource.getTimestamp(listId)
 
     suspend fun getRemoteUsers(listId: String) = shoppingListsRemoteSource.getUsers(listId)
 
     suspend fun downloadRemoteList(listId: String) = shoppingListsRemoteSource.getList(listId)
+
+    suspend fun downloadOrSyncList(listId: String): Boolean {
+        val localList = shoppingListsDao.getByIdPlain(listId)
+        if (localList != null) {
+            if (!syncListBlocking(listId) && localList.keepInSync) {
+                shoppingListsDao.setKeepSynced(listId, false)
+            }
+
+            return true
+        } else {
+            val list = downloadRemoteList(listId)
+
+            if (list != null) {
+                shoppingListsDao.insert(list)
+
+                return true
+            }
+        }
+
+        return false
+    }
 }

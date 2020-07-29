@@ -12,10 +12,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.view.children
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.ListFragment
 import androidx.lifecycle.Observer
 import androidx.transition.*
 import com.bumptech.glide.Glide
@@ -27,7 +31,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.consts.Values.RC_SIGN_IN
-import io.github.jpiasecki.shoppinglist.database.*
 import io.github.jpiasecki.shoppinglist.ui.AddEditItemActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -68,13 +71,25 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        onFragmentChange(FragmentType.Lists)
-
         supportFragmentManager.addOnBackStackChangedListener {
             if (supportFragmentManager.findFragmentById(R.id.activity_main_frame_layout) is ListsFragment)
                 onFragmentChange(FragmentType.Lists)
             else
                 onFragmentChange(FragmentType.ShoppingList)
+        }
+
+        activity_main_bottom_app_bar.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            for ((index, item) in activity_main_bottom_app_bar.menu.children.iterator().withIndex()) {
+                val view = activity_main_bottom_app_bar.findViewById<View>(item.itemId)
+                view.scaleX = 0f
+                view.scaleY = 0f
+
+                val animator = view.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setStartDelay(index * 30L)
+                    .setInterpolator(DecelerateInterpolator())
+            }
         }
     }
 
@@ -114,11 +129,37 @@ class MainActivity : AppCompatActivity() {
     private fun onFragmentChange(type: FragmentType) {
         when (type) {
             FragmentType.Lists -> {
-                activity_main_bottom_app_bar.replaceMenu(R.menu.menu_activity_main_lists_bottom_app_bar)
+                for ((index, item) in activity_main_bottom_app_bar.menu.children.iterator().withIndex()) {
+                    val animator = activity_main_bottom_app_bar.findViewById<View>(item.itemId)
+                        .animate()
+                        .scaleX(0f)
+                        .scaleY(0f)
+                        .setStartDelay(index * 30L)
+                        .setInterpolator(AccelerateInterpolator())
+
+                    if (index == activity_main_bottom_app_bar.menu.size - 1) {
+                        animator.withEndAction {
+                            activity_main_bottom_app_bar.replaceMenu(R.menu.menu_activity_main_lists_bottom_app_bar)
+                        }
+                    }
+                }
             }
 
             FragmentType.ShoppingList -> {
-                activity_main_bottom_app_bar.replaceMenu(R.menu.menu_activity_main_shopping_list_bottom_app_bar)
+                for ((index, item) in activity_main_bottom_app_bar.menu.children.iterator().withIndex()) {
+                    val animator = activity_main_bottom_app_bar.findViewById<View>(item.itemId)
+                        .animate()
+                        .scaleX(0f)
+                        .scaleY(0f)
+                        .setStartDelay(index * 50L)
+                        .setInterpolator(AccelerateInterpolator())
+
+                    if (index == activity_main_bottom_app_bar.menu.size - 1) {
+                        animator.withEndAction {
+                            activity_main_bottom_app_bar.replaceMenu(R.menu.menu_activity_main_shopping_list_bottom_app_bar)
+                        }
+                    }
+                }
             }
         }
 
@@ -142,6 +183,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "logged in ${FirebaseAuth.getInstance().currentUser?.displayName}", Toast.LENGTH_SHORT).show()
 
             viewModel.setupUser()
+            viewModel.downloadRemoteLists()
         }
     }
 
