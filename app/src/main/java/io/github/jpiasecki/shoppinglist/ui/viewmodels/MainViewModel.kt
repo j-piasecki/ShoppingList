@@ -2,6 +2,7 @@ package io.github.jpiasecki.shoppinglist.ui.viewmodels
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.repositories.ShoppingListsRepository
@@ -30,8 +31,13 @@ class MainViewModel @ViewModelInject constructor(
     fun createList() = shoppingListsRepository.createList("list name ${Random.nextInt(100)}", "list note number ${Random.nextInt(1000)}", "pln")
 
     fun deleteList(list: ShoppingList) {
-        if (list.keepInSync)
-            shoppingListsRepository.deleteRemoteList(list.id)
+        if (list.keepInSync) {
+            GlobalScope.launch(Dispatchers.IO) {
+                shoppingListsRepository.deleteRemoteListBlocking(list.id)
+
+                usersRepository.removeListFromUser(list.id)
+            }
+        }
 
         shoppingListsRepository.deleteLocalList(list.id)
     }
@@ -45,10 +51,17 @@ class MainViewModel @ViewModelInject constructor(
     fun updateItems(listId: String) = shoppingListsRepository.syncList(listId)
 
     fun downloadList(listId: String): LiveData<Boolean?> {
-        val result = shoppingListsRepository.downloadList(listId)
+        val result = MutableLiveData<Boolean?>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
-            usersRepository.addListToUser(listId)
+            if (!shoppingListsRepository.downloadRemoteList(listId)) {
+                result.postValue(false)
+            } else if (!usersRepository.addListToUser(listId)) {
+                result.postValue(false)
+            } else {
+                result.postValue(true)
+            }
+
         }
 
         return result

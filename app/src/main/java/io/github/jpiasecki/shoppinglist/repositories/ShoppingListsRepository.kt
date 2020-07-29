@@ -95,30 +95,8 @@ class ShoppingListsRepository @Inject constructor(
     fun downloadList(listId: String): LiveData<Boolean?> {
         val result = MutableLiveData<Boolean?>(null)
 
-        try {
-            UUID.fromString(listId)
-        } catch (e: IllegalArgumentException) {
-            result.postValue(false)
-            return result
-        }
-
         GlobalScope.launch(Dispatchers.IO) {
-            val localList = shoppingListsDao.getByIdPlain(listId)
-
-            if (localList != null) {
-                syncListBlocking(listId)
-
-                result.postValue(true)
-            } else {
-                val list = shoppingListsRemoteSource.getList(listId)
-
-                if (list != null) {
-                    shoppingListsDao.insert(list)
-                    result.postValue(true)
-                } else {
-                    result.postValue(false)
-                }
-            }
+            result.postValue(downloadRemoteList(listId))
         }
 
         return result
@@ -585,7 +563,10 @@ class ShoppingListsRepository @Inject constructor(
         if (shoppingListsDao.isSynced(listId)) {
             val list = shoppingListsRemoteSource.getListMetadata(listId)
 
-            if (list != null && shoppingListsDao.getTimestamp(listId) < list.timestamp) {
+            if (list != null) {
+                if (shoppingListsDao.getTimestamp(listId) >= list.timestamp)
+                    return true
+
                 val localList = shoppingListsDao.getByIdPlain(listId)
 
                 if (localList != null) {
@@ -606,6 +587,10 @@ class ShoppingListsRepository @Inject constructor(
 
                     return true
                 }
+            } else {
+                shoppingListsDao.setKeepSynced(listId, false)
+                shoppingListsDao.changeOwner(listId, FirebaseAuth.getInstance().currentUser?.uid)
+                shoppingListsDao.setNewId(listId)
             }
         }
 
@@ -616,18 +601,39 @@ class ShoppingListsRepository @Inject constructor(
 
     suspend fun getRemoteUsers(listId: String) = shoppingListsRemoteSource.getUsers(listId)
 
-    suspend fun downloadRemoteList(listId: String) = shoppingListsRemoteSource.getList(listId)
+    suspend fun downloadRemoteList(listId: String): Boolean {
+        try {
+            UUID.fromString(listId)
+        } catch (e: IllegalArgumentException) {
+            return false
+        }
+
+        val localList = shoppingListsDao.getByIdPlain(listId)
+
+        if (localList != null) {
+            syncListBlocking(listId)
+
+            return true
+        } else {
+            val list = shoppingListsRemoteSource.getList(listId)
+
+            if (list != null) {
+                shoppingListsDao.insert(list)
+                return true
+            }
+        }
+
+        return false
+    }
+
+    suspend fun downloadRemoteListNoSafeChecks(listId: String) = shoppingListsRemoteSource.getList(listId)
 
     suspend fun downloadOrSyncList(listId: String): Boolean {
         val localList = shoppingListsDao.getByIdPlain(listId)
         if (localList != null) {
-            if (!syncListBlocking(listId) && localList.keepInSync) {
-                shoppingListsDao.setKeepSynced(listId, false)
-            }
-
-            return true
+            syncListBlocking(listId)
         } else {
-            val list = downloadRemoteList(listId)
+            val list = downloadRemoteListNoSafeChecks(listId)
 
             if (list != null) {
                 shoppingListsDao.insert(list)
@@ -638,4 +644,6 @@ class ShoppingListsRepository @Inject constructor(
 
         return false
     }
+
+    suspend fun deleteRemoteListBlocking(listId: String) = shoppingListsRemoteSource.deleteList(listId)
 }

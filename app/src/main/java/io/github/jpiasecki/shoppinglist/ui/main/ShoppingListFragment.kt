@@ -65,22 +65,29 @@ class ShoppingListFragment : Fragment() {
 
             listLiveData = viewModel.getShoppingList(argumentListId)
             listLiveData?.observe(viewLifecycleOwner, Observer {
-                it.items.sortWith(Comparator { o1, o2 ->
-                    if ((o1.isCompleted && o2.isCompleted) || (!o1.isCompleted && !o2.isCompleted)) {
-                        (o2.timestamp - o1.timestamp).sign
-                    } else if (o1.isCompleted && !o2.isCompleted) {
-                        1
-                    } else {
-                        -1
-                    }
-                })
+                if (it != null) {
+                    it.items.sortWith(Comparator { o1, o2 ->
+                        if ((o1.isCompleted && o2.isCompleted) || (!o1.isCompleted && !o2.isCompleted)) {
+                            (o2.timestamp - o1.timestamp).sign
+                        } else if (o1.isCompleted && !o2.isCompleted) {
+                            1
+                        } else {
+                            -1
+                        }
+                    })
 
-                adapter.setList(it)
-                if (currentList == null)
-                    view?.findViewById<RecyclerView>(R.id.fragment_shopping_list_recycler_view)?.layoutAnimation =
-                        AnimationUtils.loadLayoutAnimation(context, R.anim.recycler_view_animation)
+                    adapter.setList(it)
+                    if (currentList == null)
+                        view?.findViewById<RecyclerView>(R.id.fragment_shopping_list_recycler_view)?.layoutAnimation =
+                            AnimationUtils.loadLayoutAnimation(
+                                context,
+                                R.anim.recycler_view_animation
+                            )
 
-                currentList = it
+                    currentList = it
+                } else {
+                    Toast.makeText(context, "error", Toast.LENGTH_SHORT).show()
+                }
             })
 
             viewModel.getAllUsers().observe(viewLifecycleOwner, Observer {

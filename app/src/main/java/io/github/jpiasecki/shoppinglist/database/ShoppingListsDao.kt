@@ -31,6 +31,9 @@ interface ShoppingListsDao {
     @Query("SELECT * FROM shopping_lists WHERE id=(:id)")
     fun getByIdPlain(id: String): ShoppingList?
 
+    @Query("UPDATE shopping_lists SET id = (:newId) WHERE id = (:oldId)")
+    fun setNewId(oldId: String, newId: String = UUID.randomUUID().toString())
+
     @Query("UPDATE shopping_lists SET keepInSync = (:sync) WHERE id = (:id)")
     fun setKeepSynced(id: String, sync: Boolean = true)
 
