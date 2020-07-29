@@ -3,6 +3,7 @@ package io.github.jpiasecki.shoppinglist.database
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.firestore.Exclude
+import io.github.jpiasecki.shoppinglist.consts.Icons
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -21,6 +22,7 @@ data class ShoppingList(
     var users: ArrayList<String> = ArrayList(),
     var banned: ArrayList<String> = ArrayList(),
     var timestamp: Long = Calendar.getInstance().timeInMillis,
+    var icon: Int = Icons.DEFAULT,
 
     @get:Exclude
     var keepInSync: Boolean = true

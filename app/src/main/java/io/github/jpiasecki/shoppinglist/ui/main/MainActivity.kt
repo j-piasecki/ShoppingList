@@ -184,6 +184,8 @@ class MainActivity : AppCompatActivity() {
 
             viewModel.setupUser()
             viewModel.downloadRemoteLists()
+
+            loadUserProfilePicture()
         }
     }
 
@@ -193,7 +195,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    fun loadUserProfilePicture() {
+    private fun loadUserProfilePicture() {
         if (FirebaseAuth.getInstance().currentUser != null) {
             Glide.with(this).asBitmap().load(FirebaseAuth.getInstance().currentUser?.photoUrl)
                 .circleCrop().into(object : CustomTarget<Bitmap>() {

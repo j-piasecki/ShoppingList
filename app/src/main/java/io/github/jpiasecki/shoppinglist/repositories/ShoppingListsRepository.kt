@@ -184,6 +184,32 @@ class ShoppingListsRepository @Inject constructor(
         return result
     }
 
+    fun changeListIcon(listId: String, icon: Int): LiveData<Boolean?> {
+        val result = MutableLiveData<Boolean?>(null)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val list = shoppingListsDao.getByIdPlain(listId)
+
+            if (list != null) {
+                if (list.keepInSync) {
+                    if (shoppingListsRemoteSource.changeListIcon(listId, icon)) {
+                        shoppingListsDao.updateTimestamp(listId)
+                        shoppingListsDao.changeIcon(listId, icon)
+                        result.postValue(true)
+                    } else {
+                        result.postValue(false)
+                    }
+                } else {
+                    shoppingListsDao.updateTimestamp(listId)
+                    shoppingListsDao.changeIcon(listId, icon)
+                    result.postValue(true)
+                }
+            }
+        }
+
+        return result
+    }
+
     fun addUserToList(listId: String, userId: String): LiveData<Boolean?> {
         val result = MutableLiveData<Boolean?>(null)
 

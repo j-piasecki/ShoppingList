@@ -58,6 +58,8 @@ class ShoppingListsAdapter(
 
             view.findViewById<ImageView>(R.id.row_shopping_list_synced_icon).setImageResource(if (dataSet[position].keepInSync) R.drawable.ic_cloud_24 else R.drawable.ic_smartphone_24)
 
+            view.findViewById<ImageView>(R.id.row_shopping_list_icon).setImageResource(R.drawable.ic_list_default_24)
+
             if (dataSet[position].keepInSync) {
                 owner?.apply {
                     loadProfileImage(view.context) {

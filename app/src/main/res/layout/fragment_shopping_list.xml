@@ -11,5 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="4dp"
-        android:paddingBottom="4dp" />
+        android:paddingBottom="96dp"
+        android:clipToPadding="false"
+        android:layoutAnimation="@anim/recycler_view_animation" />
 </FrameLayout>

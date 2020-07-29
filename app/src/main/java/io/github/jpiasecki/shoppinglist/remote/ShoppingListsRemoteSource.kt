@@ -291,6 +291,26 @@ class ShoppingListsRemoteSource(private val context: Context) {
         return success
     }
 
+    suspend fun changeListIcon(id: String, newIcon: Int): Boolean {
+        var success = false
+
+        try {
+            Firebase.firestore
+                .collection("lists")
+                .document(id)
+                .update("icon", newIcon)
+                .addOnSuccessListener {
+                    success = true
+                }.await()
+
+            updateListTimestamp(id)
+        } catch (e: FirebaseFirestoreException) {
+            handleFirestoreException(e)
+        }
+
+        return success
+    }
+
     suspend fun updateListTimestamp(id: String): Boolean {
         var success = false
 
