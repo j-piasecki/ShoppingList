@@ -83,9 +83,14 @@ class ShoppingListsAdapter(
 
             if (getItem(position).keepInSync) {
                 owner?.apply {
-                    loadProfileImage(view.context) {
+                    if (this.profilePicture != null) {
                         view.findViewById<ImageView>(R.id.row_shopping_list_owner_icon)
                             .setImageBitmap(profilePicture)
+                    } else {
+                        loadProfileImage(view.context) {
+                            view.findViewById<ImageView>(R.id.row_shopping_list_owner_icon)
+                                .setImageBitmap(profilePicture)
+                        }
                     }
                 }
             } else {

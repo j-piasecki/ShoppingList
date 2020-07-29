@@ -12,6 +12,7 @@ import com.google.firebase.firestore.Exclude
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import io.github.jpiasecki.shoppinglist.other.GlideApp
+import io.github.jpiasecki.shoppinglist.other.UsersProfilePictures
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -26,12 +27,13 @@ data class User(
     var lists: ArrayList<String> = ArrayList(),
 
     @get:Exclude
-    var timestamp: Long = Calendar.getInstance().timeInMillis,
-
-    @Ignore
-    @get:Exclude
-    var profilePicture: Bitmap? = null
+    var timestamp: Long = Calendar.getInstance().timeInMillis
 ) {
+    @get:Exclude
+    var profilePicture: Bitmap?
+        get() = UsersProfilePictures.getPicture(id)
+        set(value) = UsersProfilePictures.setPicture(id, value)
+
     fun loadProfileImage(context: Context, callback: () -> Unit) {
         val ref = Firebase.storage.reference.child("profile_pics/${id}")
 
