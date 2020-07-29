@@ -9,7 +9,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -20,6 +19,8 @@ import androidx.activity.viewModels
 import androidx.core.view.children
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.transition.*
 import com.bumptech.glide.Glide
@@ -31,13 +32,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.consts.Values.RC_SIGN_IN
+import io.github.jpiasecki.shoppinglist.other.changeFragment
 import io.github.jpiasecki.shoppinglist.ui.AddEditItemActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private enum class FragmentType { Lists, ShoppingList }
+    enum class FragmentType { Lists, ShoppingList }
 
     private val viewModel: MainViewModel by viewModels()
 
@@ -50,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(activity_main_bottom_app_bar)
         loadUserProfilePicture()
 
-        changeFragment(ListsFragment())
+        initFragments()
 
         activity_main_fab.setOnClickListener {
             when (currentFragment) {
@@ -59,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 FragmentType.ShoppingList -> {
-                    val fragment = supportFragmentManager.findFragmentById(R.id.activity_main_frame_layout) as ShoppingListFragment
+                    val fragment = supportFragmentManager.primaryNavigationFragment as ShoppingListFragment
 
                     startActivity(
                         Intent(
@@ -72,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         supportFragmentManager.addOnBackStackChangedListener {
-            if (supportFragmentManager.findFragmentById(R.id.activity_main_frame_layout) is ListsFragment)
+            if (supportFragmentManager.primaryNavigationFragment is ListsFragment)
                 onFragmentChange(FragmentType.Lists)
             else
                 onFragmentChange(FragmentType.ShoppingList)
@@ -94,7 +96,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.activity_main_frame_layout)
+        val currentFragment = supportFragmentManager.primaryNavigationFragment
 
         when (item.itemId) {
             android.R.id.home -> {
@@ -134,7 +136,8 @@ class MainActivity : AppCompatActivity() {
                         .animate()
                         .scaleX(0f)
                         .scaleY(0f)
-                        .setStartDelay(index * 30L)
+                        .setStartDelay(index * Values.BOTTOM_APP_BAR_MENU_ANIMATION_DELAY)
+                        .setDuration(Values.BOTTOM_APP_BAR_MENU_ANIMATION_DURATION)
                         .setInterpolator(AccelerateInterpolator())
 
                     if (index == activity_main_bottom_app_bar.menu.size - 1) {
@@ -151,7 +154,8 @@ class MainActivity : AppCompatActivity() {
                         .animate()
                         .scaleX(0f)
                         .scaleY(0f)
-                        .setStartDelay(index * 50L)
+                        .setStartDelay(index * Values.BOTTOM_APP_BAR_MENU_ANIMATION_DELAY)
+                        .setDuration(Values.BOTTOM_APP_BAR_MENU_ANIMATION_DURATION)
                         .setInterpolator(AccelerateInterpolator())
 
                     if (index == activity_main_bottom_app_bar.menu.size - 1) {
@@ -166,14 +170,36 @@ class MainActivity : AppCompatActivity() {
         currentFragment = type
     }
 
-    private fun changeFragment(target: Fragment) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.activity_main_frame_layout, target)
+    private fun initFragments() {
+        val listsFragment = ListsFragment()
+        val shoppingListFragment = ShoppingListFragment()
 
-        target.enterTransition = Fade()
-        supportFragmentManager.findFragmentById(R.id.activity_main_frame_layout)?.exitTransition = Fade()
+        val transaction = supportFragmentManager.beginTransaction()
+
+        transaction.add(R.id.activity_main_frame_layout, shoppingListFragment, Values.FRAGMENT_SHOPPING_LIST_TAG)
+        transaction.add(R.id.activity_main_frame_layout, listsFragment, Values.FRAGMENT_LISTS_TAG)
+
+        transaction.hide(shoppingListFragment)
+        transaction.setPrimaryNavigationFragment(listsFragment)
+
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 
         transaction.commit()
+    }
+
+    override fun onBackPressed() {
+        when (currentFragment) {
+            FragmentType.ShoppingList -> {
+                supportFragmentManager
+                    .changeFragment(FragmentType.Lists)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit()
+
+                supportFragmentManager.popBackStack()
+            }
+
+            else -> super.onBackPressed()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

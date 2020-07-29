@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
+import io.github.jpiasecki.shoppinglist.database.Item
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.ui.AddEditItemActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
@@ -46,12 +47,20 @@ class ShoppingListFragment : Fragment() {
         return view
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
 
         val listId = arguments?.getString(Values.SHOPPING_LIST_ID)
 
-        if (listId != null) {
+        if (hidden) {
+            if (listId != null) {
+                viewModel.getShoppingList(listId).removeObservers(this)
+                viewModel.getAllUsers().removeObservers(this)
+            }
+
+            currentList = null
+            adapter.submitList(emptyList())
+        } else if (listId != null) {
             viewModel.updateItems(listId)
 
             viewModel.getShoppingList(listId).observe(viewLifecycleOwner, Observer {
@@ -67,7 +76,8 @@ class ShoppingListFragment : Fragment() {
 
                 adapter.setList(it)
                 if (currentList == null)
-                    view?.findViewById<RecyclerView>(R.id.fragment_shopping_list_recycler_view)?.layoutAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.recycler_view_animation)
+                    view?.findViewById<RecyclerView>(R.id.fragment_shopping_list_recycler_view)?.layoutAnimation =
+                        AnimationUtils.loadLayoutAnimation(context, R.anim.recycler_view_animation)
 
                 currentList = it
             })
@@ -75,17 +85,6 @@ class ShoppingListFragment : Fragment() {
             viewModel.getAllUsers().observe(viewLifecycleOwner, Observer {
                 adapter.setUsers(it)
             })
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        val listId = arguments?.getString(Values.SHOPPING_LIST_ID)
-
-        if (listId != null) {
-            viewModel.getShoppingList(listId).removeObservers(this)
-            viewModel.getAllUsers().removeObservers(this)
         }
     }
 

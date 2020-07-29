@@ -4,12 +4,15 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
+import io.github.jpiasecki.shoppinglist.other.changeFragment
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
 
 @AndroidEntryPoint
@@ -54,19 +58,41 @@ class ListsFragment : Fragment() {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        view?.findViewById<RecyclerView>(R.id.fragment_lists_recycler_view)?.layoutAnimation =
+            AnimationUtils.loadLayoutAnimation(context, R.anim.recycler_view_animation)
+            .also {
+                it.animation.startOffset = 200
+                it.start()
+            }
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        if (hidden) {
+            viewModel.getAllShoppingLists().removeObservers(this)
+            viewModel.getAllUsers().removeObservers(this)
+        } else {
+            viewModel.getAllShoppingLists().observe(viewLifecycleOwner, Observer {
+                adapter.submitList(it)
+
+                shoppingLists = it
+            })
+
+            viewModel.getAllUsers().observe(viewLifecycleOwner, Observer {
+                adapter.setUsers(it)
+            })
+        }
+    }
+
     private fun createAdapter() = ShoppingListsAdapter(
             { id ->
-                val targetFragment = ShoppingListFragment()
-                targetFragment.arguments = Bundle().apply {
-                    putString(Values.SHOPPING_LIST_ID, id)
-                }
-
-                exitTransition = Fade()
-                targetFragment.enterTransition = Fade()
-
-                parentFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.activity_main_frame_layout, targetFragment)
+                parentFragmentManager.changeFragment(
+                    MainActivity.FragmentType.ShoppingList,
+                    Bundle().apply {
+                        putString(Values.SHOPPING_LIST_ID, id)
+                    }).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .addToBackStack(null)
                     .commit()
             },

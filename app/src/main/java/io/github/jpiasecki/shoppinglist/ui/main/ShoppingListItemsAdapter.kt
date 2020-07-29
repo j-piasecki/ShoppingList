@@ -49,6 +49,10 @@ class ShoppingListItemsAdapter(
         holder.bind(position)
     }
 
+    override fun onViewDetachedFromWindow(holder: ViewHolder) {
+        holder.unbind()
+    }
+
     override fun getItemId(position: Int): Long {
         return UUID.fromString(getItem(position).id).mostSignificantBits
     }
@@ -111,6 +115,10 @@ class ShoppingListItemsAdapter(
 
                 true
             }
+        }
+
+        fun unbind() {
+            view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box).setOnCheckedChangeListener(null)
         }
 
         private fun setProfilePictures(position: Int) {
