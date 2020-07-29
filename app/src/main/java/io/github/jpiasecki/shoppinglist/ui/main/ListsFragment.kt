@@ -58,21 +58,10 @@ class ListsFragment : Fragment() {
         return view
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        view?.findViewById<RecyclerView>(R.id.fragment_lists_recycler_view)?.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.recycler_view_animation)
-            .also {
-                it.animation.startOffset = 200
-                it.start()
-            }
-    }
-
     override fun onHiddenChanged(hidden: Boolean) {
         if (hidden) {
-            viewModel.getAllShoppingLists().removeObservers(this)
-            viewModel.getAllUsers().removeObservers(this)
+            viewModel.getAllShoppingLists().removeObservers(viewLifecycleOwner)
+            viewModel.getAllUsers().removeObservers(viewLifecycleOwner)
         } else {
             viewModel.getAllShoppingLists().observe(viewLifecycleOwner, Observer {
                 adapter.submitList(it)

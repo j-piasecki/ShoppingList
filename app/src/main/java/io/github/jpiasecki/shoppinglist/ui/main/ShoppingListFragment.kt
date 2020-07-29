@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +21,6 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
-import io.github.jpiasecki.shoppinglist.database.Item
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.ui.AddEditItemActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
@@ -32,6 +32,8 @@ class ShoppingListFragment : Fragment() {
     private lateinit var adapter: ShoppingListItemsAdapter
 
     private val viewModel: MainViewModel by viewModels()
+
+    private var listLiveData: LiveData<ShoppingList>? = null
 
     var currentList: ShoppingList? = null
 
@@ -50,20 +52,19 @@ class ShoppingListFragment : Fragment() {
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
 
-        val listId = arguments?.getString(Values.SHOPPING_LIST_ID)
+        val argumentListId = arguments?.getString(Values.SHOPPING_LIST_ID)
 
         if (hidden) {
-            if (listId != null) {
-                viewModel.getShoppingList(listId).removeObservers(this)
-                viewModel.getAllUsers().removeObservers(this)
-            }
+            listLiveData?.removeObservers(viewLifecycleOwner)
+            viewModel.getAllUsers().removeObservers(viewLifecycleOwner)
 
             currentList = null
             adapter.submitList(emptyList())
-        } else if (listId != null) {
-            viewModel.updateItems(listId)
+        } else if (argumentListId != null) {
+            viewModel.updateItems(argumentListId)
 
-            viewModel.getShoppingList(listId).observe(viewLifecycleOwner, Observer {
+            listLiveData = viewModel.getShoppingList(argumentListId)
+            listLiveData?.observe(viewLifecycleOwner, Observer {
                 it.items.sortWith(Comparator { o1, o2 ->
                     if ((o1.isCompleted && o2.isCompleted) || (!o1.isCompleted && !o2.isCompleted)) {
                         (o2.timestamp - o1.timestamp).sign

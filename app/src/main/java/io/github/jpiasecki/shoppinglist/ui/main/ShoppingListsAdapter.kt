@@ -29,7 +29,8 @@ class ShoppingListsAdapter(
                 oldItem.currency == newItem.currency &&
                 oldItem.name == newItem.name &&
                 oldItem.icon == newItem.icon &&
-                oldItem.note == newItem.note
+                oldItem.note == newItem.note &&
+                oldItem.keepInSync == newItem.keepInSync
     }
 }) {
 
@@ -70,18 +71,19 @@ class ShoppingListsAdapter(
     inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(position: Int) {
-            val owner = userList.firstOrNull { it.id == getItem(position).owner }
+            val list = getItem(position)
+            val owner = userList.firstOrNull { it.id == list.owner }
 
-            view.findViewById<TextView>(R.id.row_shopping_list_name).text = getItem(position).name
-            view.findViewById<TextView>(R.id.row_shopping_list_note).text = getItem(position).note
+            view.findViewById<TextView>(R.id.row_shopping_list_name).text = list.name
+            view.findViewById<TextView>(R.id.row_shopping_list_note).text = list.note
 
-            view.findViewById<TextView>(R.id.row_shopping_list_last_update).text = view.context.getString(R.string.shopping_list_last_update, dateFormat.format(Date(getItem(position).timestamp)))
+            view.findViewById<TextView>(R.id.row_shopping_list_last_update).text = view.context.getString(R.string.shopping_list_last_update, dateFormat.format(Date(list.timestamp)))
 
-            view.findViewById<ImageView>(R.id.row_shopping_list_synced_icon).setImageResource(if (getItem(position).keepInSync) R.drawable.ic_cloud_24 else R.drawable.ic_smartphone_24)
+            view.findViewById<ImageView>(R.id.row_shopping_list_synced_icon).setImageResource(if (list.keepInSync) R.drawable.ic_cloud_24 else R.drawable.ic_smartphone_24)
 
             view.findViewById<ImageView>(R.id.row_shopping_list_icon).setImageResource(R.drawable.ic_list_default_24)
 
-            if (getItem(position).keepInSync) {
+            if (list.keepInSync) {
                 owner?.apply {
                     if (this.profilePicture != null) {
                         view.findViewById<ImageView>(R.id.row_shopping_list_owner_icon)
@@ -99,11 +101,11 @@ class ShoppingListsAdapter(
             }
 
             view.setOnClickListener {
-                clickCallback(getItem(position).id)
+                clickCallback(list.id)
             }
 
             view.setOnLongClickListener {
-                longClickCallback(getItem(position).id)
+                longClickCallback(list.id)
 
                 true
             }
