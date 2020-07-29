@@ -26,6 +26,8 @@ import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
 @AndroidEntryPoint
 class ListsFragment : Fragment() {
 
+    private lateinit var adapter: ShoppingListsAdapter
+
     private var shoppingLists: List<ShoppingList> = emptyList()
     private val viewModel: MainViewModel by viewModels()
 
@@ -34,30 +36,46 @@ class ListsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_lists, container, false)
-        val context = context ?: return null
 
-        val adapter =
-            ShoppingListsAdapter(
-                { id ->
-                    val targetFragment = ShoppingListFragment()
-                    targetFragment.arguments = Bundle().apply {
-                        putString(Values.SHOPPING_LIST_ID, id)
-                    }
+        adapter = createAdapter()
 
-                    exitTransition = Fade()
-                    targetFragment.enterTransition = Fade()
+        initRecyclerView(view)
 
-                    parentFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.activity_main_frame_layout, targetFragment)
-                        .addToBackStack(null)
-                        .commit()
-                },
-                { id ->
-                    val list = shoppingLists.find { it.id == id }
+        viewModel.getAllShoppingLists().observe(viewLifecycleOwner, Observer {
+            adapter.submitList(it)
 
-                    if (list != null) {
-                        val dialog = BottomSheetDialog(context)
+            shoppingLists = it
+        })
+
+        viewModel.getAllUsers().observe(viewLifecycleOwner, Observer {
+            adapter.setUsers(it)
+        })
+
+        return view
+    }
+
+    private fun createAdapter() = ShoppingListsAdapter(
+            { id ->
+                val targetFragment = ShoppingListFragment()
+                targetFragment.arguments = Bundle().apply {
+                    putString(Values.SHOPPING_LIST_ID, id)
+                }
+
+                exitTransition = Fade()
+                targetFragment.enterTransition = Fade()
+
+                parentFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.activity_main_frame_layout, targetFragment)
+                    .addToBackStack(null)
+                    .commit()
+            },
+            { id ->
+                val list = shoppingLists.find { it.id == id }
+
+                if (list != null) {
+                    context?.let {
+                        val dialog = BottomSheetDialog(it)
                         val view =
                             layoutInflater.inflate(R.layout.dialog_shopping_list_options, null)
                         dialog.setContentView(view)
@@ -76,8 +94,10 @@ class ListsFragment : Fragment() {
                             }
                     }
                 }
-            )
+            }
+        )
 
+    private fun initRecyclerView(view: View) {
         val recyclerView = view.findViewById<RecyclerView>(R.id.fragment_lists_recycler_view)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
@@ -87,17 +107,5 @@ class ListsFragment : Fragment() {
         if (animator is SimpleItemAnimator) {
             animator.supportsChangeAnimations = false
         }
-
-        viewModel.getAllShoppingLists().observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
-
-            shoppingLists = it
-        })
-
-        viewModel.getAllUsers().observe(viewLifecycleOwner, Observer {
-            adapter.setUsers(it)
-        })
-
-        return view
     }
 }

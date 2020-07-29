@@ -10,6 +10,7 @@ import io.github.jpiasecki.shoppinglist.remote.ShoppingListsRemoteSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.lang.IllegalArgumentException
 import java.util.*
 import javax.inject.Inject
 
@@ -93,6 +94,13 @@ class ShoppingListsRepository @Inject constructor(
 
     fun downloadList(listId: String): LiveData<Boolean?> {
         val result = MutableLiveData<Boolean?>(null)
+
+        try {
+            UUID.fromString(listId)
+        } catch (e: IllegalArgumentException) {
+            result.postValue(false)
+            return result
+        }
 
         GlobalScope.launch(Dispatchers.IO) {
             val localList = shoppingListsDao.getByIdPlain(listId)

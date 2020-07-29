@@ -28,6 +28,8 @@ import kotlin.math.sign
 @AndroidEntryPoint
 class ShoppingListFragment : Fragment() {
 
+    private lateinit var adapter: ShoppingListItemsAdapter
+
     private val viewModel: MainViewModel by viewModels()
 
     var currentList: ShoppingList? = null
@@ -37,30 +39,17 @@ class ShoppingListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_shopping_list, container, false)
-        val context = context ?: return null
+
+        adapter = createAdapter()
+        initRecyclerView(view)
+
+        return view
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         val listId = arguments?.getString(Values.SHOPPING_LIST_ID)
-
-        val adapter =
-            ShoppingListItemsAdapter { id ->
-                startActivity(
-                    Intent(
-                        context,
-                        AddEditItemActivity::class.java
-                    ).putExtra(Values.ITEM_ID, id)
-                        .putExtra(Values.SHOPPING_LIST_ID, listId)
-                )
-            }
-
-        val recyclerView = view.findViewById<RecyclerView>(R.id.fragment_shopping_list_recycler_view)
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.setHasFixedSize(true)
-
-        val animator = recyclerView.itemAnimator
-        if (animator is SimpleItemAnimator) {
-            animator.supportsChangeAnimations = false
-        }
 
         if (listId != null) {
             viewModel.updateItems(listId)
@@ -78,7 +67,7 @@ class ShoppingListFragment : Fragment() {
 
                 adapter.setList(it)
                 if (currentList == null)
-                    recyclerView.layoutAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.recycler_view_animation)
+                    view?.findViewById<RecyclerView>(R.id.fragment_shopping_list_recycler_view)?.layoutAnimation = AnimationUtils.loadLayoutAnimation(context, R.anim.recycler_view_animation)
 
                 currentList = it
             })
@@ -87,12 +76,40 @@ class ShoppingListFragment : Fragment() {
                 adapter.setUsers(it)
             })
         }
-
-        return view
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onPause() {
+        super.onPause()
+
+        val listId = arguments?.getString(Values.SHOPPING_LIST_ID)
+
+        if (listId != null) {
+            viewModel.getShoppingList(listId).removeObservers(this)
+            viewModel.getAllUsers().removeObservers(this)
+        }
+    }
+
+    private fun createAdapter() =
+        ShoppingListItemsAdapter { id ->
+            startActivity(
+                Intent(
+                    context,
+                    AddEditItemActivity::class.java
+                ).putExtra(Values.ITEM_ID, id)
+                    .putExtra(Values.SHOPPING_LIST_ID, currentList?.id)
+            )
+        }
+
+    private fun initRecyclerView(view: View) {
+        val recyclerView = view.findViewById<RecyclerView>(R.id.fragment_shopping_list_recycler_view)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.setHasFixedSize(true)
+
+        val animator = recyclerView.itemAnimator
+        if (animator is SimpleItemAnimator) {
+            animator.supportsChangeAnimations = false
+        }
     }
 
     fun shareCurrentList() {
