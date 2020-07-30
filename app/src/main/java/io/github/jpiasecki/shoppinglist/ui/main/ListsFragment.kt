@@ -64,16 +64,20 @@ class ListsFragment : Fragment() {
 
         refreshLayout.setOnRefreshListener {
             if (refreshLiveData == null) {
-                refreshLiveData = viewModel.syncAllListsMetadata()
+                if (viewModel.canSyncMetadataManually()) {
+                    refreshLiveData = viewModel.syncAllListsMetadata()
 
-                refreshLiveData?.observe(viewLifecycleOwner, Observer {
-                    if (it == true) {
-                        refreshLayout.isRefreshing = false
+                    refreshLiveData?.observe(viewLifecycleOwner, Observer {
+                        if (it == true) {
+                            refreshLayout.isRefreshing = false
 
-                        refreshLiveData?.removeObservers(viewLifecycleOwner)
-                        refreshLiveData = null
-                    }
-                })
+                            refreshLiveData?.removeObservers(viewLifecycleOwner)
+                            refreshLiveData = null
+                        }
+                    })
+                } else {
+                    refreshLayout.isRefreshing = false
+                }
             }
         }
 

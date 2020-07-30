@@ -26,8 +26,8 @@ class SplashViewModel @ViewModelInject constructor(
             usersRepository.updateProfilePicture()
         }
 
-        if (time - config.getListsMetadataAutoUpdateTimestamp() > Values.LISTS_AUTO_UPDATE_PERIOD) {
-            config.updateListsMetadataAutoUpdateTimestamp()
+        if (time - config.getListsAutoUpdateTimestamp() > Values.LISTS_AUTO_UPDATE_PERIOD) {
+            config.updateListsAutoUpdateTimestamp()
             shoppingListsRepository.syncAllLists()
         }
 

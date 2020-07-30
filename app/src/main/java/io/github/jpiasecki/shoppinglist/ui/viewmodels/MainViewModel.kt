@@ -6,18 +6,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import io.github.jpiasecki.shoppinglist.consts.Values
+import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.repositories.ShoppingListsRepository
 import io.github.jpiasecki.shoppinglist.repositories.UsersRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.*
 
 import kotlin.random.Random
 
 class MainViewModel @ViewModelInject constructor(
     private val usersRepository: UsersRepository,
-    private val shoppingListsRepository: ShoppingListsRepository
+    private val shoppingListsRepository: ShoppingListsRepository,
+    private val config: Config
 ) : ViewModel() {
 
     fun getShoppingList(id: String) = shoppingListsRepository.getList(id)
@@ -53,7 +56,15 @@ class MainViewModel @ViewModelInject constructor(
 
     fun updateItems(listId: String) = shoppingListsRepository.syncList(listId)
 
-    fun syncAllListsMetadata() = shoppingListsRepository.syncAllListsMetadata()
+    fun syncAllListsMetadata(): LiveData<Boolean?> {
+        config.updateListsMetadataManualUpdateTimestamp()
+
+        return shoppingListsRepository.syncAllListsMetadata()
+    }
+
+    fun canSyncMetadataManually(): Boolean {
+        return Calendar.getInstance().timeInMillis - config.getListsMetadataManualUpdateTimestamp() >= Values.LISTS_METADATA_MANUAL_UPDATE_PERIOD
+    }
 
     fun setItemCompleted(listId: String, itemId: String, completed: Boolean): LiveData<Boolean?> {
         return if (completed)
