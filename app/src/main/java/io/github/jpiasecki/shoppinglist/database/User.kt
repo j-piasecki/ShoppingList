@@ -34,7 +34,7 @@ data class User(
         get() = UsersProfilePictures.getPicture(id)
         set(value) = UsersProfilePictures.setPicture(id, value)
 
-    fun loadProfileImage(context: Context, callback: () -> Unit) {
+    fun loadProfileImage(context: Context, callback: (() -> Unit)? = null) {
         val ref = Firebase.storage.reference.child("profile_pics/${id}")
 
         // if profile picture file exists, load it
@@ -45,7 +45,7 @@ data class User(
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     profilePicture = resource
 
-                    callback()
+                    callback?.invoke()
                 }
             })
         }

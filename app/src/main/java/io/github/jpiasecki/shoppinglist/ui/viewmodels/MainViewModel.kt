@@ -4,6 +4,8 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
+import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.repositories.ShoppingListsRepository
 import io.github.jpiasecki.shoppinglist.repositories.UsersRepository
@@ -34,6 +36,7 @@ class MainViewModel @ViewModelInject constructor(
         if (list.keepInSync) {
             GlobalScope.launch(Dispatchers.IO) {
                 shoppingListsRepository.deleteRemoteListBlocking(list.id)
+                shoppingListsRepository.removeUserFromList(list.id, FirebaseAuth.getInstance().currentUser?.uid ?: Values.USER_ID_NOT_FOUND)
 
                 usersRepository.removeListFromUser(list.id)
             }
@@ -54,9 +57,9 @@ class MainViewModel @ViewModelInject constructor(
         val result = MutableLiveData<Boolean?>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
-            if (!shoppingListsRepository.downloadRemoteList(listId)) {
+            if (!shoppingListsRepository.downloadListBlocking(listId)) {
                 result.postValue(false)
-            } else if (!usersRepository.addListToUser(listId)) {
+            } else if (!usersRepository.addListToUser(listId) || !shoppingListsRepository.addUserToListBlocking(listId, FirebaseAuth.getInstance().currentUser?.uid ?: Values.USER_ID_NOT_FOUND)) {
                 result.postValue(false)
             } else {
                 result.postValue(true)
@@ -72,7 +75,7 @@ class MainViewModel @ViewModelInject constructor(
             val remoteLists = usersRepository.getRemoteLists()
 
             for (listId in remoteLists) {
-                if (!shoppingListsRepository.downloadOrSyncList(listId)) {
+                if (!shoppingListsRepository.downloadOrSyncListBlocking(listId)) {
                     usersRepository.removeListFromUser(listId)
                 }
             }

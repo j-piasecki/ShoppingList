@@ -123,6 +123,8 @@ class UsersRepository @Inject constructor(
                 usersDao.insert(remoteUser)
             }
         }
+
+        usersDao.getById(id)?.loadProfileImage(context)
     }
 
     suspend fun setUserNameIfNotSet() = usersRemoteSource.setUserNameIfNotSet()

@@ -92,6 +92,8 @@ class ShoppingListsAdapter(
                         loadProfileImage(view.context) {
                             view.findViewById<ImageView>(R.id.row_shopping_list_owner_icon)
                                 .setImageBitmap(profilePicture)
+
+                            notifyItemChanged(adapterPosition)
                         }
                     }
                 }

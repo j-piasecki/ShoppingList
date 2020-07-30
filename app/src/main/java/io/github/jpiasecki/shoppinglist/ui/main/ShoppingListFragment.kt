@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.viewModels
@@ -78,11 +79,26 @@ class ShoppingListFragment : Fragment() {
 
                     adapter.setList(it)
                     if (currentList == null)
-                        view?.findViewById<RecyclerView>(R.id.fragment_shopping_list_recycler_view)?.layoutAnimation =
-                            AnimationUtils.loadLayoutAnimation(
-                                context,
-                                R.anim.recycler_view_animation
-                            )
+                        view?.findViewById<RecyclerView>(R.id.fragment_shopping_list_recycler_view)?.apply {
+                            layoutAnimation =
+                                AnimationUtils.loadLayoutAnimation(
+                                    context,
+                                    R.anim.recycler_view_animation
+                                )
+
+                            layoutAnimationListener = object : Animation.AnimationListener {
+                                override fun onAnimationRepeat(animation: Animation?) {}
+
+                                override fun onAnimationEnd(animation: Animation?) {}
+
+                                override fun onAnimationStart(animation: Animation?) {
+                                    //layoutManager?.findViewByPosition(0)?.clearAnimation()
+                                }
+
+                            }
+
+                            scheduleLayoutAnimation()
+                        }
 
                     currentList = it
                 } else {

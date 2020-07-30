@@ -96,7 +96,7 @@ class ShoppingListsRepository @Inject constructor(
         val result = MutableLiveData<Boolean?>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
-            result.postValue(downloadRemoteList(listId))
+            result.postValue(downloadListBlocking(listId))
         }
 
         return result
@@ -597,11 +597,11 @@ class ShoppingListsRepository @Inject constructor(
         return false
     }
 
-    suspend fun getRemoteTimestamp(listId: String) = shoppingListsRemoteSource.getTimestamp(listId)
+    suspend fun getRemoteTimestampBlocking(listId: String) = shoppingListsRemoteSource.getTimestamp(listId)
 
-    suspend fun getRemoteUsers(listId: String) = shoppingListsRemoteSource.getUsers(listId)
+    suspend fun getRemoteUsersBlocking(listId: String) = shoppingListsRemoteSource.getUsers(listId)
 
-    suspend fun downloadRemoteList(listId: String): Boolean {
+    suspend fun downloadListBlocking(listId: String): Boolean {
         try {
             UUID.fromString(listId)
         } catch (e: IllegalArgumentException) {
@@ -626,14 +626,14 @@ class ShoppingListsRepository @Inject constructor(
         return false
     }
 
-    suspend fun downloadRemoteListNoSafeChecks(listId: String) = shoppingListsRemoteSource.getList(listId)
+    suspend fun downloadListBlockingNoSafeChecks(listId: String) = shoppingListsRemoteSource.getList(listId)
 
-    suspend fun downloadOrSyncList(listId: String): Boolean {
+    suspend fun downloadOrSyncListBlocking(listId: String): Boolean {
         val localList = shoppingListsDao.getByIdPlain(listId)
         if (localList != null) {
             syncListBlocking(listId)
         } else {
-            val list = downloadRemoteListNoSafeChecks(listId)
+            val list = downloadListBlockingNoSafeChecks(listId)
 
             if (list != null) {
                 shoppingListsDao.insert(list)
@@ -646,4 +646,8 @@ class ShoppingListsRepository @Inject constructor(
     }
 
     suspend fun deleteRemoteListBlocking(listId: String) = shoppingListsRemoteSource.deleteList(listId)
+
+    suspend fun addUserToListBlocking(listId: String, userId: String) = shoppingListsRemoteSource.addUserToList(listId, userId)
+
+    suspend fun removeUserFromListBlocking(listId: String, userId: String) = shoppingListsRemoteSource.removeUserFromList(listId, userId)
 }
