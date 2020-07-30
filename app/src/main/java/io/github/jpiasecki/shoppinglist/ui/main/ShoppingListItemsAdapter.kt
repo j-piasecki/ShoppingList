@@ -130,8 +130,11 @@ class ShoppingListItemsAdapter(
                 view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon).setImageBitmap(null)
             }
 
-            view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box).setOnCheckedChangeListener { buttonView, isChecked ->
-                Toast.makeText(buttonView.context, "${item.name} completed: $isChecked", Toast.LENGTH_SHORT).show()
+            view.findViewById<View>(R.id.row_shopping_list_item_check_box_overlay).setOnClickListener {
+                val checkBox =  view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box)
+                checkBox.isChecked = !checkBox.isChecked
+
+                Toast.makeText(it.context, "${item.name} completed: ${checkBox.isChecked}", Toast.LENGTH_SHORT).show()
             }
 
             view.setOnClickListener {
@@ -146,7 +149,7 @@ class ShoppingListItemsAdapter(
         }
 
         fun unbind() {
-            view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box).setOnCheckedChangeListener(null)
+            view.findViewById<View>(R.id.row_shopping_list_item_check_box_overlay).setOnClickListener(null)
         }
 
         private fun setProfilePictures(item: Item) {

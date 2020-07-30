@@ -131,6 +131,20 @@
             android:layout_alignStart="@id/row_shopping_list_item_completed_check_box"
             android:layout_below="@id/row_shopping_list_item_completed_check_box" />
 
+        <LinearLayout
+            android:id="@+id/row_shopping_list_item_check_box_overlay"
+            android:layout_width="56dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignBottom="@id/row_shopping_list_item_completed_by_icon"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/transparent"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true"/>
+
     </RelativeLayout>
 
     <LinearLayout
