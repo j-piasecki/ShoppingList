@@ -14,10 +14,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.transition.Fade
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +28,7 @@ import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.other.changeFragment
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
+import kotlinx.android.synthetic.main.fragment_lists.*
 
 @AndroidEntryPoint
 class ListsFragment : Fragment() {
@@ -34,6 +37,8 @@ class ListsFragment : Fragment() {
 
     private var shoppingLists: List<ShoppingList> = emptyList()
     private val viewModel: MainViewModel by viewModels()
+
+    private var refreshLiveData: LiveData<Boolean?>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,6 +60,23 @@ class ListsFragment : Fragment() {
             adapter.setUsers(it)
         })
 
+        val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.fragment_lists_refresh_layout)
+
+        refreshLayout.setOnRefreshListener {
+            if (refreshLiveData == null) {
+                refreshLiveData = viewModel.syncAllListsMetadata()
+
+                refreshLiveData?.observe(viewLifecycleOwner, Observer {
+                    if (it == true) {
+                        refreshLayout.isRefreshing = false
+
+                        refreshLiveData?.removeObservers(viewLifecycleOwner)
+                        refreshLiveData = null
+                    }
+                })
+            }
+        }
+
         return view
     }
 
@@ -62,6 +84,9 @@ class ListsFragment : Fragment() {
         if (hidden) {
             viewModel.getAllShoppingLists().removeObservers(viewLifecycleOwner)
             viewModel.getAllUsers().removeObservers(viewLifecycleOwner)
+
+            refreshLiveData?.removeObservers(viewLifecycleOwner)
+            refreshLiveData = null
         } else {
             viewModel.getAllShoppingLists().observe(viewLifecycleOwner, Observer {
                 adapter.submitList(it)

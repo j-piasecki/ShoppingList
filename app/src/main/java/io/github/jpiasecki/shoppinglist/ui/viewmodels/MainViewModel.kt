@@ -53,6 +53,8 @@ class MainViewModel @ViewModelInject constructor(
 
     fun updateItems(listId: String) = shoppingListsRepository.syncList(listId)
 
+    fun syncAllListsMetadata() = shoppingListsRepository.syncAllListsMetadata()
+
     fun setItemCompleted(listId: String, itemId: String, completed: Boolean): LiveData<Boolean?> {
         return if (completed)
             shoppingListsRepository.setItemCompleted(listId, itemId)

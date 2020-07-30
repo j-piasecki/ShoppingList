@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
@@ -35,6 +36,7 @@ class ShoppingListFragment : Fragment() {
     private val viewModel: MainViewModel by viewModels()
 
     private var listLiveData: LiveData<ShoppingList>? = null
+    private var refreshLiveData: LiveData<Boolean?>? = null
 
     var currentList: ShoppingList? = null
 
@@ -47,7 +49,36 @@ class ShoppingListFragment : Fragment() {
         adapter = createAdapter()
         initRecyclerView(view)
 
+        val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.fragment_shopping_list_refresh_layout)
+
+        refreshLayout.setOnRefreshListener {
+            refresh()
+        }
+
         return view
+    }
+
+    private fun refresh() {
+        val refreshLayout = view?.findViewById<SwipeRefreshLayout>(R.id.fragment_shopping_list_refresh_layout) ?: return
+
+        if (refreshLiveData == null) {
+            val listId = currentList?.id
+
+            if (listId != null) {
+                refreshLiveData = viewModel.updateItems(listId)
+
+                refreshLiveData?.observe(viewLifecycleOwner, Observer {
+                    if (it == true) {
+                        refreshLayout.isRefreshing = false
+
+                        refreshLiveData?.removeObservers(viewLifecycleOwner)
+                        refreshLiveData = null
+                    }
+                })
+            } else {
+                refreshLayout.isRefreshing = false
+            }
+        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -58,11 +89,13 @@ class ShoppingListFragment : Fragment() {
         if (hidden) {
             listLiveData?.removeObservers(viewLifecycleOwner)
             viewModel.getAllUsers().removeObservers(viewLifecycleOwner)
+            refreshLiveData?.removeObservers(viewLifecycleOwner)
 
+            refreshLiveData = null
             currentList = null
             adapter.submitList(emptyList())
         } else if (argumentListId != null) {
-            viewModel.updateItems(argumentListId)
+            refresh()
 
             listLiveData = viewModel.getShoppingList(argumentListId)
             listLiveData?.observe(viewLifecycleOwner, Observer {
@@ -100,6 +133,10 @@ class ShoppingListFragment : Fragment() {
                         }
 
                     currentList = it
+
+                    view?.findViewById<SwipeRefreshLayout>(R.id.fragment_shopping_list_refresh_layout)?.apply {
+                        isEnabled = currentList?.keepInSync ?: false
+                    }
                 } else {
                     Toast.makeText(context, "error", Toast.LENGTH_SHORT).show()
                 }

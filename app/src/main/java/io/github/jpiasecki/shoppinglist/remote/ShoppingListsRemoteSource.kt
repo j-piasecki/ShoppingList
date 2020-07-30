@@ -518,7 +518,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
                     .await()
 
             for (itemDoc in itemsCollection.documents) {
-                val item = itemDoc.toObject<Item>()
+                val item = itemDoc.toObject<Item>()?.copy(id = itemDoc.id)
 
                 if (item != null) {
                     result.add(item)
