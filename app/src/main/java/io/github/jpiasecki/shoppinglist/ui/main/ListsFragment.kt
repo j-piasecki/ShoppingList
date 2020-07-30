@@ -100,8 +100,9 @@ class ListsFragment : Fragment() {
         }
     }
 
-    private fun createAdapter() = ShoppingListsAdapter(
-            { id ->
+    private fun createAdapter() =
+        ShoppingListsAdapter().also {
+            it.clickCallback = { id ->
                 parentFragmentManager.changeFragment(
                     MainActivity.FragmentType.ShoppingList,
                     Bundle().apply {
@@ -109,8 +110,9 @@ class ListsFragment : Fragment() {
                     }).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .addToBackStack(null)
                     .commit()
-            },
-            { id ->
+            }
+
+            it.longClickCallback = { id ->
                 val list = shoppingLists.find { it.id == id }
 
                 if (list != null) {
@@ -135,7 +137,7 @@ class ListsFragment : Fragment() {
                     }
                 }
             }
-        )
+        }
 
     private fun initRecyclerView(view: View) {
         val recyclerView = view.findViewById<RecyclerView>(R.id.fragment_lists_recycler_view)

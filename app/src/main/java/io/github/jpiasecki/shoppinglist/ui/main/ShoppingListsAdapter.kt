@@ -15,10 +15,7 @@ import io.github.jpiasecki.shoppinglist.database.User
 import java.text.DateFormat
 import java.util.*
 
-class ShoppingListsAdapter(
-    private val clickCallback: (id: String) -> Unit,
-    private val longClickCallback: (id: String) -> Unit
-) : ListAdapter<ShoppingList, ShoppingListsAdapter.ViewHolder>(object : DiffUtil.ItemCallback<ShoppingList>() {
+class ShoppingListsAdapter() : ListAdapter<ShoppingList, ShoppingListsAdapter.ViewHolder>(object : DiffUtil.ItemCallback<ShoppingList>() {
     override fun areItemsTheSame(oldItem: ShoppingList, newItem: ShoppingList): Boolean {
         return oldItem.id == newItem.id
     }
@@ -37,6 +34,9 @@ class ShoppingListsAdapter(
     private val dateFormat: DateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT)
     
     private var userList: List<User> = emptyList()
+
+    lateinit var clickCallback: (id: String) -> Unit
+    lateinit var longClickCallback: (id: String) -> Unit
 
     init {
         setHasStableIds(true)

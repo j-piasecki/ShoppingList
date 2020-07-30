@@ -24,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
+import io.github.jpiasecki.shoppinglist.other.changeFragment
 import io.github.jpiasecki.shoppinglist.ui.AddEditItemActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
 import kotlin.math.sign
@@ -139,6 +140,8 @@ class ShoppingListFragment : Fragment() {
                     }
                 } else {
                     Toast.makeText(context, "error", Toast.LENGTH_SHORT).show()
+
+                    parentFragmentManager.changeFragment(MainActivity.FragmentType.Lists).addToBackStack(null).commit()
                 }
             })
 
