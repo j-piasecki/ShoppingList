@@ -94,7 +94,6 @@ class ShoppingListFragment : Fragment() {
                                 override fun onAnimationStart(animation: Animation?) {
                                     //layoutManager?.findViewByPosition(0)?.clearAnimation()
                                 }
-
                             }
 
                             scheduleLayoutAnimation()

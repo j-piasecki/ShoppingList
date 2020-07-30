@@ -4,6 +4,9 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
 
+    <color name="backgroundColorElevatedLight">#ffffff</color>
+    <color name="backgroundColorElevatedDark">#393939</color>
+
     <color name="userProfilePictureTransparentTint">#ccffffff</color>
     <color name="itemCompletedOverlay">#66000000</color>
 </resources>

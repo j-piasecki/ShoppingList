@@ -29,6 +29,7 @@ fun FragmentManager.changeFragment(target: MainActivity.FragmentType, arguments:
     primaryNavigationFragment?.let { transaction.hide(it) }
     transaction.show(targetFragment)
     transaction.setPrimaryNavigationFragment(targetFragment)
+    transaction.setReorderingAllowed(true)
 
     return transaction
 }

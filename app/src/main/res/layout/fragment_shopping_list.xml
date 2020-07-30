@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?android:attr/colorBackground"
     tools:context=".ui.main.ShoppingListFragment">
 
@@ -11,7 +10,6 @@
         android:id="@+id/fragment_shopping_list_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="4dp"
         android:paddingBottom="96dp"
         android:clipToPadding="false"
         android:layoutAnimation="@anim/recycler_view_animation" />

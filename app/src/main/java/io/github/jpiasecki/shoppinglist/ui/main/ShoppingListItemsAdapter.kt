@@ -1,6 +1,5 @@
 package io.github.jpiasecki.shoppinglist.ui.main
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +19,7 @@ import java.util.*
 
 class ShoppingListItemsAdapter(
     private val clickCallback: (id: String) -> Unit
-) : ListAdapter<Item, ShoppingListItemsAdapter.ViewHolder>(object : DiffUtil.ItemCallback<Item>() {
+) : ListAdapter<Item, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Item>() {
     override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
         return oldItem.id == newItem.id
     }
@@ -29,6 +28,9 @@ class ShoppingListItemsAdapter(
         return oldItem == newItem
     }
 }) {
+
+    private val VIEW_TYPE_ITEM = 1
+    private val VIEW_TYPE_HEADER = 2
 
     private val dateFormat: DateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT)
 
@@ -39,31 +41,44 @@ class ShoppingListItemsAdapter(
         setHasStableIds(true)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.row_shopping_list_item, parent, false)
-
-        return ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            VIEW_TYPE_HEADER -> HeaderViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_shopping_list_header, parent, false))
+            else -> ItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_shopping_list_item, parent, false))
+        }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(position)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is HeaderViewHolder)
+            holder.bind()
+        else if (holder is ItemViewHolder)
+            holder.bind(position)
     }
 
-    override fun onViewDetachedFromWindow(holder: ViewHolder) {
-        holder.unbind()
+    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
+        if (holder is ItemViewHolder)
+            holder.unbind()
     }
 
     override fun getItemId(position: Int): Long {
         return UUID.fromString(getItem(position).id).mostSignificantBits
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return if (position == 0)
+            VIEW_TYPE_HEADER
+        else
+            VIEW_TYPE_ITEM
+    }
+
     @Synchronized
     fun setList(list: ShoppingList) {
         shoppingList = list
 
-        submitList(list.items)
+        submitList(list.items.toMutableList().also { it.add(0, Item(id = "00000000-0000-0000-0000-000000000000")) })
     }
 
+    @Synchronized
     fun setUsers(list: List<User>) {
         usersList = list
 
@@ -76,7 +91,18 @@ class ShoppingListItemsAdapter(
         }
     }
 
-    inner class ViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+    inner class HeaderViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+
+        fun bind() {
+            view.findViewById<TextView>(R.id.row_shopping_list_header_name).text = shoppingList.name
+
+            view.findViewById<ImageView>(R.id.row_shopping_list_header_synced_icon).setImageResource(if (shoppingList.keepInSync) R.drawable.ic_cloud_24 else R.drawable.ic_smartphone_24)
+
+            view.findViewById<ImageView>(R.id.row_shopping_list_header_icon).setImageResource(R.drawable.ic_list_default_24)
+        }
+    }
+
+    inner class ItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(position: Int) {
             val item = getItem(position)
