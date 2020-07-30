@@ -22,9 +22,7 @@
             android:id="@+id/row_shopping_list_item_icon"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@drawable/ic_item_default_24"
-            android:tint="?android:attr/textColorPrimary"
-            android:tintMode="multiply" />
+            android:src="@drawable/ic_item_default_24" />
 
         <TextView
             android:id="@+id/row_shopping_list_item_name"

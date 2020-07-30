@@ -2,6 +2,7 @@ package io.github.jpiasecki.shoppinglist.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
@@ -22,6 +23,11 @@ class AddEditItemActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_item)
 
+        setSupportActionBar(activity_add_edit_item_toolbar)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_24)
+
         val listId = intent.getStringExtra(Values.SHOPPING_LIST_ID)
         val itemId = intent.getStringExtra(Values.ITEM_ID)
 
@@ -29,13 +35,15 @@ class AddEditItemActivity : AppCompatActivity() {
             finish()
 
         if (itemId != null) {
-            viewModel.getShoppingList(listId).observe(this, Observer {
+            viewModel.getShoppingList(listId!!).observe(this, Observer {
                 it.items.firstOrNull { it.id == itemId }?.let {
                     activity_add_edit_item_name.setText(it.name)
                     activity_add_edit_item_note.setText(it.note)
                     activity_add_edit_item_quantity.setText(it.quantity.toString())
                 }
             })
+
+            supportActionBar?.setTitle(R.string.edit_item)
         }
 
         activity_add_edit_item_fab.setOnClickListener {
@@ -50,7 +58,7 @@ class AddEditItemActivity : AppCompatActivity() {
                 item = item.copy(id = itemId)
             }
 
-            viewModel.addItemToList(listId, item).observe(this, Observer {
+            viewModel.addItemToList(listId!!, item).observe(this, Observer {
                 if (it == true) {
                     Toast.makeText(this, "success", Toast.LENGTH_SHORT).show()
                     finish()
@@ -59,5 +67,13 @@ class AddEditItemActivity : AppCompatActivity() {
                 }
             })
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+        }
+
+        return true
     }
 }

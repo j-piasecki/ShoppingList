@@ -4,4 +4,6 @@
     <string name="shopping_list_last_update">Last update: %1$s</string>
     <string name="menu_import_list">Import list</string>
     <string name="menu_share">Share</string>
+    <string name="add_new_item">Add new item</string>
+    <string name="edit_item">Edit item</string>
 </resources>
