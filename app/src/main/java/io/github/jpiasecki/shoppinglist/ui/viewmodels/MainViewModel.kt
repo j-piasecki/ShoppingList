@@ -53,6 +53,13 @@ class MainViewModel @ViewModelInject constructor(
 
     fun updateItems(listId: String) = shoppingListsRepository.syncList(listId)
 
+    fun setItemCompleted(listId: String, itemId: String, completed: Boolean): LiveData<Boolean?> {
+        return if (completed)
+            shoppingListsRepository.setItemCompleted(listId, itemId)
+        else
+            shoppingListsRepository.setItemNotCompleted(listId, itemId)
+    }
+
     fun downloadList(listId: String): LiveData<Boolean?> {
         val result = MutableLiveData<Boolean?>(null)
 

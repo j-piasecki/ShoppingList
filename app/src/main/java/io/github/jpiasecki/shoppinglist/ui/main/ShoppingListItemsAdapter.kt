@@ -17,9 +17,7 @@ import io.github.jpiasecki.shoppinglist.database.User
 import java.text.DateFormat
 import java.util.*
 
-class ShoppingListItemsAdapter(
-    private val clickCallback: (id: String) -> Unit
-) : ListAdapter<Item, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Item>() {
+class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Item>() {
     override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
         return oldItem.id == newItem.id
     }
@@ -28,6 +26,9 @@ class ShoppingListItemsAdapter(
         return oldItem == newItem
     }
 }) {
+
+    lateinit var clickCallback: (id: String) -> Unit
+    lateinit var itemCompletionChangeCallback: (id: String, completed: Boolean) -> Unit
 
     private val VIEW_TYPE_ITEM = 1
     private val VIEW_TYPE_HEADER = 2
@@ -134,7 +135,18 @@ class ShoppingListItemsAdapter(
                 val checkBox =  view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box)
                 checkBox.isChecked = !checkBox.isChecked
 
-                Toast.makeText(it.context, "${item.name} completed: ${checkBox.isChecked}", Toast.LENGTH_SHORT).show()
+                itemCompletionChangeCallback(item.id, checkBox.isChecked)
+
+                view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility = View.VISIBLE
+            }
+
+            view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay_hitbox).setOnClickListener {
+                val checkBox =  view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box)
+                checkBox.isChecked = false
+
+                itemCompletionChangeCallback(item.id, false)
+
+                view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility = View.GONE
             }
 
             view.setOnClickListener {

@@ -153,9 +153,19 @@
         android:layout_height="match_parent"
         android:background="@color/itemCompletedOverlay"
         android:elevation="4dp"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:visibility="gone"
         android:clickable="true"
-        android:focusable="true" />
+        android:focusable="true">
+
+        <LinearLayout
+            android:id="@+id/row_shopping_list_item_completed_overlay_hitbox"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="24dp"
+            android:orientation="horizontal" />
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>

@@ -112,14 +112,22 @@ class ShoppingListFragment : Fragment() {
     }
 
     private fun createAdapter() =
-        ShoppingListItemsAdapter { id ->
-            startActivity(
-                Intent(
-                    context,
-                    AddEditItemActivity::class.java
-                ).putExtra(Values.ITEM_ID, id)
-                    .putExtra(Values.SHOPPING_LIST_ID, currentList?.id)
-            )
+        ShoppingListItemsAdapter().also {
+            it.clickCallback = { id ->
+                startActivity(
+                    Intent(
+                        context,
+                        AddEditItemActivity::class.java
+                    ).putExtra(Values.ITEM_ID, id)
+                        .putExtra(Values.SHOPPING_LIST_ID, currentList?.id)
+                )
+            }
+
+            it.itemCompletionChangeCallback = { id, completed ->
+                currentList?.let {
+                    viewModel.setItemCompleted(it.id, id, completed)
+                }
+            }
         }
 
     private fun initRecyclerView(view: View) {
