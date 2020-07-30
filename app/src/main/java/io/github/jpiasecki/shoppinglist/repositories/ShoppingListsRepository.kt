@@ -96,7 +96,7 @@ class ShoppingListsRepository @Inject constructor(
         val result = MutableLiveData<Boolean?>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
-            result.postValue(downloadListBlocking(listId))
+            result.postValue(downloadListBlocking(listId) != null)
         }
 
         return result
@@ -601,11 +601,11 @@ class ShoppingListsRepository @Inject constructor(
 
     suspend fun getRemoteUsersBlocking(listId: String) = shoppingListsRemoteSource.getUsers(listId)
 
-    suspend fun downloadListBlocking(listId: String): Boolean {
+    suspend fun downloadListBlocking(listId: String): ShoppingList? {
         try {
             UUID.fromString(listId)
         } catch (e: IllegalArgumentException) {
-            return false
+            return null
         }
 
         val localList = shoppingListsDao.getByIdPlain(listId)
@@ -613,17 +613,17 @@ class ShoppingListsRepository @Inject constructor(
         if (localList != null) {
             syncListBlocking(listId)
 
-            return true
+            return localList
         } else {
             val list = shoppingListsRemoteSource.getList(listId)
 
             if (list != null) {
                 shoppingListsDao.insert(list)
-                return true
+                return list
             }
         }
 
-        return false
+        return null
     }
 
     suspend fun downloadListBlockingNoSafeChecks(listId: String) = shoppingListsRemoteSource.getList(listId)

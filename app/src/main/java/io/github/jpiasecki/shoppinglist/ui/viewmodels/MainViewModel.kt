@@ -57,14 +57,18 @@ class MainViewModel @ViewModelInject constructor(
         val result = MutableLiveData<Boolean?>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
-            if (!shoppingListsRepository.downloadListBlocking(listId)) {
+            val list = shoppingListsRepository.downloadListBlocking(listId)
+            val uid = FirebaseAuth.getInstance().currentUser?.uid ?: Values.USER_ID_NOT_FOUND
+
+            if (list == null) {
                 result.postValue(false)
-            } else if (!usersRepository.addListToUser(listId) || !shoppingListsRepository.addUserToListBlocking(listId, FirebaseAuth.getInstance().currentUser?.uid ?: Values.USER_ID_NOT_FOUND)) {
+            } else if (!usersRepository.addListToUser(listId)) {
+                result.postValue(false)
+            } else if (list.owner != uid && !shoppingListsRepository.addUserToListBlocking(listId, uid)) {
                 result.postValue(false)
             } else {
                 result.postValue(true)
             }
-
         }
 
         return result
