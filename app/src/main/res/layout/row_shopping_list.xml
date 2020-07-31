@@ -75,7 +75,7 @@
 
         <TextView
             android:id="@+id/row_shopping_list_last_update"
-            android:text="@string/shopping_list_last_update"
+            android:text="@string/last_update"
             android:textColor="?android:attr/textColorTertiary"
             android:textStyle="italic"
             android:textSize="12sp"

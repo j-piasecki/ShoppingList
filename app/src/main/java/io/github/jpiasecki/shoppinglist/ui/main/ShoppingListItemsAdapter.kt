@@ -1,6 +1,5 @@
 package io.github.jpiasecki.shoppinglist.ui.main
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -113,7 +112,7 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
             view.findViewById<TextView>(R.id.row_shopping_list_item_note).text = item.note
             view.findViewById<TextView>(R.id.row_shopping_list_item_quantity).text = "Quantity: ${item.quantity}"
             view.findViewById<TextView>(R.id.row_shopping_list_item_price).text = item.price.toString()
-            view.findViewById<TextView>(R.id.row_shopping_list_item_last_update).text = view.context.getString(R.string.shopping_list_last_update, dateFormat.format(Date(item.timestamp)))
+            view.findViewById<TextView>(R.id.row_shopping_list_item_last_update).text = view.context.getString(R.string.last_update, dateFormat.format(Date(item.timestamp)))
 
             view.findViewById<ImageView>(R.id.row_shopping_list_item_icon).setImageResource(R.drawable.ic_item_default_24)
 

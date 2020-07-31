@@ -1,9 +1,15 @@
 <resources>
     <string name="app_name">Shopping List</string>
     <string name="unknown_name">Unknown</string>
-    <string name="shopping_list_last_update">Last update: %1$s</string>
+    <string name="last_update">Last update: %1$s</string>
     <string name="menu_import_list">Import list</string>
     <string name="menu_share">Share</string>
-    <string name="add_new_item">Add new item</string>
-    <string name="edit_item">Edit item</string>
+    <string name="activity_add_edit_add_new_item">Add new item</string>
+    <string name="activity_add_edit_edit_item">Edit item</string>
+    <string name="activity_add_edit_name_hint">Name</string>
+    <string name="activity_add_edit_quantity_hint">Quantity</string>
+    <string name="activity_add_edit_note_hint">Note</string>
+    <string name="activity_add_edit_price_hint">Price</string>
+    <string name="activity_add_edit_icon_description">Item icon</string>
+    <string name="activity_add_edit_fab_description">Save</string>
 </resources>

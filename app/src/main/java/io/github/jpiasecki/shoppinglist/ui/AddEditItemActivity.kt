@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -20,7 +19,6 @@ import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.Item
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.AddEditItemViewModel
 import kotlinx.android.synthetic.main.activity_add_edit_item.*
-import kotlinx.android.synthetic.main.row_shopping_list_item.*
 
 @AndroidEntryPoint
 class AddEditItemActivity : AppCompatActivity() {
@@ -60,7 +58,7 @@ class AddEditItemActivity : AppCompatActivity() {
                 }
             })
 
-            supportActionBar?.setTitle(R.string.edit_item)
+            supportActionBar?.setTitle(R.string.activity_add_edit_edit_item)
         }
 
         activity_add_edit_item_quantity.addTextChangedListener {
