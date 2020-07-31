@@ -34,7 +34,7 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
     }
 }) {
 
-    lateinit var clickCallback: (id: String) -> Unit
+    lateinit var clickCallback: (id: String, view: View) -> Unit
     lateinit var itemCompletionChangeCallback: (id: String, completed: Boolean) -> Unit
 
     private val VIEW_TYPE_ITEM = 1
@@ -235,7 +235,7 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
             }
 
             view.setOnClickListener {
-                clickCallback(item.id)
+                clickCallback(item.id, it)
             }
 
             view.setOnLongClickListener {

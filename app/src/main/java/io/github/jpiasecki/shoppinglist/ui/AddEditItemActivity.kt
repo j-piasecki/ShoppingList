@@ -123,4 +123,10 @@ class AddEditItemActivity : AppCompatActivity() {
 
         return true
     }
+
+    override fun finish() {
+        super.finish()
+
+        overridePendingTransition(android.R.anim.fade_in, R.anim.activity_slide_down)
+    }
 }

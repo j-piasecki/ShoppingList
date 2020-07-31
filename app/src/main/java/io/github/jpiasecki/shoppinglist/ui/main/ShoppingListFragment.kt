@@ -162,13 +162,14 @@ class ShoppingListFragment : Fragment() {
 
     private fun createAdapter() =
         ShoppingListItemsAdapter().also {
-            it.clickCallback = { id ->
+            it.clickCallback = { id, view ->
                 startActivity(
                     Intent(
                         context,
                         AddEditItemActivity::class.java
                     ).putExtra(Values.ITEM_ID, id)
-                        .putExtra(Values.SHOPPING_LIST_ID, currentList?.id)
+                        .putExtra(Values.SHOPPING_LIST_ID, currentList?.id),
+                    MainActivity.getAnimationBundle(view)
                 )
             }
 

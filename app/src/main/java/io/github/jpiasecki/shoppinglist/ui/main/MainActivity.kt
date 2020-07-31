@@ -16,6 +16,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.children
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
@@ -62,7 +63,8 @@ class MainActivity : AppCompatActivity() {
                         Intent(
                             this,
                             AddEditListActivity::class.java
-                        )
+                        ),
+                        getAnimationBundle(activity_main_fab)
                     )
                 }
 
@@ -73,7 +75,8 @@ class MainActivity : AppCompatActivity() {
                         Intent(
                             this,
                             AddEditItemActivity::class.java
-                        ).putExtra(Values.SHOPPING_LIST_ID, fragment.currentList?.id)
+                        ).putExtra(Values.SHOPPING_LIST_ID, fragment.currentList?.id),
+                        getAnimationBundle(activity_main_fab)
                     )
                 }
             }
@@ -136,7 +139,8 @@ class MainActivity : AppCompatActivity() {
                         Intent(
                             this,
                             AddEditListActivity::class.java
-                        ).putExtra(Values.SHOPPING_LIST_ID, currentFragment.currentList?.id)
+                        ).putExtra(Values.SHOPPING_LIST_ID, currentFragment.currentList?.id),
+                        getAnimationBundle(activity_main_bottom_app_bar.findViewById(item.itemId))
                     )
                 }
             }
@@ -251,6 +255,16 @@ class MainActivity : AppCompatActivity() {
                         activity_main_bottom_app_bar.navigationIcon = BitmapDrawable(resources, bitmap)
                     }
                 })
+        }
+    }
+
+    companion object {
+        fun getAnimationBundle(v: View): Bundle? {
+            val left = 0
+            val top = 0
+            val width = v.measuredWidth
+            val height = v.measuredHeight
+            return ActivityOptionsCompat.makeScaleUpAnimation(v, left, top, width, height).toBundle()
         }
     }
 }
