@@ -37,17 +37,25 @@ data class User(
     fun loadProfileImage(context: Context, callback: (() -> Unit)? = null) {
         val ref = Firebase.storage.reference.child("profile_pics/${id}")
 
-        // if profile picture file exists, load it
-        ref.metadata.addOnSuccessListener {
-            GlideApp.with(context).asBitmap().circleCrop().load(ref).into(object : CustomTarget<Bitmap>() {
-                override fun onLoadCleared(placeholder: Drawable?) {}
+        if (profilePicture == null) {
+            // if profile picture file exists, load it
+            ref.metadata.addOnSuccessListener {
+                GlideApp.with(context).asBitmap().circleCrop().load(ref)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onLoadCleared(placeholder: Drawable?) {}
 
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    profilePicture = resource
+                        override fun onResourceReady(
+                            resource: Bitmap,
+                            transition: Transition<in Bitmap>?
+                        ) {
+                            profilePicture = resource
 
-                    callback?.invoke()
-                }
-            })
+                            callback?.invoke()
+                        }
+                    })
+            }
+        } else {
+            callback?.invoke()
         }
     }
 }

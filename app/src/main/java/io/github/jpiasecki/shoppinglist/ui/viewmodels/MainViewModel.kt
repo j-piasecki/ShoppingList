@@ -15,8 +15,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 
-import kotlin.random.Random
-
 class MainViewModel @ViewModelInject constructor(
     private val usersRepository: UsersRepository,
     private val shoppingListsRepository: ShoppingListsRepository,
@@ -54,16 +52,62 @@ class MainViewModel @ViewModelInject constructor(
         }
     }
 
-    fun updateItems(listId: String) = shoppingListsRepository.syncList(listId)
+    fun updateItems(listId: String): LiveData<Boolean?> {
+        val result = MutableLiveData<Boolean?>(null)
 
-    fun syncAllListsMetadata(): LiveData<Boolean?> {
-        config.updateListsMetadataManualUpdateTimestamp()
+        GlobalScope.launch(Dispatchers.IO) {
+            val syncResult = shoppingListsRepository.syncListBlocking(listId)
 
-        return shoppingListsRepository.syncAllListsMetadata()
+            if (syncResult) {
+                val list = shoppingListsRepository.getListPlain(listId)
+
+                if (list != null) {
+                    for (userId in list.getAllUsersNoOwner()) {
+                        usersRepository.updateUser(userId)
+                    }
+                }
+
+                result.postValue(true)
+            } else {
+                result.postValue(false)
+            }
+        }
+
+        return result
     }
 
-    fun canSyncMetadataManually(): Boolean {
-        return Calendar.getInstance().timeInMillis - config.getListsMetadataManualUpdateTimestamp() >= Values.LISTS_METADATA_MANUAL_UPDATE_PERIOD
+    fun syncAllLists(): LiveData<Boolean?> {
+        config.updateListsManualUpdateTimestamp()
+        val result = MutableLiveData<Boolean?>(null)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val syncResult = shoppingListsRepository.syncAllListsBlocking()
+            val updated = ArrayList<String>()
+
+            for (list in shoppingListsRepository.getAllListsPlain()) {
+                list.owner?.let {
+                    if (it !in updated) {
+                        usersRepository.updateUser(it)
+                        updated.add(it)
+                    }
+                }
+
+                for (user in list.getAllUsersNoOwner()) {
+                    if (user !in updated) {
+                        usersRepository.updateUser(user)
+                        updated.add(user)
+                    }
+                }
+            }
+
+            result.postValue(syncResult)
+        }
+
+        return result
+    }
+
+    fun canSyncListsManually(): Boolean {
+        return Calendar.getInstance().timeInMillis - config.getListsManualUpdateTimestamp() >= Values.LISTS_MANUAL_UPDATE_PERIOD
     }
 
     fun setItemCompleted(listId: String, itemId: String, completed: Boolean): LiveData<Boolean?> {
@@ -101,6 +145,8 @@ class MainViewModel @ViewModelInject constructor(
             for (listId in remoteLists) {
                 if (!shoppingListsRepository.downloadOrSyncListBlocking(listId)) {
                     usersRepository.removeListFromUser(listId)
+                } else {
+                    usersRepository.addListToUser(listId)
                 }
             }
 

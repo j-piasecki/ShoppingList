@@ -165,7 +165,7 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
         }
 
         private fun addUserToList(layout: LinearLayout, user: User, owner: Boolean = false) {
-            if (user.profilePicture != null) {
+            user.loadProfileImage(view.context) {
                 val img = ImageView(view.context)
                 img.setImageBitmap(user.profilePicture)
 

@@ -11,7 +11,7 @@ class Config(private val context: Context) {
 
         const val PROFILE_PICTURE_UPDATE_TIMESTAMP = "PROFILE_PICTURE_UPDATE_TIMESTAMP"
         const val LISTS_AUTO_UPDATE_TIMESTAMP = "LISTS_METADATA_AUTO_UPDATE_TIMESTAMP"
-        const val LISTS_METADATA_MANUAL_UPDATE_TIMESTAMP = "LISTS_METADATA_MANUAL_UPDATE_TIMESTAMP"
+        const val LISTS_MANUAL_UPDATE_TIMESTAMP = "LISTS_METADATA_MANUAL_UPDATE_TIMESTAMP"
     }
 
     private var preferences: SharedPreferences = context.getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE)
@@ -20,7 +20,7 @@ class Config(private val context: Context) {
 
     fun getListsAutoUpdateTimestamp() = preferences.getLong(LISTS_AUTO_UPDATE_TIMESTAMP, 0)
 
-    fun getListsMetadataManualUpdateTimestamp() = preferences.getLong(LISTS_METADATA_MANUAL_UPDATE_TIMESTAMP, 0)
+    fun getListsManualUpdateTimestamp() = preferences.getLong(LISTS_MANUAL_UPDATE_TIMESTAMP, 0)
 
     fun updateProfilePictureUpdateTimestamp() = preferences.edit().putLong(
         PROFILE_PICTURE_UPDATE_TIMESTAMP,
@@ -32,8 +32,8 @@ class Config(private val context: Context) {
         Calendar.getInstance().timeInMillis
     ).apply()
 
-    fun updateListsMetadataManualUpdateTimestamp() = preferences.edit().putLong(
-        LISTS_METADATA_MANUAL_UPDATE_TIMESTAMP,
+    fun updateListsManualUpdateTimestamp() = preferences.edit().putLong(
+        LISTS_MANUAL_UPDATE_TIMESTAMP,
         Calendar.getInstance().timeInMillis
     ).apply()
 }

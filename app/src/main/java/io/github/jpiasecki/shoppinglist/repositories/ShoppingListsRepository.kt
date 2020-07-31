@@ -485,36 +485,7 @@ class ShoppingListsRepository @Inject constructor(
         val result = MutableLiveData<Boolean?>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
-            val allLists = shoppingListsDao.getAllIds()
-
-            for (id in allLists) {
-                if (shoppingListsDao.isSynced(id)) {
-                    val list = shoppingListsRemoteSource.getListMetadata(id)
-
-                    if (list != null && shoppingListsDao.getTimestamp(id) < list.timestamp) {
-                        val localList = shoppingListsDao.getByIdPlain(id)
-
-                        if (localList != null) {
-                            list.items = localList.items
-                            list.users = localList.users
-
-                            for (item in shoppingListsRemoteSource.getUpdatedItems(id, localList.timestamp)) {
-                                val index = list.items.indexOfFirst { it.id == item.id }
-
-                                if (index == -1) {
-                                    list.items.add(item)
-                                } else {
-                                    list.items[index] = item
-                                }
-                            }
-
-                            shoppingListsDao.insert(list)
-                        }
-                    }
-                }
-            }
-
-            result.postValue(true)
+            result.postValue(syncAllListsBlocking())
         }
 
         return result
@@ -550,6 +521,8 @@ class ShoppingListsRepository @Inject constructor(
 
         return result
     }
+
+    fun getListPlain(listId: String) = shoppingListsDao.getByIdPlain(listId)
 
     suspend fun syncListBlocking(listId: String): Boolean {
         if (shoppingListsDao.isSynced(listId)) {
@@ -587,6 +560,39 @@ class ShoppingListsRepository @Inject constructor(
         }
 
         return false
+    }
+
+    suspend fun syncAllListsBlocking(): Boolean {
+        val allLists = shoppingListsDao.getAllIds()
+
+        for (id in allLists) {
+            if (shoppingListsDao.isSynced(id)) {
+                val list = shoppingListsRemoteSource.getListMetadata(id)
+
+                if (list != null && shoppingListsDao.getTimestamp(id) < list.timestamp) {
+                    val localList = shoppingListsDao.getByIdPlain(id)
+
+                    if (localList != null) {
+                        list.items = localList.items
+                        list.users = localList.users
+
+                        for (item in shoppingListsRemoteSource.getUpdatedItems(id, localList.timestamp)) {
+                            val index = list.items.indexOfFirst { it.id == item.id }
+
+                            if (index == -1) {
+                                list.items.add(item)
+                            } else {
+                                list.items[index] = item
+                            }
+                        }
+
+                        shoppingListsDao.insert(list)
+                    }
+                }
+            }
+        }
+
+        return true
     }
 
     suspend fun getRemoteTimestampBlocking(listId: String) = shoppingListsRemoteSource.getTimestamp(listId)

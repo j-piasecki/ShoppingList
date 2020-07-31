@@ -1,17 +1,11 @@
 package io.github.jpiasecki.shoppinglist.ui.main
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -20,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.transition.Fade
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
@@ -28,7 +21,6 @@ import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.other.changeFragment
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
-import kotlinx.android.synthetic.main.fragment_lists.*
 
 @AndroidEntryPoint
 class ListsFragment : Fragment() {
@@ -64,8 +56,8 @@ class ListsFragment : Fragment() {
 
         refreshLayout.setOnRefreshListener {
             if (refreshLiveData == null) {
-                if (viewModel.canSyncMetadataManually()) {
-                    refreshLiveData = viewModel.syncAllListsMetadata()
+                if (viewModel.canSyncListsManually()) {
+                    refreshLiveData = viewModel.syncAllLists()
 
                     refreshLiveData?.observe(viewLifecycleOwner, Observer {
                         if (it == true) {

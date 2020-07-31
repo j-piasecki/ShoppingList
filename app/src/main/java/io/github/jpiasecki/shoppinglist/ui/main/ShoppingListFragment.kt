@@ -193,20 +193,21 @@ class ShoppingListFragment : Fragment() {
     }
 
     fun shareCurrentList() {
-        if (currentList?.keepInSync == true) {
+        currentList?.let {
+            if (!it.keepInSync) {
+                viewModel.uploadList(it)
+            }
+
             val clipboard =
                 activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             clipboard.setPrimaryClip(
                 ClipData.newPlainText(
                     "listId",
-                    currentList?.id
+                    it.id
                 )
             )
 
             Toast.makeText(context, "copied to clipboard", Toast.LENGTH_SHORT)
-                .show()
-        } else {
-            Toast.makeText(context, "need to upload first", Toast.LENGTH_SHORT)
                 .show()
         }
     }
