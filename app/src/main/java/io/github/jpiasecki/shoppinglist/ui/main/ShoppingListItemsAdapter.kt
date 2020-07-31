@@ -3,7 +3,9 @@ package io.github.jpiasecki.shoppinglist.ui.main
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
@@ -16,6 +18,7 @@ import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.database.User
 import java.text.DateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Item>() {
     override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
@@ -94,12 +97,71 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
 
     inner class HeaderViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
+        private val scale = view.context.resources.displayMetrics.density
+
         fun bind() {
             view.findViewById<TextView>(R.id.row_shopping_list_header_name).text = shoppingList.name
 
             view.findViewById<ImageView>(R.id.row_shopping_list_header_synced_icon).setImageResource(if (shoppingList.keepInSync) R.drawable.ic_cloud_24 else R.drawable.ic_smartphone_24)
 
             view.findViewById<ImageView>(R.id.row_shopping_list_header_icon).setImageResource(R.drawable.ic_list_default_24)
+
+            createUserList()
+        }
+
+        private fun createUserList() {
+            val iconsLayout = view.findViewById<LinearLayout>(R.id.row_shopping_list_header_users)
+            iconsLayout.removeAllViews()
+
+            iconsLayout.setOnClickListener {
+                Toast.makeText(view.context, "users", Toast.LENGTH_SHORT).show()
+            }
+
+            val userList = shoppingList.getAllUsersNoOwner()
+
+            if (shoppingList.keepInSync && userList.isNotEmpty()) {
+                iconsLayout.visibility = View.VISIBLE
+
+                usersList.find { it.id == shoppingList.owner }?.let {
+                    addUserToList(iconsLayout, it, true)
+                }
+
+                for ((index, userId) in userList.iterator().withIndex()) {
+                    usersList.find { it.id == userId && it.id != shoppingList.owner }?.let {
+                        addUserToList(iconsLayout, it)
+                    }
+
+                    if (index == 20)
+                        break
+                }
+
+                iconsLayout.layoutAnimation =
+                    AnimationUtils.loadLayoutAnimation(
+                        view.context,
+                        R.anim.users_list_animation
+                    )
+                iconsLayout.startLayoutAnimation()
+            } else {
+                iconsLayout.visibility = View.GONE
+            }
+        }
+
+        private fun addUserToList(layout: LinearLayout, user: User, owner: Boolean = false) {
+            if (user.profilePicture != null) {
+                val img = ImageView(view.context)
+                img.setImageBitmap(user.profilePicture)
+
+                img.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT
+                ).also {
+                    if (owner) {
+                        it.marginEnd = (8 * scale + 0.5f).roundToInt()
+                    }
+                }
+
+                layout.addView(img)
+            }
         }
     }
 
