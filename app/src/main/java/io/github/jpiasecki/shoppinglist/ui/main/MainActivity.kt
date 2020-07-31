@@ -36,6 +36,7 @@ import io.github.jpiasecki.shoppinglist.consts.Values.RC_SIGN_IN
 import io.github.jpiasecki.shoppinglist.other.changeFragment
 import io.github.jpiasecki.shoppinglist.ui.AddEditItemActivity
 import io.github.jpiasecki.shoppinglist.ui.AddEditListActivity
+import io.github.jpiasecki.shoppinglist.ui.SettingsActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -143,6 +144,16 @@ class MainActivity : AppCompatActivity() {
                         getAnimationBundle(activity_main_bottom_app_bar.findViewById(item.itemId))
                     )
                 }
+            }
+
+            R.id.menu_settings -> {
+                startActivity(
+                    Intent(
+                        this,
+                        SettingsActivity::class.java
+                    ),
+                    getAnimationBundle(activity_main_bottom_app_bar.findViewById(item.itemId))
+                )
             }
         }
 
