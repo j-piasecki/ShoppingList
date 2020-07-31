@@ -27,6 +27,10 @@ import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.other.changeFragment
 import io.github.jpiasecki.shoppinglist.ui.AddEditItemActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.sign
 
 @AndroidEntryPoint
@@ -126,11 +130,16 @@ class ShoppingListFragment : Fragment() {
                                 override fun onAnimationEnd(animation: Animation?) {}
 
                                 override fun onAnimationStart(animation: Animation?) {
+                                    //wait until there are items in adapter, zero is safe because there is always header
+                                    if (adapter?.itemCount == 0) {
+                                        GlobalScope.launch(Dispatchers.Main) {
+                                            delay(10)
+                                            startLayoutAnimation()
+                                        }
+                                    }
                                     //layoutManager?.findViewByPosition(0)?.clearAnimation()
                                 }
                             }
-
-                            scheduleLayoutAnimation()
                         }
 
                     currentList = it

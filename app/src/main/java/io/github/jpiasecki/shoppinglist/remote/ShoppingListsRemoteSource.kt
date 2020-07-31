@@ -173,7 +173,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
                 Firebase.firestore.collection("lists").document(list.id).collection("items").whereEqualTo("deleted", false).get(defaultSource)
                     .await()
             for (itemDoc in itemsCollection.documents) {
-                val item = itemDoc.toObject<Item>()
+                val item = itemDoc.toObject<Item>()?.copy(id = itemDoc.id)
 
                 if (item != null) {
                     list.items.add(item)

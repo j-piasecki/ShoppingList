@@ -103,6 +103,28 @@ class MainViewModel @ViewModelInject constructor(
                     usersRepository.removeListFromUser(listId)
                 }
             }
+
+
+            val updated = ArrayList<String?>()
+
+            for (list in shoppingListsRepository.getAllListsPlain()) {
+                if (list.owner !in updated) {
+                    usersRepository.updateUser(list.owner)
+                    updated.add(list.owner)
+                }
+
+                for (item in list.items) {
+                    if (item.addedBy !in updated) {
+                        usersRepository.updateUser(item.addedBy)
+                        updated.add(item.addedBy)
+                    }
+
+                    if (item.completedBy !in updated) {
+                        usersRepository.updateUser(item.completedBy)
+                        updated.add(item.completedBy)
+                    }
+                }
+            }
         }
     }
 }

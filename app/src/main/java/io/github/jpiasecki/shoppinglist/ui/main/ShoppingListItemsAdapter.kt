@@ -1,5 +1,6 @@
 package io.github.jpiasecki.shoppinglist.ui.main
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -185,13 +186,13 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
                 view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon).setImageBitmap(null)
             } else {
                 if (completedBy.profilePicture != null) {
-                    view.findViewById<ImageView>(R.id.row_shopping_list_item_added_by_icon)
+                    view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon)
                         .setImageBitmap(completedBy.profilePicture)
                 } else {
-                    view.findViewById<ImageView>(R.id.row_shopping_list_item_added_by_icon).setImageBitmap(null)
+                    view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon).setImageBitmap(null)
 
                     completedBy.loadProfileImage(view.context) {
-                        view.findViewById<ImageView>(R.id.row_shopping_list_item_added_by_icon)
+                        view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon)
                             .setImageBitmap(completedBy.profilePicture)
                     }
                 }
