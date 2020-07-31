@@ -4,12 +4,17 @@
     <string name="last_update">Last update: %1$s</string>
     <string name="menu_import_list">Import list</string>
     <string name="menu_share">Share</string>
-    <string name="activity_add_edit_add_new_item">Add new item</string>
-    <string name="activity_add_edit_edit_item">Edit item</string>
-    <string name="activity_add_edit_name_hint">Name</string>
-    <string name="activity_add_edit_quantity_hint">Quantity</string>
-    <string name="activity_add_edit_note_hint">Note</string>
-    <string name="activity_add_edit_price_hint">Price</string>
-    <string name="activity_add_edit_icon_description">Item icon</string>
-    <string name="activity_add_edit_fab_description">Save</string>
+    <string name="activity_add_edit_item_add_new_item">Add new item</string>
+    <string name="activity_add_edit_item_edit_item">Edit item</string>
+    <string name="activity_add_edit_item_name_hint">Name</string>
+    <string name="activity_add_edit_item_quantity_hint">Quantity</string>
+    <string name="activity_add_edit_item_note_hint">Note</string>
+    <string name="activity_add_edit_item_price_hint">Price</string>
+    <string name="activity_add_edit_item_icon_description">Item icon</string>
+    <string name="activity_add_edit_item_fab_description">Save</string>
+    <string name="activity_add_edit_list_add_new_list">Create list</string>
+    <string name="activity_add_edit_list_edit_list">Edit list</string>
+    <string name="activity_add_edit_list_name_hint">Name</string>
+    <string name="activity_add_edit_list_note_hint">Description</string>
+    <string name="menu_edit">Edit</string>
 </resources>

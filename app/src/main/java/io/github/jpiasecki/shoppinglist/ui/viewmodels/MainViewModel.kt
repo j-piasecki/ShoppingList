@@ -33,8 +33,6 @@ class MainViewModel @ViewModelInject constructor(
 
     fun trySettingOwner() = shoppingListsRepository.trySettingOwner()
 
-    fun createList() = shoppingListsRepository.createList("list name ${Random.nextInt(100)}", "list note number ${Random.nextInt(1000)}", "pln")
-
     fun deleteList(list: ShoppingList) {
         if (list.keepInSync) {
             GlobalScope.launch(Dispatchers.IO) {

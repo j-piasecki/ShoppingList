@@ -34,6 +34,7 @@ import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.consts.Values.RC_SIGN_IN
 import io.github.jpiasecki.shoppinglist.other.changeFragment
 import io.github.jpiasecki.shoppinglist.ui.AddEditItemActivity
+import io.github.jpiasecki.shoppinglist.ui.AddEditListActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -57,7 +58,12 @@ class MainActivity : AppCompatActivity() {
         activity_main_fab.setOnClickListener {
             when (currentFragment) {
                 FragmentType.Lists -> {
-                    viewModel.createList()
+                    startActivity(
+                        Intent(
+                            this,
+                            AddEditListActivity::class.java
+                        )
+                    )
                 }
 
                 FragmentType.ShoppingList -> {
@@ -121,6 +127,17 @@ class MainActivity : AppCompatActivity() {
             R.id.menu_share -> {
                 if (currentFragment is ShoppingListFragment) {
                     currentFragment.shareCurrentList()
+                }
+            }
+
+            R.id.menu_edit_list -> {
+                if (currentFragment is ShoppingListFragment) {
+                    startActivity(
+                        Intent(
+                            this,
+                            AddEditListActivity::class.java
+                        ).putExtra(Values.SHOPPING_LIST_ID, currentFragment.currentList?.id)
+                    )
                 }
             }
         }

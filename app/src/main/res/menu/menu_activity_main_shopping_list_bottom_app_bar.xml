@@ -6,4 +6,10 @@
         android:title="@string/menu_share"
         android:icon="@drawable/ic_share_24"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_edit_list"
+        android:title="@string/menu_edit"
+        android:icon="@drawable/ic_edit_24"
+        app:showAsAction="ifRoom" />
 </menu>

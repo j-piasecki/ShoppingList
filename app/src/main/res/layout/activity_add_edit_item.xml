@@ -18,7 +18,7 @@
             android:id="@+id/activity_add_edit_item_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="@string/activity_add_edit_add_new_item"
+            app:title="@string/activity_add_edit_item_add_new_item"
             app:layout_scrollFlags="scroll"/>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -31,7 +31,7 @@
         android:clickable="true"
         android:focusable="true"
         android:layout_gravity="bottom|center_horizontal"
-        android:contentDescription="@string/activity_add_edit_fab_description"
+        android:contentDescription="@string/activity_add_edit_item_fab_description"
         app:srcCompat="@drawable/ic_done_24" />
 
     <androidx.core.widget.NestedScrollView
@@ -53,7 +53,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:ems="10"
-                android:hint="@string/activity_add_edit_name_hint"
+                android:hint="@string/activity_add_edit_item_name_hint"
                 android:inputType="text"
                 android:importantForAutofill="no"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -68,7 +68,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:ems="10"
-                android:hint="@string/activity_add_edit_quantity_hint"
+                android:hint="@string/activity_add_edit_item_quantity_hint"
                 android:inputType="numberSigned"
                 android:importantForAutofill="no"
                 app:layout_constraintEnd_toStartOf="@+id/activity_add_edit_item_unit"
@@ -83,8 +83,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:ems="10"
-                android:hint="@string/activity_add_edit_note_hint"
-                android:inputType="text"
+                android:hint="@string/activity_add_edit_item_note_hint"
+                android:inputType="textMultiLine"
                 android:importantForAutofill="no"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +98,7 @@
                 android:padding="2dp"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="@string/activity_add_edit_icon_description"
+                android:contentDescription="@string/activity_add_edit_item_icon_description"
                 app:layout_constraintBottom_toBottomOf="@+id/activity_add_edit_item_name"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintStart_toStartOf="parent"
@@ -107,7 +107,7 @@
 
             <Spinner
                 android:id="@+id/activity_add_edit_item_unit"
-                android:layout_width="128dp"
+                android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintBottom_toBottomOf="@+id/activity_add_edit_item_quantity"
@@ -122,7 +122,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:ems="10"
-                android:hint="@string/activity_add_edit_price_hint"
+                android:hint="@string/activity_add_edit_item_price_hint"
                 android:inputType="numberSigned|numberDecimal"
                 android:importantForAutofill="no"
                 app:layout_constraintEnd_toEndOf="parent"

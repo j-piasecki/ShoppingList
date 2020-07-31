@@ -58,7 +58,7 @@ class AddEditItemActivity : AppCompatActivity() {
                 }
             })
 
-            supportActionBar?.setTitle(R.string.activity_add_edit_edit_item)
+            supportActionBar?.setTitle(R.string.activity_add_edit_item_edit_item)
         }
 
         activity_add_edit_item_quantity.addTextChangedListener {

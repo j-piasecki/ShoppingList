@@ -1,5 +1,6 @@
 package io.github.jpiasecki.shoppinglist.ui.main
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,10 @@ import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.database.Item
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.database.User
+import java.lang.Exception
 import java.text.DateFormat
+import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -40,6 +44,7 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
 
     private var usersList: List<User> = emptyList()
     private var shoppingList: ShoppingList = ShoppingList()
+    private var priceFormat = NumberFormat.getCurrencyInstance()
 
     init {
         setHasStableIds(true)
@@ -77,6 +82,19 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
 
     @Synchronized
     fun setList(list: ShoppingList) {
+        if (list.currency != null) {
+            try {
+                val currency = Currency.getInstance(list.currency)
+
+                priceFormat.currency = currency
+                priceFormat.maximumFractionDigits = currency.defaultFractionDigits
+                priceFormat.minimumFractionDigits = currency.defaultFractionDigits
+            } catch (e: Exception) {}
+        }
+
+        if (list.id == shoppingList.id && list.currency != shoppingList.currency)
+            notifyDataSetChanged()
+
         shoppingList = list
 
         submitList(list.items.toMutableList().also { it.add(0, Item(id = "00000000-0000-0000-0000-000000000000")) })
@@ -173,8 +191,13 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
             view.findViewById<TextView>(R.id.row_shopping_list_item_name).text = item.name
             view.findViewById<TextView>(R.id.row_shopping_list_item_note).text = item.note
             view.findViewById<TextView>(R.id.row_shopping_list_item_quantity).text = "Quantity: ${item.quantity}"
-            view.findViewById<TextView>(R.id.row_shopping_list_item_price).text = item.price.toString()
             view.findViewById<TextView>(R.id.row_shopping_list_item_last_update).text = view.context.getString(R.string.last_update, dateFormat.format(Date(item.timestamp)))
+
+            if (shoppingList.currency == null) {
+                view.findViewById<TextView>(R.id.row_shopping_list_item_price).text = item.price.toString()
+            } else {
+                view.findViewById<TextView>(R.id.row_shopping_list_item_price).text = priceFormat.format(item.price).toString()
+            }
 
             view.findViewById<ImageView>(R.id.row_shopping_list_item_icon).setImageResource(R.drawable.ic_item_default_24)
 

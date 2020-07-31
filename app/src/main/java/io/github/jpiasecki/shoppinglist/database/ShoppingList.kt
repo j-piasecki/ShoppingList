@@ -27,6 +27,8 @@ data class ShoppingList(
     @get:Exclude
     var keepInSync: Boolean = true
 ) {
+
+    @Exclude
     fun getAllUsersNoOwner(): List<String> {
         val list = ArrayList<String>(users)
 

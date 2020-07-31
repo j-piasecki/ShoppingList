@@ -26,18 +26,10 @@ class ShoppingListsRepository @Inject constructor(
 
     fun getList(listId: String) = shoppingListsDao.getById(listId)
 
-    fun createList(name: String, note: String, currency: String): LiveData<String?> {
+    fun createList(list: ShoppingList): LiveData<String?> {
         val result = MutableLiveData<String?>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
-            val list = ShoppingList(
-                name = name,
-                note = note,
-                currency = currency,
-                owner = FirebaseAuth.getInstance().currentUser?.uid,
-                keepInSync = false
-            )
-
             shoppingListsDao.insert(list)
 
             result.postValue(list.id)
@@ -650,4 +642,14 @@ class ShoppingListsRepository @Inject constructor(
     suspend fun addUserToListBlocking(listId: String, userId: String) = shoppingListsRemoteSource.addUserToList(listId, userId)
 
     suspend fun removeUserFromListBlocking(listId: String, userId: String) = shoppingListsRemoteSource.removeUserFromList(listId, userId)
+
+    suspend fun changeListMetadataBlocking(list: ShoppingList) {
+        if (list.keepInSync) {
+            if (shoppingListsRemoteSource.changeListMetadata(list)) {
+                shoppingListsDao.update(list)
+            }
+        } else {
+            shoppingListsDao.update(list)
+        }
+    }
 }

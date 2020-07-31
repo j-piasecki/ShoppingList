@@ -238,12 +238,14 @@ class ShoppingListsRemoteSource(private val context: Context) {
             Firebase.firestore
                 .collection("lists")
                 .document(id)
-                .update("owner", newOwner)
+                .update(mapOf(
+                    "owner" to newOwner,
+                    "timestamp" to Calendar.getInstance().timeInMillis
+                ))
                 .addOnSuccessListener {
                     success = true
                 }.await()
 
-            updateListTimestamp(id)
         } catch (e: FirebaseFirestoreException) {
             handleFirestoreException(e)
         }
@@ -258,12 +260,13 @@ class ShoppingListsRemoteSource(private val context: Context) {
             Firebase.firestore
                 .collection("lists")
                 .document(id)
-                .update("name", newName)
+                .update(mapOf(
+                    "name" to newName,
+                    "timestamp" to Calendar.getInstance().timeInMillis
+                ))
                 .addOnSuccessListener {
                     success = true
                 }.await()
-
-            updateListTimestamp(id)
         } catch (e: FirebaseFirestoreException) {
             handleFirestoreException(e)
         }
@@ -278,12 +281,13 @@ class ShoppingListsRemoteSource(private val context: Context) {
             Firebase.firestore
                 .collection("lists")
                 .document(id)
-                .update("note", newNote)
+                .update(mapOf(
+                    "note" to newNote,
+                    "timestamp" to Calendar.getInstance().timeInMillis
+                ))
                 .addOnSuccessListener {
                     success = true
                 }.await()
-
-            updateListTimestamp(id)
         } catch (e: FirebaseFirestoreException) {
             handleFirestoreException(e)
         }
@@ -298,12 +302,37 @@ class ShoppingListsRemoteSource(private val context: Context) {
             Firebase.firestore
                 .collection("lists")
                 .document(id)
-                .update("icon", newIcon)
+                .update(mapOf(
+                    "icon" to newIcon,
+                    "timestamp" to Calendar.getInstance().timeInMillis
+                ))
                 .addOnSuccessListener {
                     success = true
                 }.await()
+        } catch (e: FirebaseFirestoreException) {
+            handleFirestoreException(e)
+        }
 
-            updateListTimestamp(id)
+        return success
+    }
+
+    suspend fun changeListMetadata(list: ShoppingList): Boolean {
+        var success = false
+
+        try {
+            Firebase.firestore
+                .collection("lists")
+                .document(list.id)
+                .update(mapOf(
+                    "name" to list.name,
+                    "note" to list.note,
+                    "icon" to list.icon,
+                    "currency" to list.currency,
+                    "timestamp" to Calendar.getInstance().timeInMillis
+                ))
+                .addOnSuccessListener {
+                    success = true
+                }.await()
         } catch (e: FirebaseFirestoreException) {
             handleFirestoreException(e)
         }

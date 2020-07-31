@@ -10,14 +10,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.AddEditItemActivity"></activity>
-        <activity android:name=".ui.list.ShoppingListActivity" />
-        <activity
-            android:name=".ui.main.MainActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".ui.AddEditListActivity" />
+        <activity android:name=".ui.AddEditItemActivity" />
+        <activity android:name=".ui.main.MainActivity" />
         <activity
             android:name=".ui.SplashActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
