@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.Config
+import io.github.jpiasecki.shoppinglist.database.Item
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.repositories.ShoppingListsRepository
 import io.github.jpiasecki.shoppinglist.repositories.UsersRepository
@@ -176,6 +177,8 @@ class MainViewModel @ViewModelInject constructor(
             }
         }
     }
+
+    fun removeItemFromList(listId: String, item: Item) = shoppingListsRepository.removeItemFromList(listId, item)
 
     fun startListeningForChanges(listId: String) = shoppingListsRepository.startListeningForChanges(listId)
 

@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
@@ -145,6 +147,25 @@ class ShoppingListFragment : Fragment() {
             it.itemCompletionChangeCallback = { id, completed ->
                 currentList?.let {
                     viewModel.setItemCompleted(it.id, id, completed)
+                }
+            }
+
+            it.longClickCallback = { item, itemView ->
+                context?.let { context ->
+                    val dialog = BottomSheetDialog(context)
+                    val view =
+                        layoutInflater.inflate(R.layout.dialog_item_options, null)
+                    dialog.setContentView(view)
+                    dialog.show()
+
+                    view.findViewById<TextView>(R.id.dialog_item_options_delete)
+                        .setOnClickListener {
+                            currentList?.let {
+                                viewModel.removeItemFromList(it.id, item)
+                            }
+
+                            dialog.dismiss()
+                        }
                 }
             }
         }

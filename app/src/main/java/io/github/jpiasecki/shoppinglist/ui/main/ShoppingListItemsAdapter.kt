@@ -34,6 +34,7 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
 }) {
 
     lateinit var clickCallback: (id: String, view: View) -> Unit
+    lateinit var longClickCallback: (item: Item, view: View) -> Unit
     lateinit var itemCompletionChangeCallback: (id: String, completed: Boolean) -> Unit
 
     private val VIEW_TYPE_ITEM = 1
@@ -245,7 +246,13 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
             }
 
             view.setOnLongClickListener {
-                Toast.makeText(view.context, "${item.name} long clicked", Toast.LENGTH_SHORT).show()
+                longClickCallback(item, it)
+
+                true
+            }
+
+            view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay)?.setOnLongClickListener {
+                longClickCallback(item, it)
 
                 true
             }
