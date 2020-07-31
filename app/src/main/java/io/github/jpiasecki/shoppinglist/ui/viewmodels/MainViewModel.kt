@@ -176,4 +176,8 @@ class MainViewModel @ViewModelInject constructor(
             }
         }
     }
+
+    fun startListeningForChanges(listId: String) = shoppingListsRepository.startListeningForChanges(listId)
+
+    fun stopListeningForChanges() = shoppingListsRepository.stopListeningForChanges()
 }

@@ -5,7 +5,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -54,36 +53,7 @@ class ShoppingListFragment : Fragment() {
         adapter = createAdapter()
         initRecyclerView(view)
 
-        val refreshLayout = view.findViewById<SwipeRefreshLayout>(R.id.fragment_shopping_list_refresh_layout)
-
-        refreshLayout.setOnRefreshListener {
-            refresh()
-        }
-
         return view
-    }
-
-    private fun refresh() {
-        val refreshLayout = view?.findViewById<SwipeRefreshLayout>(R.id.fragment_shopping_list_refresh_layout) ?: return
-
-        if (refreshLiveData == null) {
-            val listId = currentList?.id
-
-            if (listId != null) {
-                refreshLiveData = viewModel.updateItems(listId)
-
-                refreshLiveData?.observe(viewLifecycleOwner, Observer {
-                    if (it == true) {
-                        refreshLayout.isRefreshing = false
-
-                        refreshLiveData?.removeObservers(viewLifecycleOwner)
-                        refreshLiveData = null
-                    }
-                })
-            } else {
-                refreshLayout.isRefreshing = false
-            }
-        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -99,16 +69,19 @@ class ShoppingListFragment : Fragment() {
             refreshLiveData = null
             currentList = null
             adapter.submitList(emptyList())
+
+            viewModel.stopListeningForChanges()
         } else if (argumentListId != null) {
-            refresh()
+            viewModel.updateItems(argumentListId)
+            viewModel.startListeningForChanges(argumentListId)
 
             listLiveData = viewModel.getShoppingList(argumentListId)
             listLiveData?.observe(viewLifecycleOwner, Observer {
                 if (it != null) {
                     it.items.sortWith(Comparator { o1, o2 ->
-                        if ((o1.isCompleted && o2.isCompleted) || (!o1.isCompleted && !o2.isCompleted)) {
+                        if ((o1.completed && o2.completed) || (!o1.completed && !o2.completed)) {
                             (o2.timestamp - o1.timestamp).sign
-                        } else if (o1.isCompleted && !o2.isCompleted) {
+                        } else if (o1.completed && !o2.completed) {
                             1
                         } else {
                             -1
@@ -143,10 +116,6 @@ class ShoppingListFragment : Fragment() {
                         }
 
                     currentList = it
-
-                    view?.findViewById<SwipeRefreshLayout>(R.id.fragment_shopping_list_refresh_layout)?.apply {
-                        isEnabled = currentList?.keepInSync ?: false
-                    }
                 } else {
                     Toast.makeText(context, "error", Toast.LENGTH_SHORT).show()
 

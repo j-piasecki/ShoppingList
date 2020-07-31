@@ -19,7 +19,6 @@ import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.database.User
 import java.lang.Exception
 import java.text.DateFormat
-import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
 import kotlin.math.roundToInt
@@ -97,7 +96,14 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
 
         shoppingList = list
 
-        submitList(list.items.filter { !it.deleted }.toMutableList().also { it.add(0, Item(id = "00000000-0000-0000-0000-000000000000")) })
+        submitList(list.items.filter { !it.deleted }.toMutableList().also {
+            it.add(0,
+                Item(
+                    id = "00000000-0000-0000-0000-000000000000",
+                    timestamp = UUID.fromString(list.id).mostSignificantBits + list.getAllUsersNoOwner().size
+                )
+            )
+        })
     }
 
     @Synchronized
@@ -201,9 +207,9 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
 
             view.findViewById<ImageView>(R.id.row_shopping_list_item_icon).setImageResource(R.drawable.ic_item_default_24)
 
-            view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box).isChecked = item.isCompleted
+            view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box).isChecked = item.completed
 
-            if (item.isCompleted) {
+            if (item.completed) {
                 view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility = View.VISIBLE
             } else {
                 view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility = View.GONE

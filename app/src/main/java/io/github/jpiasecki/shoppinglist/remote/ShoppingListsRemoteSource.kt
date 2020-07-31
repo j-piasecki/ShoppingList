@@ -6,10 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.Source
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -26,6 +23,8 @@ class ShoppingListsRemoteSource(private val context: Context) {
 
     private var defaultSource = Source.DEFAULT
     private val workingOnlineLiveData = MutableLiveData<Boolean>(true)
+
+    private var snapshotListener: ListenerRegistration? = null
     
     private fun handleFirestoreException(e: FirebaseFirestoreException) {
         Log.w("ShoppingListsRemote", "Firestore error: ${e.code}")
@@ -568,5 +567,44 @@ class ShoppingListsRemoteSource(private val context: Context) {
         }
 
         return result
+    }
+
+    fun startListeningForChanges(listId: String, callback: (List<Item>) -> Unit) {
+        stopListeningForChanges()
+
+        val listenerStart = Calendar.getInstance().timeInMillis
+
+        snapshotListener = Firebase.firestore
+            .collection("lists")
+            .document(listId)
+            .collection("items")
+            .whereGreaterThan("timestamp", listenerStart)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    Log.w("ShoppingListsRemote", "Listener error", error)
+                } else {
+                    if (value != null && !value.metadata.hasPendingWrites()) {
+                        val items = ArrayList<Item>()
+
+                        for (itemDoc in value.documents) {
+                            itemDoc.toObject<Item>()?.copy(id = itemDoc.id)?.let {
+                                items.add(it)
+                            }
+                        }
+
+                        callback(items)
+
+                        if (Calendar.getInstance().timeInMillis - listenerStart > Values.LISTENER_RESTART_TIMER || value.documents.size >= Values.LISTENER_RESTART_LIMIT)
+                            startListeningForChanges(listId, callback)
+                    }
+                }
+            }
+    }
+
+    fun stopListeningForChanges() {
+        snapshotListener?.let {
+            it.remove()
+            snapshotListener = null
+        }
     }
 }

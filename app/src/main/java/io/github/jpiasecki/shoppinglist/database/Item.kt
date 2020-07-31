@@ -11,7 +11,7 @@ data class Item(
     val note: String? = null,
     val addedBy: String? = null,
     val completedBy: String? = null,
-    val isCompleted: Boolean = false,
+    val completed: Boolean = false,
     val quantity: Int = 0,
     val unit: Int = Units.NO_UNIT,
     val price: Double = 0.0,

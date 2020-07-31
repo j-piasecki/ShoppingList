@@ -40,6 +40,6 @@ data class ShoppingList(
                 list.add(item.completedBy)
         }
 
-        return list
+        return list.distinct()
     }
 }
