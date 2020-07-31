@@ -36,8 +36,10 @@ class MainViewModel @ViewModelInject constructor(
     fun deleteList(list: ShoppingList) {
         if (list.keepInSync) {
             GlobalScope.launch(Dispatchers.IO) {
-                shoppingListsRepository.deleteRemoteListBlocking(list.id)
-                shoppingListsRepository.removeUserFromList(list.id, FirebaseAuth.getInstance().currentUser?.uid ?: Values.USER_ID_NOT_FOUND)
+                if (list.owner == FirebaseAuth.getInstance().currentUser?.uid)
+                    shoppingListsRepository.deleteOrReleaseListBlocking(list.id)
+                else
+                    shoppingListsRepository.removeUserFromList(list.id, FirebaseAuth.getInstance().currentUser?.uid ?: Values.USER_ID_NOT_FOUND)
 
                 usersRepository.removeListFromUser(list.id)
             }

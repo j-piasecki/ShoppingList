@@ -152,6 +152,16 @@ class ShoppingListsRemoteSource(private val context: Context) {
         return success
     }
 
+    suspend fun deleteOrReleaseList(listId: String): Boolean {
+        val successor = Firebase.firestore.collection("lists").document(listId).collection("users").limit(1).get().await()
+
+        return if (successor.documents.size == 0) {
+            deleteList(listId)
+        } else {
+            removeUserFromList(listId, successor.documents.first().id) && changeListOwner(listId, successor.documents.first().id)
+        }
+    }
+
     suspend fun getListMetadata(id: String): ShoppingList? {
         try {
             val data = Firebase.firestore.collection("lists").document(id).get(defaultSource).await()

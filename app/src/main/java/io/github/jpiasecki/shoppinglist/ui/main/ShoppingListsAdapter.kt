@@ -95,7 +95,8 @@ class ShoppingListsAdapter() : ListAdapter<ShoppingList, ShoppingListsAdapter.Vi
                             notifyItemChanged(adapterPosition)
                         }
                     }
-                }
+                } ?: view.findViewById<ImageView>(R.id.row_shopping_list_owner_icon)
+                    .setImageBitmap(null)
             } else {
                 view.findViewById<ImageView>(R.id.row_shopping_list_owner_icon)
                     .setImageBitmap(null)

@@ -652,4 +652,6 @@ class ShoppingListsRepository @Inject constructor(
             shoppingListsDao.update(list)
         }
     }
+
+    suspend fun deleteOrReleaseListBlocking(listId: String) = shoppingListsRemoteSource.deleteOrReleaseList(listId)
 }
