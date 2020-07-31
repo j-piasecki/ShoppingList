@@ -31,7 +31,7 @@ class SplashViewModel @ViewModelInject constructor(
         }
 
         GlobalScope.launch(Dispatchers.IO) {
-            val updated = java.util.ArrayList<String>()
+            val updated = ArrayList<String>()
 
             for (list in shoppingListsRepository.getAllListsPlain()) {
                 list.owner?.let {
@@ -46,6 +46,10 @@ class SplashViewModel @ViewModelInject constructor(
                         usersRepository.updateUser(user)
                         updated.add(user)
                     }
+                }
+
+                if (list.keepInSync) {
+                    shoppingListsRepository.deleteUnusedItemsBlocking(list.id)
                 }
             }
         }

@@ -97,7 +97,7 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
 
         shoppingList = list
 
-        submitList(list.items.toMutableList().also { it.add(0, Item(id = "00000000-0000-0000-0000-000000000000")) })
+        submitList(list.items.filter { !it.deleted }.toMutableList().also { it.add(0, Item(id = "00000000-0000-0000-0000-000000000000")) })
     }
 
     @Synchronized

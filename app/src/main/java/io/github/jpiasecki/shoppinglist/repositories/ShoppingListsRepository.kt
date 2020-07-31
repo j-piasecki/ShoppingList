@@ -3,6 +3,7 @@ package io.github.jpiasecki.shoppinglist.repositories
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
+import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.Item
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.database.ShoppingListsDao
@@ -363,20 +364,7 @@ class ShoppingListsRepository @Inject constructor(
 
     fun deleteUnusedItems(listId: String) {
         GlobalScope.launch(Dispatchers.IO) {
-            shoppingListsDao.getByIdPlain(listId)?.let {
-                val iterator = it.items.listIterator()
-
-                while (iterator.hasNext()) {
-                    val item = iterator.next()
-
-                    if (item.deleted && Calendar.getInstance().timeInMillis - item.timestamp >= 5 * 24 * 60 * 60 * 1000) {
-                        shoppingListsRemoteSource.deleteItemFromList(listId, item.id)
-                        iterator.remove()
-                    }
-                }
-
-                shoppingListsDao.insert(it)
-            }
+            deleteUnusedItemsBlocking(listId)
         }
     }
 
@@ -524,6 +512,23 @@ class ShoppingListsRepository @Inject constructor(
 
     fun getListPlain(listId: String) = shoppingListsDao.getByIdPlain(listId)
 
+    suspend fun deleteUnusedItemsBlocking(listId: String) {
+        shoppingListsDao.getByIdPlain(listId)?.let {
+            val iterator = it.items.listIterator()
+
+            while (iterator.hasNext()) {
+                val item = iterator.next()
+
+                if (item.deleted && Calendar.getInstance().timeInMillis - item.timestamp >= Values.STALE_ITEM_DELETION_DELAY) {
+                    shoppingListsRemoteSource.deleteItemFromList(listId, item.id)
+                    iterator.remove()
+                }
+            }
+
+            shoppingListsDao.insert(it)
+        }
+    }
+
     suspend fun syncListBlocking(listId: String): Boolean {
         if (shoppingListsDao.isSynced(listId)) {
             val list = shoppingListsRemoteSource.getListMetadata(listId)
@@ -566,30 +571,7 @@ class ShoppingListsRepository @Inject constructor(
         val allLists = shoppingListsDao.getAllIds()
 
         for (id in allLists) {
-            if (shoppingListsDao.isSynced(id)) {
-                val list = shoppingListsRemoteSource.getListMetadata(id)
-
-                if (list != null && shoppingListsDao.getTimestamp(id) < list.timestamp) {
-                    val localList = shoppingListsDao.getByIdPlain(id)
-
-                    if (localList != null) {
-                        list.items = localList.items
-                        list.users = localList.users
-
-                        for (item in shoppingListsRemoteSource.getUpdatedItems(id, localList.timestamp)) {
-                            val index = list.items.indexOfFirst { it.id == item.id }
-
-                            if (index == -1) {
-                                list.items.add(item)
-                            } else {
-                                list.items[index] = item
-                            }
-                        }
-
-                        shoppingListsDao.insert(list)
-                    }
-                }
-            }
+            syncListBlocking(id)
         }
 
         return true

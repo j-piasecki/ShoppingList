@@ -71,6 +71,8 @@ class MainViewModel @ViewModelInject constructor(
             } else {
                 result.postValue(false)
             }
+
+            shoppingListsRepository.deleteUnusedItemsBlocking(listId)
         }
 
         return result
@@ -97,6 +99,10 @@ class MainViewModel @ViewModelInject constructor(
                         usersRepository.updateUser(user)
                         updated.add(user)
                     }
+                }
+
+                if (list.keepInSync) {
+                    shoppingListsRepository.deleteUnusedItemsBlocking(list.id)
                 }
             }
 
