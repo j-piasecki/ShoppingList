@@ -27,6 +27,7 @@ import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.other.changeFragment
 import io.github.jpiasecki.shoppinglist.ui.AddEditItemActivity
+import io.github.jpiasecki.shoppinglist.ui.ListUsersActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -180,6 +181,16 @@ class ShoppingListFragment : Fragment() {
                             }
                         }
                 }
+            }
+
+            it.userListClickCallback = { listId, view ->
+                startActivity(
+                    Intent(
+                        context,
+                        ListUsersActivity::class.java
+                    ).putExtra(Values.SHOPPING_LIST_ID, listId),
+                    MainActivity.getAnimationBundle(view)
+                )
             }
         }
 

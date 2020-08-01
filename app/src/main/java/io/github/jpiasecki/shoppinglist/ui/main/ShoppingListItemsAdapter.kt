@@ -37,6 +37,7 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
     lateinit var clickCallback: (id: String, view: View) -> Unit
     lateinit var longClickCallback: (item: Item, view: View) -> Unit
     lateinit var itemCompletionChangeCallback: (id: String, completed: Boolean) -> Unit
+    lateinit var userListClickCallback: (id: String, view: View) -> Unit
 
     private val VIEW_TYPE_ITEM = 1
     private val VIEW_TYPE_HEADER = 2
@@ -140,7 +141,7 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
             iconsLayout.removeAllViews()
 
             iconsLayout.setOnClickListener {
-                Toast.makeText(view.context, "users", Toast.LENGTH_SHORT).show()
+                userListClickCallback(shoppingList.id, it)
             }
 
             val userList = shoppingList.getAllUsersNoOwner()
