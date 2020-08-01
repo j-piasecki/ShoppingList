@@ -59,8 +59,7 @@ class UsersRemoteSource(private val context: Context) {
                                 Firebase.storage.reference.child("profile_pics/${FirebaseAuth.getInstance().currentUser?.uid}")
                             val stream = ByteArrayOutputStream()
                             resource.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                            val bytes = stream.toByteArray()
-                            iconRef.putBytes(bytes)
+                            iconRef.putBytes(stream.toByteArray())
                         }
                     }
                 })
