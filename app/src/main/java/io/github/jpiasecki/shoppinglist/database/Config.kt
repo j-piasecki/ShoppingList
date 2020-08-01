@@ -33,9 +33,7 @@ class Config(private val context: Context) {
                 if (network != null) {
                     val capabilities = manager.getNetworkCapabilities(network)
 
-                    return capabilities != null && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) || capabilities.hasTransport(
-                        NetworkCapabilities.TRANSPORT_CELLULAR) || capabilities.hasTransport(
-                        NetworkCapabilities.TRANSPORT_VPN))
+                    return capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 }
             }
 
