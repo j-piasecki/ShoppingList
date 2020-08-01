@@ -1,4 +1,4 @@
-package io.github.jpiasecki.shoppinglist.ui
+package io.github.jpiasecki.shoppinglist.ui.editors
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

@@ -12,10 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.ListUsersActivity"></activity>
+        <activity android:name=".ui.editors.ListUsersActivity"></activity>
         <activity android:name=".ui.SettingsActivity" />
-        <activity android:name=".ui.AddEditListActivity" />
-        <activity android:name=".ui.AddEditItemActivity" />
+        <activity android:name=".ui.editors.AddEditListActivity" />
+        <activity android:name=".ui.editors.AddEditItemActivity" />
         <activity android:name=".ui.main.MainActivity" />
         <activity
             android:name=".ui.SplashActivity"

@@ -32,8 +32,8 @@ import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.consts.Values.RC_SIGN_IN
 import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.other.changeFragment
-import io.github.jpiasecki.shoppinglist.ui.AddEditItemActivity
-import io.github.jpiasecki.shoppinglist.ui.AddEditListActivity
+import io.github.jpiasecki.shoppinglist.ui.editors.AddEditItemActivity
+import io.github.jpiasecki.shoppinglist.ui.editors.AddEditListActivity
 import io.github.jpiasecki.shoppinglist.ui.SettingsActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*

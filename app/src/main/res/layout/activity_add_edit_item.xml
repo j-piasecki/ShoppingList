@@ -42,7 +42,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".ui.AddEditItemActivity"
+            tools:context=".ui.editors.AddEditItemActivity"
             android:paddingBottom="96dp">
 
             <EditText

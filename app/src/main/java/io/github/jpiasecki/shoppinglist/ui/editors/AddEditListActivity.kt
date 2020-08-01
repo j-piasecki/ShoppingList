@@ -1,11 +1,8 @@
-package io.github.jpiasecki.shoppinglist.ui
+package io.github.jpiasecki.shoppinglist.ui.editors
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.viewModels

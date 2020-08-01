@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -178,6 +179,8 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
                 val img = ImageView(view.context)
                 img.setImageBitmap(user.profilePicture)
 
+                TooltipCompat.setTooltipText(img, user.name)
+
                 img.layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.MATCH_PARENT
@@ -289,6 +292,8 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
                             .setImageBitmap(it.profilePicture)
                     }
                 }
+
+                TooltipCompat.setTooltipText(view.findViewById<ImageView>(R.id.row_shopping_list_item_added_by_icon), it.name)
             }
 
             val completedBy = usersList.find { it.id == item.completedBy }
@@ -307,6 +312,8 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
                             .setImageBitmap(completedBy.profilePicture)
                     }
                 }
+
+                TooltipCompat.setTooltipText(view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon), completedBy.name)
             }
         }
     }

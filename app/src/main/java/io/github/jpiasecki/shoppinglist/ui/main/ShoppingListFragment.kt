@@ -30,8 +30,8 @@ import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.other.changeFragment
-import io.github.jpiasecki.shoppinglist.ui.AddEditItemActivity
-import io.github.jpiasecki.shoppinglist.ui.ListUsersActivity
+import io.github.jpiasecki.shoppinglist.ui.editors.AddEditItemActivity
+import io.github.jpiasecki.shoppinglist.ui.editors.ListUsersActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
