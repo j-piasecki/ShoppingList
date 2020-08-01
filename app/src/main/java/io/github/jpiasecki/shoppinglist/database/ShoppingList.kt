@@ -42,4 +42,19 @@ data class ShoppingList(
 
         return list.distinct()
     }
+
+    @Exclude
+    fun getAllUsersNoOwnerNoBan(): List<String> {
+        val list = ArrayList<String>(users)
+
+        for (item in items) {
+            if (item.addedBy != null && item.addedBy !in list && item.addedBy != owner && item.addedBy !in banned)
+                list.add(item.addedBy)
+
+            if (item.completedBy != null && item.completedBy !in list && item.completedBy != owner && item.completedBy !in banned)
+                list.add(item.completedBy)
+        }
+
+        return list.distinct()
+    }
 }

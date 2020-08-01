@@ -22,4 +22,8 @@ object Values {
 
     const val BOTTOM_APP_BAR_MENU_ANIMATION_DURATION = 60L
     const val BOTTOM_APP_BAR_MENU_ANIMATION_DELAY = 20L
+
+    const val USERS_LIST_HEADER_OWNER = "OWNER"
+    const val USERS_LIST_HEADER_USERS = "USERS"
+    const val USERS_LIST_HEADER_BANNED = "BANNED"
 }

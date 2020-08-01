@@ -179,8 +179,6 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
                 val img = ImageView(view.context)
                 img.setImageBitmap(user.profilePicture)
 
-                TooltipCompat.setTooltipText(img, user.name)
-
                 img.layoutParams = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.MATCH_PARENT
