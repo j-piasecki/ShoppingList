@@ -189,85 +189,101 @@ class ShoppingListsRepository @Inject constructor(
         return result
     }
 
+    suspend fun addUserToListBlocking(listId: String, userId: String): Boolean {
+        if (shoppingListsRemoteSource.addUserToList(listId, userId)) {
+            shoppingListsDao.getByIdPlain(listId)?.apply {
+                users.add(userId)
+                timestamp = Calendar.getInstance().timeInMillis
+
+                shoppingListsDao.insert(this)
+            }
+
+            return true
+        }
+
+        return false
+    }
+
     fun addUserToList(listId: String, userId: String): LiveData<Boolean?> {
         val result = MutableLiveData<Boolean?>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
-            if (shoppingListsRemoteSource.addUserToList(listId, userId)) {
-                shoppingListsDao.getByIdPlain(listId)?.apply {
-                    users.add(userId)
-                    timestamp = Calendar.getInstance().timeInMillis
-
-                    shoppingListsDao.insert(this)
-                }
-
-                result.postValue(true)
-            } else {
-                result.postValue(false)
-            }
+            result.postValue(addUserToListBlocking(listId, userId))
         }
 
         return result
+    }
+
+    suspend fun removeUserFromListBlocking(listId: String, userId: String): Boolean {
+        if (shoppingListsRemoteSource.removeUserFromList(listId, userId)) {
+            shoppingListsDao.getByIdPlain(listId)?.apply {
+                users.remove(userId)
+                timestamp = Calendar.getInstance().timeInMillis
+
+                shoppingListsDao.insert(this)
+            }
+
+            return true
+        }
+
+        return false
     }
 
     fun removeUserFromList(listId: String, userId: String): LiveData<Boolean?> {
         val result = MutableLiveData<Boolean?>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
-            if (shoppingListsRemoteSource.removeUserFromList(listId, userId)) {
-                shoppingListsDao.getByIdPlain(listId)?.apply {
-                    users.remove(userId)
-                    timestamp = Calendar.getInstance().timeInMillis
-
-                    shoppingListsDao.insert(this)
-                }
-
-                result.postValue(true)
-            } else {
-                result.postValue(false)
-            }
+            result.postValue(removeUserFromListBlocking(listId, userId))
         }
 
         return result
+    }
+
+    suspend fun banUserFromListBlocking(listId: String, userId: String): Boolean {
+        if (shoppingListsRemoteSource.banUserFromList(listId, userId)) {
+            shoppingListsDao.getByIdPlain(listId)?.apply {
+                banned.add(userId)
+                timestamp = Calendar.getInstance().timeInMillis
+
+                shoppingListsDao.insert(this)
+            }
+
+            return true
+        }
+
+        return false
     }
 
     fun banUserFromList(listId: String, userId: String): LiveData<Boolean?> {
         val result = MutableLiveData<Boolean?>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
-            if (shoppingListsRemoteSource.banUserFromList(listId, userId)) {
-                shoppingListsDao.getByIdPlain(listId)?.apply {
-                    banned.add(userId)
-                    timestamp = Calendar.getInstance().timeInMillis
-
-                    shoppingListsDao.insert(this)
-                }
-
-                result.postValue(true)
-            } else {
-                result.postValue(false)
-            }
+            result.postValue(banUserFromListBlocking(listId, userId))
         }
 
         return result
+    }
+
+    suspend fun unBanUserFromListBlocking(listId: String, userId: String): Boolean {
+        if (shoppingListsRemoteSource.unBanUserFromList(listId, userId)) {
+            shoppingListsDao.getByIdPlain(listId)?.apply {
+                banned.remove(userId)
+                timestamp = Calendar.getInstance().timeInMillis
+
+                shoppingListsDao.insert(this)
+            }
+
+            return true
+        }
+
+        return false
     }
 
     fun unBanUserFromList(listId: String, userId: String): LiveData<Boolean?> {
         val result = MutableLiveData<Boolean?>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
-            if (shoppingListsRemoteSource.unBanUserFromList(listId, userId)) {
-                shoppingListsDao.getByIdPlain(listId)?.apply {
-                    banned.remove(userId)
-                    timestamp = Calendar.getInstance().timeInMillis
-
-                    shoppingListsDao.insert(this)
-                }
-
-                result.postValue(true)
-            } else {
-                result.postValue(false)
-            }
+            result.postValue(unBanUserFromListBlocking(listId, userId))
         }
 
         return result
@@ -638,7 +654,7 @@ class ShoppingListsRepository @Inject constructor(
     suspend fun downloadOrSyncListBlocking(listId: String): Boolean {
         val localList = shoppingListsDao.getByIdPlain(listId)
         if (localList != null) {
-            syncListBlocking(listId)
+            return syncListBlocking(listId)
         } else {
             val list = downloadListBlockingNoSafeChecks(listId)
 
@@ -653,10 +669,6 @@ class ShoppingListsRepository @Inject constructor(
     }
 
     suspend fun deleteRemoteListBlocking(listId: String) = shoppingListsRemoteSource.deleteList(listId)
-
-    suspend fun addUserToListBlocking(listId: String, userId: String) = shoppingListsRemoteSource.addUserToList(listId, userId)
-
-    suspend fun removeUserFromListBlocking(listId: String, userId: String) = shoppingListsRemoteSource.removeUserFromList(listId, userId)
 
     suspend fun changeListMetadataBlocking(list: ShoppingList) {
         if (list.keepInSync) {

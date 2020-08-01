@@ -32,6 +32,9 @@ data class ShoppingList(
     fun getAllUsersNoOwner(): List<String> {
         val list = ArrayList<String>(users)
 
+        if (owner in list)
+            list.remove(owner)
+
         for (item in items) {
             if (item.addedBy != null && item.addedBy !in list && item.addedBy != owner)
                 list.add(item.addedBy)
@@ -46,6 +49,9 @@ data class ShoppingList(
     @Exclude
     fun getAllUsersNoOwnerNoBan(): List<String> {
         val list = ArrayList<String>(users)
+
+        if (owner in list)
+            list.remove(owner)
 
         for (item in items) {
             if (item.addedBy != null && item.addedBy !in list && item.addedBy != owner && item.addedBy !in banned)

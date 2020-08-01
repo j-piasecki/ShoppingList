@@ -39,6 +39,8 @@ class ListUsersAdapter : ListAdapter<ListUsersAdapter.AdapterItem, RecyclerView.
     private var shoppingList: ShoppingList = ShoppingList(id = Values.SHOPPING_LIST_ID_NOT_FOUND)
     private var users: List<User> = emptyList()
 
+    lateinit var userClickCallback: (user: User) -> Unit
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == VIEW_TYPE_USER) {
             UserViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_list_user, parent, false))
@@ -84,11 +86,15 @@ class ListUsersAdapter : ListAdapter<ListUsersAdapter.AdapterItem, RecyclerView.
             val result = ArrayList<AdapterItem>()
             result.add(AdapterItem(Values.USERS_LIST_HEADER_OWNER))
             result.add(AdapterItem(user = users.find { it.id == shoppingList.owner }))
-            result.add(AdapterItem(Values.USERS_LIST_HEADER_USERS))
 
-            for (userId in shoppingList.getAllUsersNoOwnerNoBan()) {
-                users.find { it.id == userId }?.let {
-                    result.add(AdapterItem(user = it))
+            val listUsers = shoppingList.getAllUsersNoOwnerNoBan()
+            if (listUsers.isNotEmpty()) {
+                result.add(AdapterItem(Values.USERS_LIST_HEADER_USERS))
+
+                for (userId in listUsers) {
+                    users.find { it.id == userId }?.let {
+                        result.add(AdapterItem(user = it))
+                    }
                 }
             }
 
@@ -139,6 +145,19 @@ class ListUsersAdapter : ListAdapter<ListUsersAdapter.AdapterItem, RecyclerView.
                             .setImageBitmap(user.profilePicture)
                     }
                 }
+
+                view.setOnClickListener {
+                    userClickCallback(user)
+                }
+
+                view.setOnLongClickListener {
+                    userClickCallback(user)
+
+                    true
+                }
+            } else {
+                view.setOnClickListener(null)
+                view.setOnLongClickListener(null)
             }
         }
     }

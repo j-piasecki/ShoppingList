@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
@@ -91,7 +92,7 @@ class ListsFragment : Fragment() {
             refreshLiveData = null
         } else {
             viewModel.getAllShoppingLists().observe(viewLifecycleOwner, Observer {
-                adapter.submitList(it)
+                adapter.submitList(it.filter { FirebaseAuth.getInstance().currentUser?.uid !in it.banned })
 
                 shoppingLists = it
             })

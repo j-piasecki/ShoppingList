@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.database.User
@@ -26,7 +27,8 @@ class ShoppingListsAdapter() : ListAdapter<ShoppingList, ShoppingListsAdapter.Vi
                 oldItem.name == newItem.name &&
                 oldItem.icon == newItem.icon &&
                 oldItem.note == newItem.note &&
-                oldItem.keepInSync == newItem.keepInSync
+                oldItem.keepInSync == newItem.keepInSync &&
+                FirebaseAuth.getInstance().currentUser?.uid in oldItem.banned == FirebaseAuth.getInstance().currentUser?.uid in newItem.banned
     }
 }) {
 

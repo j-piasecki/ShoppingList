@@ -4,15 +4,19 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.view.animation.Animation
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
+import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.ListUsersViewModel
 import kotlinx.android.synthetic.main.activity_list_users.*
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +30,7 @@ class ListUsersActivity : AppCompatActivity() {
     private val viewModel: ListUsersViewModel by viewModels()
 
     private lateinit var adapter: ListUsersAdapter
+    private var shoppingList: ShoppingList? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +47,62 @@ class ListUsersActivity : AppCompatActivity() {
             finish()
         }
 
-        adapter = ListUsersAdapter()
+        createAdapter()
+        setupRecyclerView()
 
+        viewModel.getShoppingList(listId!!).observe(this, Observer {
+            adapter.setList(it)
+
+            shoppingList = it
+        })
+
+        viewModel.getAllUsers().observe(this, Observer {
+            adapter.setUsers(it)
+        })
+    }
+
+    private fun createAdapter() {
+        adapter = ListUsersAdapter().also {
+            it.userClickCallback = { user ->
+                shoppingList?.let {  list ->
+                    if (list.owner == FirebaseAuth.getInstance().currentUser?.uid && user.id != list.owner) {
+                        val dialog = BottomSheetDialog(this)
+                        val view = layoutInflater.inflate(R.layout.dialog_user_options, null)
+
+                        if (user.id in list.banned) {
+                            view.findViewById<View>(R.id.dialog_user_options_give_ownership).visibility = View.GONE
+                            view.findViewById<View>(R.id.dialog_user_options_ban).visibility = View.GONE
+                        } else {
+                            view.findViewById<View>(R.id.dialog_user_options_unban).visibility = View.GONE
+                        }
+
+                        view.findViewById<View>(R.id.dialog_user_options_give_ownership).setOnClickListener {
+                            viewModel.changeOwner(list.id, user.id)
+
+                            dialog.dismiss()
+                        }
+
+                        view.findViewById<View>(R.id.dialog_user_options_ban).setOnClickListener {
+                            viewModel.banUser(list.id, user.id)
+
+                            dialog.dismiss()
+                        }
+
+                        view.findViewById<View>(R.id.dialog_user_options_unban).setOnClickListener {
+                            viewModel.unBanUser(list.id, user.id)
+
+                            dialog.dismiss()
+                        }
+
+                        dialog.setContentView(view)
+                        dialog.show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupRecyclerView() {
         activity_list_users_recycler_view.adapter = adapter
         activity_list_users_recycler_view.layoutManager = LinearLayoutManager(this)
         activity_list_users_recycler_view.setHasFixedSize(true)
@@ -70,14 +129,6 @@ class ListUsersActivity : AppCompatActivity() {
         if (animator is SimpleItemAnimator) {
             animator.supportsChangeAnimations = false
         }
-
-        viewModel.getShoppingList(listId!!).observe(this, Observer {
-            adapter.setList(it)
-        })
-
-        viewModel.getAllUsers().observe(this, Observer {
-            adapter.setUsers(it)
-        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
