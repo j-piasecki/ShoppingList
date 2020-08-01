@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
+import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.AddEditListViewModel
 import kotlinx.android.synthetic.main.activity_add_edit_list.*
@@ -37,6 +38,7 @@ class AddEditListActivity : AppCompatActivity() {
         keepInSync = false
     )
     private var createNew = true
+    private var listSynced = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +57,7 @@ class AddEditListActivity : AppCompatActivity() {
             viewModel.getList(listId).observe(this, Observer {
                 currentList = it
                 createNew = false
+                listSynced = it.keepInSync
 
                 activity_add_edit_list_name.setText(it.name)
                 activity_add_edit_list_note.setText(it.note)
@@ -76,12 +79,19 @@ class AddEditListActivity : AppCompatActivity() {
             currentList.currency = currencyList[activity_add_edit_list_currency.selectedItemPosition].currencyCode
             currentList.timestamp = Calendar.getInstance().timeInMillis
 
-            if (createNew)
+            if (createNew) {
                 viewModel.createList(currentList)
-            else
+                finish()
+            } else if (!listSynced || Config.isNetworkConnected(this)) {
                 viewModel.updateList(currentList)
-
-            finish()
+                finish()
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(R.string.message_need_internet_to_modify_list),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 

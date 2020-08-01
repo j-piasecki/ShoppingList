@@ -18,4 +18,7 @@
     <string name="activity_add_edit_list_edit_list">Edit list</string>
     <string name="activity_add_edit_list_name_hint">Name</string>
     <string name="activity_add_edit_list_note_hint">Description</string>
+    <string name="message_list_edit_no_ownership">You can only edit lists of which you are owner</string>
+    <string name="message_need_internet_to_modify_list">You have to be online to modify synchronized lists</string>
+    <string name="message_no_internet_connection">You don\'t have Internet connection</string>
 </resources>

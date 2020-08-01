@@ -13,6 +13,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import io.github.jpiasecki.shoppinglist.other.GlideApp
 import io.github.jpiasecki.shoppinglist.other.UsersProfilePictures
+import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -40,19 +41,21 @@ data class User(
         if (profilePicture == null) {
             // if profile picture file exists, load it
             ref.metadata.addOnSuccessListener {
-                GlideApp.with(context).asBitmap().circleCrop().load(ref)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onLoadCleared(placeholder: Drawable?) {}
+                try {
+                    GlideApp.with(context).asBitmap().circleCrop().load(ref)
+                        .into(object : CustomTarget<Bitmap>() {
+                            override fun onLoadCleared(placeholder: Drawable?) {}
 
-                        override fun onResourceReady(
-                            resource: Bitmap,
-                            transition: Transition<in Bitmap>?
-                        ) {
-                            profilePicture = resource
+                            override fun onResourceReady(
+                                resource: Bitmap,
+                                transition: Transition<in Bitmap>?
+                            ) {
+                                profilePicture = resource
 
-                            callback?.invoke()
-                        }
-                    })
+                                callback?.invoke()
+                            }
+                        })
+                } catch (e: IllegalArgumentException) {}
             }
         } else {
             callback?.invoke()

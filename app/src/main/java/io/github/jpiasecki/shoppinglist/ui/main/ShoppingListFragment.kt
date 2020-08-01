@@ -5,7 +5,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,11 +19,11 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
+import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.other.changeFragment
 import io.github.jpiasecki.shoppinglist.ui.AddEditItemActivity
@@ -135,19 +134,29 @@ class ShoppingListFragment : Fragment() {
     private fun createAdapter() =
         ShoppingListItemsAdapter().also {
             it.clickCallback = { id, view ->
-                startActivity(
-                    Intent(
-                        context,
-                        AddEditItemActivity::class.java
-                    ).putExtra(Values.ITEM_ID, id)
-                        .putExtra(Values.SHOPPING_LIST_ID, currentList?.id),
-                    MainActivity.getAnimationBundle(view)
-                )
+                currentList?.let {
+                    if (!it.keepInSync || Config.isNetworkConnected(context)) {
+                        startActivity(
+                            Intent(
+                                context,
+                                AddEditItemActivity::class.java
+                            ).putExtra(Values.ITEM_ID, id)
+                                .putExtra(Values.SHOPPING_LIST_ID, currentList?.id),
+                            MainActivity.getAnimationBundle(view)
+                        )
+                    } else {
+                        Toast.makeText(context, getString(R.string.message_need_internet_to_modify_list), Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
 
             it.itemCompletionChangeCallback = { id, completed ->
                 currentList?.let {
-                    viewModel.setItemCompleted(it.id, id, completed)
+                    if (!it.keepInSync || Config.isNetworkConnected(context)) {
+                        viewModel.setItemCompleted(it.id, id, completed)
+                    } else {
+                        Toast.makeText(context, getString(R.string.message_need_internet_to_modify_list), Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
 
@@ -162,10 +171,13 @@ class ShoppingListFragment : Fragment() {
                     view.findViewById<TextView>(R.id.dialog_item_options_delete)
                         .setOnClickListener {
                             currentList?.let {
-                                viewModel.removeItemFromList(it.id, item)
+                                if (!it.keepInSync || Config.isNetworkConnected(context)) {
+                                    viewModel.removeItemFromList(it.id, item)
+                                    dialog.dismiss()
+                                } else {
+                                    Toast.makeText(context, getString(R.string.message_need_internet_to_modify_list), Toast.LENGTH_SHORT).show()
+                                }
                             }
-
-                            dialog.dismiss()
                         }
                 }
             }
@@ -200,21 +212,26 @@ class ShoppingListFragment : Fragment() {
 
     fun shareCurrentList() {
         currentList?.let {
-            if (!it.keepInSync) {
-                viewModel.uploadList(it)
-            }
+            if (Config.isNetworkConnected(context)) {
+                if (!it.keepInSync) {
+                    viewModel.uploadList(it)
+                }
 
-            val clipboard =
-                activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            clipboard.setPrimaryClip(
-                ClipData.newPlainText(
-                    "listId",
-                    it.id
+                val clipboard =
+                    activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                clipboard.setPrimaryClip(
+                    ClipData.newPlainText(
+                        "listId",
+                        it.id
+                    )
                 )
-            )
 
-            Toast.makeText(context, "copied to clipboard", Toast.LENGTH_SHORT)
-                .show()
+                Toast.makeText(context, "copied to clipboard", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                Toast.makeText(context, getString(R.string.message_no_internet_connection), Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
     }
 }

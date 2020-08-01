@@ -19,11 +19,8 @@ import androidx.activity.viewModels
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.children
 import androidx.core.view.size
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
-import androidx.transition.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -33,6 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.consts.Values.RC_SIGN_IN
+import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.other.changeFragment
 import io.github.jpiasecki.shoppinglist.ui.AddEditItemActivity
 import io.github.jpiasecki.shoppinglist.ui.AddEditListActivity
@@ -72,13 +70,19 @@ class MainActivity : AppCompatActivity() {
                 FragmentType.ShoppingList -> {
                     val fragment = supportFragmentManager.primaryNavigationFragment as ShoppingListFragment
 
-                    startActivity(
-                        Intent(
-                            this,
-                            AddEditItemActivity::class.java
-                        ).putExtra(Values.SHOPPING_LIST_ID, fragment.currentList?.id),
-                        getAnimationBundle(activity_main_fab)
-                    )
+                    fragment.currentList?.let {
+                        if (!it.keepInSync || Config.isNetworkConnected(this)) {
+                            startActivity(
+                                Intent(
+                                    this,
+                                    AddEditItemActivity::class.java
+                                ).putExtra(Values.SHOPPING_LIST_ID, fragment.currentList?.id),
+                                getAnimationBundle(activity_main_fab)
+                            )
+                        } else {
+                            Toast.makeText(this, getString(R.string.message_need_internet_to_modify_list), Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             }
         }
@@ -120,12 +124,21 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.menu_import_list -> {
-                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                viewModel.downloadList(clipboard.primaryClip?.getItemAt(0)?.text.toString()).observe(this, Observer {
-                    if (it == false) {
-                        Toast.makeText(this, "list ${clipboard.primaryClip?.getItemAt(0)?.text.toString()} doesn't exist", Toast.LENGTH_SHORT).show()
-                    }
-                })
+                if (Config.isNetworkConnected(this)) {
+                    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    viewModel.downloadList(clipboard.primaryClip?.getItemAt(0)?.text.toString())
+                        .observe(this, Observer {
+                            if (it == false) {
+                                Toast.makeText(
+                                    this,
+                                    "list ${clipboard.primaryClip?.getItemAt(0)?.text.toString()} doesn't exist",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        })
+                } else {
+                    Toast.makeText(this, R.string.message_no_internet_connection, Toast.LENGTH_SHORT).show()
+                }
             }
 
             R.id.menu_share -> {
@@ -136,13 +149,27 @@ class MainActivity : AppCompatActivity() {
 
             R.id.menu_edit_list -> {
                 if (currentFragment is ShoppingListFragment) {
-                    startActivity(
-                        Intent(
-                            this,
-                            AddEditListActivity::class.java
-                        ).putExtra(Values.SHOPPING_LIST_ID, currentFragment.currentList?.id),
-                        getAnimationBundle(activity_main_bottom_app_bar.findViewById(item.itemId))
-                    )
+                    currentFragment.currentList?.let {
+                        if (it.owner == FirebaseAuth.getInstance().currentUser?.uid || it.owner == null) {
+                            if (!it.keepInSync || Config.isNetworkConnected(this)) {
+                                startActivity(
+                                    Intent(
+                                        this,
+                                        AddEditListActivity::class.java
+                                    ).putExtra(Values.SHOPPING_LIST_ID, it.id),
+                                    getAnimationBundle(
+                                        activity_main_bottom_app_bar.findViewById(
+                                            item.itemId
+                                        )
+                                    )
+                                )
+                            } else {
+                                Toast.makeText(this, getString(R.string.message_need_internet_to_modify_list), Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            Toast.makeText(this, getString(R.string.message_list_edit_no_ownership), Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             }
 

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.checkbox.MaterialCheckBox
 import io.github.jpiasecki.shoppinglist.R
+import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.database.Item
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.database.User
@@ -224,21 +225,33 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
             }
 
             view.findViewById<View>(R.id.row_shopping_list_item_check_box_overlay).setOnClickListener {
-                val checkBox =  view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box)
-                checkBox.isChecked = !checkBox.isChecked
+                if (!shoppingList.keepInSync || Config.isNetworkConnected(view.context)) {
+                    val checkBox =
+                        view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box)
+                    checkBox.isChecked = !checkBox.isChecked
 
-                itemCompletionChangeCallback(item.id, checkBox.isChecked)
+                    itemCompletionChangeCallback(item.id, checkBox.isChecked)
 
-                view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility = View.VISIBLE
+                    view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility =
+                        View.VISIBLE
+                } else {
+                    Toast.makeText(view.context, view.context.getString(R.string.message_need_internet_to_modify_list), Toast.LENGTH_SHORT).show()
+                }
             }
 
             view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay_hitbox).setOnClickListener {
-                val checkBox =  view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box)
-                checkBox.isChecked = false
+                if (!shoppingList.keepInSync || Config.isNetworkConnected(view.context)) {
+                    val checkBox =
+                        view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box)
+                    checkBox.isChecked = false
 
-                itemCompletionChangeCallback(item.id, false)
+                    itemCompletionChangeCallback(item.id, false)
 
-                view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility = View.GONE
+                    view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility =
+                        View.GONE
+                } else {
+                    Toast.makeText(view.context, view.context.getString(R.string.message_need_internet_to_modify_list), Toast.LENGTH_SHORT).show()
+                }
             }
 
             view.setOnClickListener {

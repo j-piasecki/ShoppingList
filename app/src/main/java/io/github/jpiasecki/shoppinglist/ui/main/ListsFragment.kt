@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
@@ -18,6 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
+import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.other.changeFragment
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
@@ -57,16 +59,20 @@ class ListsFragment : Fragment() {
         refreshLayout.setOnRefreshListener {
             if (refreshLiveData == null) {
                 if (viewModel.canSyncListsManually()) {
-                    refreshLiveData = viewModel.syncAllLists()
+                    if (Config.isNetworkConnected(context)) {
+                        refreshLiveData = viewModel.syncAllLists()
 
-                    refreshLiveData?.observe(viewLifecycleOwner, Observer {
-                        if (it == true) {
-                            refreshLayout.isRefreshing = false
+                        refreshLiveData?.observe(viewLifecycleOwner, Observer {
+                            if (it != null) {
+                                refreshLayout.isRefreshing = false
 
-                            refreshLiveData?.removeObservers(viewLifecycleOwner)
-                            refreshLiveData = null
-                        }
-                    })
+                                refreshLiveData?.removeObservers(viewLifecycleOwner)
+                                refreshLiveData = null
+                            }
+                        })
+                    } else {
+                        refreshLayout.isRefreshing = false
+                    }
                 } else {
                     refreshLayout.isRefreshing = false
                 }
@@ -120,15 +126,23 @@ class ListsFragment : Fragment() {
                         dialog.show()
 
                         view.findViewById<TextView>(R.id.dialog_shopping_list_options_delete)
-                            .setOnClickListener {
-                                viewModel.deleteList(list)
-                                dialog.dismiss()
+                            .setOnClickListener { v ->
+                                if (!list.keepInSync || Config.isNetworkConnected(it)) {
+                                    viewModel.deleteList(list)
+                                    dialog.dismiss()
+                                } else {
+                                    Toast.makeText(it, getString(R.string.message_need_internet_to_modify_list), Toast.LENGTH_SHORT).show()
+                                }
                             }
 
                         view.findViewById<TextView>(R.id.dialog_shopping_list_options_upload)
-                            .setOnClickListener {
-                                viewModel.uploadList(list)
-                                dialog.dismiss()
+                            .setOnClickListener { v ->
+                                if (Config.isNetworkConnected(it)) {
+                                    viewModel.uploadList(list)
+                                    dialog.dismiss()
+                                } else {
+                                    Toast.makeText(it, getString(R.string.message_no_internet_connection), Toast.LENGTH_SHORT).show()
+                                }
                             }
                     }
                 }
