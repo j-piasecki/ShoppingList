@@ -53,6 +53,20 @@ class MainViewModel @ViewModelInject constructor(
         }
     }
 
+    fun createListCopy(listId: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val list = shoppingListsRepository.getListPlain(listId)
+
+            if (list != null) {
+                list.id = UUID.randomUUID().toString()
+                list.keepInSync = false
+                list.timestamp = Calendar.getInstance().timeInMillis
+
+                shoppingListsRepository.createList(list)
+            }
+        }
+    }
+
     fun updateItems(listId: String): LiveData<Boolean?> {
         val result = MutableLiveData<Boolean?>(null)
 

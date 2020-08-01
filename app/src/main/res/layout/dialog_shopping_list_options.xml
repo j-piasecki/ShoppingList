@@ -27,4 +27,15 @@
         android:layout_height="wrap_content"
         android:clickable="true"/>
 
+    <TextView
+        android:id="@+id/dialog_shopping_list_create_copy"
+        android:text="Create local copy"
+        android:textSize="20sp"
+        android:textColor="?android:attr/textColorPrimary"
+        android:padding="16dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"/>
+
 </LinearLayout>

@@ -126,6 +126,9 @@ class ListsFragment : Fragment() {
                         dialog.setContentView(view)
                         dialog.show()
 
+                        if (!list.keepInSync)
+                            view.findViewById<View>(R.id.dialog_shopping_list_create_copy).visibility = View.GONE
+
                         view.findViewById<TextView>(R.id.dialog_shopping_list_options_delete)
                             .setOnClickListener { v ->
                                 if (!list.keepInSync || Config.isNetworkConnected(it)) {
@@ -144,6 +147,12 @@ class ListsFragment : Fragment() {
                                 } else {
                                     Toast.makeText(it, getString(R.string.message_no_internet_connection), Toast.LENGTH_SHORT).show()
                                 }
+                            }
+
+                        view.findViewById<View>(R.id.dialog_shopping_list_create_copy)
+                            .setOnClickListener {
+                                viewModel.createListCopy(list.id)
+                                dialog.dismiss()
                             }
                     }
                 }

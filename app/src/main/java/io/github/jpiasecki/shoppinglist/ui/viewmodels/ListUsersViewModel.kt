@@ -34,16 +34,12 @@ class ListUsersViewModel @ViewModelInject constructor(
     }
 
     fun banUser(listId: String, userId: String) {
-        GlobalScope.launch(Dispatchers.IO) {
-            shoppingListsRepository.banUserFromListBlocking(listId, userId)
-            shoppingListsRepository.removeUserFromListBlocking(listId, userId)
-        }
+            shoppingListsRepository.banUserFromList(listId, userId)
+            shoppingListsRepository.removeUserFromList(listId, userId)
     }
 
     fun unBanUser(listId: String, userId: String) {
-        GlobalScope.launch(Dispatchers.IO) {
-            shoppingListsRepository.unBanUserFromListBlocking(listId, userId)
-            shoppingListsRepository.addUserToList(listId, userId)
-        }
+        shoppingListsRepository.unBanUserFromList(listId, userId)
+        shoppingListsRepository.addUserToList(listId, userId)
     }
 }

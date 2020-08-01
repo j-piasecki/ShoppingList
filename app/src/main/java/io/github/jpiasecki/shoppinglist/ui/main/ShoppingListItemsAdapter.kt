@@ -203,10 +203,16 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
             view.findViewById<TextView>(R.id.row_shopping_list_item_quantity).text = "Quantity: ${item.quantity}"
             view.findViewById<TextView>(R.id.row_shopping_list_item_last_update).text = view.context.getString(R.string.last_update, dateFormat.format(Date(item.timestamp)))
 
-            if (shoppingList.currency == null) {
-                view.findViewById<TextView>(R.id.row_shopping_list_item_price).text = item.price.toString()
+            if (item.price > 0) {
+                if (shoppingList.currency == null) {
+                    view.findViewById<TextView>(R.id.row_shopping_list_item_price).text =
+                        item.price.toString()
+                } else {
+                    view.findViewById<TextView>(R.id.row_shopping_list_item_price).text =
+                        priceFormat.format(item.price).toString()
+                }
             } else {
-                view.findViewById<TextView>(R.id.row_shopping_list_item_price).text = priceFormat.format(item.price).toString()
+                view.findViewById<TextView>(R.id.row_shopping_list_item_price).text = ""
             }
 
             view.findViewById<ImageView>(R.id.row_shopping_list_item_icon).setImageResource(R.drawable.ic_item_default_24)
