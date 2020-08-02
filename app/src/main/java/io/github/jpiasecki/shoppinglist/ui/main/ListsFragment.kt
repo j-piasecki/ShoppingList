@@ -1,6 +1,7 @@
 package io.github.jpiasecki.shoppinglist.ui.main
 
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -126,26 +127,28 @@ class ListsFragment : Fragment() {
                         dialog.setContentView(view)
                         dialog.show()
 
-                        if (!list.keepInSync)
-                            view.findViewById<View>(R.id.dialog_shopping_list_create_copy).visibility = View.GONE
+                        view.findViewById<TextView>(R.id.dialog_item_options_header_text).text = list.name
 
-                        view.findViewById<TextView>(R.id.dialog_shopping_list_options_delete)
+                        if (list.keepInSync)
+                            view.findViewById<TextView>(R.id.dialog_shopping_list_create_copy_text).text = getString(R.string.dialog_shopping_list_options_create_local_copy)
+
+                        view.findViewById<View>(R.id.dialog_shopping_list_options_delete)
                             .setOnClickListener { v ->
                                 if (!list.keepInSync || Config.isNetworkConnected(it)) {
                                     viewModel.deleteList(list)
                                     dialog.dismiss()
                                 } else {
-                                    Toast.makeText(it, getString(R.string.message_need_internet_to_modify_list), Toast.LENGTH_SHORT).show()
+                                    showToast(getString(R.string.message_need_internet_to_modify_list))
                                 }
                             }
 
-                        view.findViewById<TextView>(R.id.dialog_shopping_list_options_upload)
+                        view.findViewById<View>(R.id.dialog_shopping_list_options_upload)
                             .setOnClickListener { v ->
                                 if (Config.isNetworkConnected(it)) {
                                     viewModel.uploadList(list)
                                     dialog.dismiss()
                                 } else {
-                                    Toast.makeText(it, getString(R.string.message_no_internet_connection), Toast.LENGTH_SHORT).show()
+                                    showToast(getString(R.string.message_no_internet_connection))
                                 }
                             }
 
@@ -169,5 +172,15 @@ class ListsFragment : Fragment() {
         if (animator is SimpleItemAnimator) {
             animator.supportsChangeAnimations = false
         }
+    }
+
+    private fun showToast(text: String, length: Int = Toast.LENGTH_SHORT) {
+        val toast = Toast.makeText(context, text, length)
+
+        toast.view.findViewById<TextView>(android.R.id.message)?.let {
+            it.gravity = Gravity.CENTER
+        }
+
+        toast.show()
     }
 }

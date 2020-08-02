@@ -1,6 +1,8 @@
 package io.github.jpiasecki.shoppinglist.ui.main
 
+import android.content.Context
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -243,7 +245,7 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
                     view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility =
                         View.VISIBLE
                 } else {
-                    Toast.makeText(view.context, view.context.getString(R.string.message_need_internet_to_modify_list), Toast.LENGTH_SHORT).show()
+                    showToast(view.context, view.context.getString(R.string.message_need_internet_to_modify_list))
                 }
             }
 
@@ -258,7 +260,7 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
                     view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility =
                         View.GONE
                 } else {
-                    Toast.makeText(view.context, view.context.getString(R.string.message_need_internet_to_modify_list), Toast.LENGTH_SHORT).show()
+                    showToast(view.context, view.context.getString(R.string.message_need_internet_to_modify_list))
                 }
             }
 
@@ -320,5 +322,15 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
                 TooltipCompat.setTooltipText(view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon), completedBy.name)
             }
         }
+    }
+
+    private fun showToast(context: Context, text: String, length: Int = Toast.LENGTH_SHORT) {
+        val toast = Toast.makeText(context, text, length)
+
+        toast.view.findViewById<TextView>(android.R.id.message)?.let {
+            it.gravity = Gravity.CENTER
+        }
+
+        toast.show()
     }
 }

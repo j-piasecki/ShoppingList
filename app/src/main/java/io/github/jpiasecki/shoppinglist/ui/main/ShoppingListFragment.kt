@@ -9,6 +9,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Bundle
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -142,7 +143,7 @@ class ShoppingListFragment : Fragment() {
 
                     currentList = it
                 } else {
-                    Toast.makeText(context, "error", Toast.LENGTH_SHORT).show()
+                    showToast(getString(R.string.message_error))
 
                     parentFragmentManager.changeFragment(MainActivity.FragmentType.Lists).addToBackStack(null).commit()
                 }
@@ -168,7 +169,7 @@ class ShoppingListFragment : Fragment() {
                             MainActivity.getAnimationBundle(view)
                         )
                     } else {
-                        Toast.makeText(context, getString(R.string.message_need_internet_to_modify_list), Toast.LENGTH_SHORT).show()
+                        showToast(getString(R.string.message_need_internet_to_modify_list))
                     }
                 }
             }
@@ -178,7 +179,7 @@ class ShoppingListFragment : Fragment() {
                     if (!it.keepInSync || Config.isNetworkConnected(context)) {
                         viewModel.setItemCompleted(it.id, id, completed)
                     } else {
-                        Toast.makeText(context, getString(R.string.message_need_internet_to_modify_list), Toast.LENGTH_SHORT).show()
+                        showToast(getString(R.string.message_need_internet_to_modify_list))
                     }
                 }
             }
@@ -191,14 +192,16 @@ class ShoppingListFragment : Fragment() {
                     dialog.setContentView(view)
                     dialog.show()
 
-                    view.findViewById<TextView>(R.id.dialog_item_options_delete)
+                    view.findViewById<TextView>(R.id.dialog_item_options_header_text).text = item.name
+
+                    view.findViewById<View>(R.id.dialog_item_options_delete)
                         .setOnClickListener {
                             currentList?.let {
                                 if (!it.keepInSync || Config.isNetworkConnected(context)) {
                                     viewModel.removeItemFromList(it.id, item)
                                     dialog.dismiss()
                                 } else {
-                                    Toast.makeText(context, getString(R.string.message_need_internet_to_modify_list), Toast.LENGTH_SHORT).show()
+                                    showToast(getString(R.string.message_need_internet_to_modify_list))
                                 }
                             }
                         }
@@ -259,12 +262,20 @@ class ShoppingListFragment : Fragment() {
                     )
                 )
 
-                Toast.makeText(context, "copied to clipboard", Toast.LENGTH_SHORT)
-                    .show()
+                showToast(getString(R.string.message_list_copied_to_clipboard))
             } else {
-                Toast.makeText(context, getString(R.string.message_no_internet_connection), Toast.LENGTH_SHORT)
-                    .show()
+                showToast(getString(R.string.message_no_internet_connection))
             }
         }
+    }
+
+    private fun showToast(text: String, length: Int = Toast.LENGTH_SHORT) {
+        val toast = Toast.makeText(context, text, length)
+
+        toast.view.findViewById<TextView>(android.R.id.message)?.let {
+            it.gravity = Gravity.CENTER
+        }
+
+        toast.show()
     }
 }

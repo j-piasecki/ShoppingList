@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.Animation
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -68,6 +69,8 @@ class ListUsersActivity : AppCompatActivity() {
                     if (list.owner == FirebaseAuth.getInstance().currentUser?.uid && user.id != list.owner) {
                         val dialog = BottomSheetDialog(this)
                         val view = layoutInflater.inflate(R.layout.dialog_user_options, null)
+
+                        view.findViewById<TextView>(R.id.dialog_item_options_header_text).text = user.name
 
                         if (user.id in list.banned) {
                             view.findViewById<View>(R.id.dialog_user_options_give_ownership).visibility = View.GONE

@@ -2,8 +2,10 @@ package io.github.jpiasecki.shoppinglist.ui.editors
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import android.view.MenuItem
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
@@ -67,7 +69,7 @@ class AddEditListActivity : AppCompatActivity() {
         }
 
         activity_add_edit_list_icon.setOnClickListener {
-            Toast.makeText(this, "change icon", Toast.LENGTH_SHORT).show()
+            showToast("change icon")
         }
 
         activity_add_edit_list_fab.setOnClickListener {
@@ -83,11 +85,7 @@ class AddEditListActivity : AppCompatActivity() {
                 viewModel.updateList(currentList)
                 finish()
             } else {
-                Toast.makeText(
-                    this,
-                    getString(R.string.message_need_internet_to_modify_list),
-                    Toast.LENGTH_SHORT
-                ).show()
+                showToast(getString(R.string.message_need_internet_to_modify_list))
             }
         }
     }
@@ -163,5 +161,15 @@ class AddEditListActivity : AppCompatActivity() {
         super.finish()
 
         overridePendingTransition(android.R.anim.fade_in, R.anim.activity_slide_down)
+    }
+
+    private fun showToast(text: String, length: Int = Toast.LENGTH_SHORT) {
+        val toast = Toast.makeText(this, text, length)
+
+        toast.view.findViewById<TextView>(android.R.id.message)?.let {
+            it.gravity = Gravity.CENTER
+        }
+
+        toast.show()
     }
 }

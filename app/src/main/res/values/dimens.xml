@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dialog_options_item_vertical_padding">20dp</dimen>
+    <dimen name="dialog_options_item_horizontal_padding">16dp</dimen>
+    <dimen name="dialog_options_item_icon_size">24dp</dimen>
+    <dimen name="dialog_options_item_text_size">20sp</dimen>
+    <dimen name="dialog_options_header_margin_start">24dp</dimen>
+    <dimen name="dialog_options_header_margin_top">16dp</dimen>
+    <dimen name="dialog_options_header_margin_bottom">8dp</dimen>
+</resources>

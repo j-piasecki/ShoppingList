@@ -50,6 +50,8 @@ class MainViewModel @ViewModelInject constructor(
     fun uploadList(list: ShoppingList) {
         if (!list.keepInSync) {
             shoppingListsRepository.uploadList(list.id)
+        } else {
+            shoppingListsRepository.syncList(list.id)
         }
     }
 

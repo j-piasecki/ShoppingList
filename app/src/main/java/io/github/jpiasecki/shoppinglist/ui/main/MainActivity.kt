@@ -9,11 +9,13 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityOptionsCompat
@@ -80,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                                 getAnimationBundle(activity_main_fab)
                             )
                         } else {
-                            Toast.makeText(this, getString(R.string.message_need_internet_to_modify_list), Toast.LENGTH_SHORT).show()
+                            showToast(getString(R.string.message_need_internet_to_modify_list))
                         }
                     }
                 }
@@ -94,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                 onFragmentChange(FragmentType.ShoppingList)
         }
 
-        activity_main_bottom_app_bar.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+        activity_main_bottom_app_bar.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
             for ((index, item) in activity_main_bottom_app_bar.menu.children.iterator().withIndex()) {
                 val view = activity_main_bottom_app_bar.findViewById<View>(item.itemId)
                 view.scaleX = 0f
@@ -129,15 +131,11 @@ class MainActivity : AppCompatActivity() {
                     viewModel.downloadList(clipboard.primaryClip?.getItemAt(0)?.text.toString())
                         .observe(this, Observer {
                             if (it == false) {
-                                Toast.makeText(
-                                    this,
-                                    "list ${clipboard.primaryClip?.getItemAt(0)?.text.toString()} doesn't exist",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                showToast(getString(R.string.message_list_does_not_exist))
                             }
                         })
                 } else {
-                    Toast.makeText(this, R.string.message_no_internet_connection, Toast.LENGTH_SHORT).show()
+                    showToast(getString(R.string.message_no_internet_connection))
                 }
             }
 
@@ -164,10 +162,10 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 )
                             } else {
-                                Toast.makeText(this, getString(R.string.message_need_internet_to_modify_list), Toast.LENGTH_SHORT).show()
+                                showToast(getString(R.string.message_need_internet_to_modify_list))
                             }
                         } else {
-                            Toast.makeText(this, getString(R.string.message_list_edit_no_ownership), Toast.LENGTH_SHORT).show()
+                            showToast(getString(R.string.message_list_edit_no_ownership))
                         }
                     }
                 }
@@ -246,6 +244,16 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
+    private fun showToast(text: String, length: Int = Toast.LENGTH_SHORT) {
+        val toast = Toast.makeText(this, text, length)
+
+        toast.view.findViewById<TextView>(android.R.id.message)?.let {
+            it.gravity = Gravity.CENTER
+        }
+
+        toast.show()
+    }
+
     override fun onBackPressed() {
         when (currentFragment) {
             FragmentType.ShoppingList -> {
@@ -265,8 +273,6 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == RC_SIGN_IN && resultCode == Activity.RESULT_OK) {
-            Toast.makeText(this, "logged in ${FirebaseAuth.getInstance().currentUser?.displayName}", Toast.LENGTH_SHORT).show()
-
             viewModel.setupUser()
             viewModel.trySettingOwner()
             viewModel.downloadRemoteLists()

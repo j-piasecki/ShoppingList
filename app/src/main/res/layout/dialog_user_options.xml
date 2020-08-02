@@ -6,36 +6,110 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/dialog_item_options_header_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dialog_options_header_margin_start"
+        android:layout_marginTop="@dimen/dialog_options_header_margin_top"
+        android:layout_marginBottom="@dimen/dialog_options_header_margin_bottom"
+        android:text="@string/dialog_options_default_header"
+        android:textSize="@dimen/dialog_options_item_text_size"
+        android:textColor="?android:attr/textColorPrimary" />
+
+    <LinearLayout
         android:id="@+id/dialog_user_options_give_ownership"
-        android:text="Give ownership"
-        android:textSize="20sp"
-        android:textColor="?android:attr/textColorPrimary"
-        android:padding="16dp"
-        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"/>
+        android:orientation="horizontal"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true">
 
-    <TextView
+        <ImageView
+            android:layout_width="@dimen/dialog_options_item_icon_size"
+            android:layout_height="@dimen/dialog_options_item_icon_size"
+            android:layout_marginStart="@dimen/dialog_options_item_horizontal_padding"
+            android:src="@drawable/ic_give_ownership_24"
+            android:tintMode="multiply"
+            android:tint="?android:attr/textColorSecondary"/>
+
+        <TextView
+            android:id="@+id/dialog_user_options_give_ownership_text"
+            android:text="@string/dialog_user_options_give_ownership"
+            android:textSize="@dimen/dialog_options_item_text_size"
+            android:textColor="?android:attr/textColorPrimary"
+            android:paddingBottom="@dimen/dialog_options_item_vertical_padding"
+            android:paddingTop="@dimen/dialog_options_item_vertical_padding"
+            android:paddingStart="@dimen/dialog_options_item_horizontal_padding"
+            android:paddingEnd="@dimen/dialog_options_item_horizontal_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/dialog_user_options_ban"
-        android:text="Ban"
-        android:textSize="20sp"
-        android:textColor="?android:attr/textColorPrimary"
-        android:padding="16dp"
-        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"/>
+        android:orientation="horizontal"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true">
 
-    <TextView
+        <ImageView
+            android:layout_width="@dimen/dialog_options_item_icon_size"
+            android:layout_height="@dimen/dialog_options_item_icon_size"
+            android:layout_marginStart="@dimen/dialog_options_item_horizontal_padding"
+            android:src="@drawable/ic_ban_24"
+            android:tintMode="multiply"
+            android:tint="?android:attr/textColorSecondary"/>
+
+        <TextView
+            android:id="@+id/dialog_user_options_ban_text"
+            android:text="@string/dialog_user_options_ban"
+            android:textSize="@dimen/dialog_options_item_text_size"
+            android:textColor="?android:attr/textColorPrimary"
+            android:paddingBottom="@dimen/dialog_options_item_vertical_padding"
+            android:paddingTop="@dimen/dialog_options_item_vertical_padding"
+            android:paddingStart="@dimen/dialog_options_item_horizontal_padding"
+            android:paddingEnd="@dimen/dialog_options_item_horizontal_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/dialog_user_options_unban"
-        android:text="Unban"
-        android:textSize="20sp"
-        android:textColor="?android:attr/textColorPrimary"
-        android:padding="16dp"
-        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"/>
+        android:orientation="horizontal"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="@dimen/dialog_options_item_icon_size"
+            android:layout_height="@dimen/dialog_options_item_icon_size"
+            android:layout_marginStart="@dimen/dialog_options_item_horizontal_padding"
+            android:src="@drawable/ic_unban_24"
+            android:tintMode="multiply"
+            android:tint="?android:attr/textColorSecondary"/>
+
+        <TextView
+            android:id="@+id/dialog_user_options_unban_text"
+            android:text="@string/dialog_user_options_unban"
+            android:textSize="@dimen/dialog_options_item_text_size"
+            android:textColor="?android:attr/textColorPrimary"
+            android:paddingBottom="@dimen/dialog_options_item_vertical_padding"
+            android:paddingTop="@dimen/dialog_options_item_vertical_padding"
+            android:paddingStart="@dimen/dialog_options_item_horizontal_padding"
+            android:paddingEnd="@dimen/dialog_options_item_horizontal_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
 </LinearLayout>

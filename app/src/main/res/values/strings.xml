@@ -30,4 +30,17 @@
     <string name="message_list_edit_no_ownership">You can only edit lists of which you are owner</string>
     <string name="message_need_internet_to_modify_list">You have to be online to modify synchronized lists</string>
     <string name="message_no_internet_connection">You don\'t have Internet connection</string>
+    <string name="message_list_does_not_exist">That list does not exist, make sure you copied the right id</string>
+    <string name="message_list_copied_to_clipboard">Copied to clipboard</string>
+    <string name="message_error">Unexpected error occurred</string>
+
+    <string name="dialog_item_options_delete">Delete</string>
+    <string name="dialog_shopping_list_options_delete">Delete</string>
+    <string name="dialog_shopping_list_options_upload">Upload</string>
+    <string name="dialog_shopping_list_options_create_copy">Create copy</string>
+    <string name="dialog_shopping_list_options_create_local_copy">Create local copy</string>
+    <string name="dialog_user_options_give_ownership">Give ownership</string>
+    <string name="dialog_user_options_ban">Ban</string>
+    <string name="dialog_user_options_unban">Unban</string>
+    <string name="dialog_options_default_header">Options</string>
 </resources>
