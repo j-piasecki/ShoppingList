@@ -107,8 +107,9 @@ class MainActivity : AppCompatActivity() {
                 val animator = view.animate()
                     .scaleX(1f)
                     .scaleY(1f)
-                    .setStartDelay(index * 30L)
-                    .setInterpolator(DecelerateInterpolator())
+                    .setStartDelay(index * Values.BOTTOM_APP_BAR_MENU_ANIMATION_DELAY)
+                    .setDuration(Values.BOTTOM_APP_BAR_MENU_ANIMATION_DURATION)
+                    .setInterpolator(AccelerateInterpolator())
             }
         }
     }
