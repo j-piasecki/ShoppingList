@@ -196,7 +196,11 @@ class MainViewModel @ViewModelInject constructor(
 
     fun removeItemFromList(listId: String, item: Item) = shoppingListsRepository.removeItemFromList(listId, item)
 
-    fun startListeningForChanges(listId: String) = shoppingListsRepository.startListeningForChanges(listId)
+    fun startListeningForItemsChanges(listId: String) = shoppingListsRepository.startListeningForItemsChanges(listId)
 
-    fun stopListeningForChanges() = shoppingListsRepository.stopListeningForChanges()
+    fun startListeningForMetadataChanges(listId: String) = shoppingListsRepository.startListeningForMetadataChanges(listId)
+
+    fun stopListeningForItemsChanges() = shoppingListsRepository.stopListeningForItemsChanges()
+
+    fun stopListeningForMetadataChanges() = shoppingListsRepository.stopListeningForMetadataChanges()
 }

@@ -542,10 +542,10 @@ class ShoppingListsRepository @Inject constructor(
 
     fun getListPlain(listId: String) = shoppingListsDao.getByIdPlain(listId)
 
-    fun startListeningForChanges(listId: String) {
+    fun startListeningForItemsChanges(listId: String) {
         GlobalScope.launch(Dispatchers.IO) {
             if (shoppingListsDao.isSynced(listId)) {
-                shoppingListsRemoteSource.startListeningForChanges(listId) { items ->
+                shoppingListsRemoteSource.startListeningForItemsChanges(listId) { items ->
                     GlobalScope.launch(Dispatchers.IO) {
                         shoppingListsDao.getByIdPlain(listId)?.let { list ->
                             for (item in items) {
@@ -567,7 +567,26 @@ class ShoppingListsRepository @Inject constructor(
         }
     }
 
-    fun stopListeningForChanges() = shoppingListsRemoteSource.stopListeningForChanges()
+    fun startListeningForMetadataChanges(listId: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            if (shoppingListsDao.isSynced(listId)) {
+                shoppingListsRemoteSource.startListeningForMetadataChanges(listId) { updatedList ->
+                    GlobalScope.launch(Dispatchers.IO) {
+                        shoppingListsDao.getByIdPlain(listId)?.let { list ->
+                            updatedList.items = list.items
+                            updatedList.users = list.users
+
+                            shoppingListsDao.insert(updatedList)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun stopListeningForItemsChanges() = shoppingListsRemoteSource.stopListeningForItemsChanges()
+
+    fun stopListeningForMetadataChanges() = shoppingListsRemoteSource.stopListeningForMetadataChanges()
 
     suspend fun deleteUnusedItemsBlocking(listId: String) {
         shoppingListsDao.getByIdPlain(listId)?.let {

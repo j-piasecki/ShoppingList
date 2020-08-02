@@ -103,11 +103,13 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
 
         shoppingList = list
 
+        val checkSum = (list.owner?.sumBy { it.toInt() } ?: 0) + (list.name?.sumBy { it.toInt() } ?: 0) + (if (list.keepInSync) 1 else 2)
+
         submitList(list.items.filter { !it.deleted }.toMutableList().also {
             it.add(0,
                 Item(
                     id = "00000000-0000-0000-0000-000000000000",
-                    timestamp = UUID.fromString(list.id).mostSignificantBits + list.getAllUsersNoOwner().size
+                    timestamp = UUID.fromString(list.id).mostSignificantBits + list.getAllUsersNoOwner().size + checkSum
                 )
             )
         })

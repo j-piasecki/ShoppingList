@@ -97,10 +97,12 @@ class ShoppingListFragment : Fragment() {
             currentList = null
             adapter.submitList(emptyList())
 
-            viewModel.stopListeningForChanges()
+            viewModel.stopListeningForItemsChanges()
+            viewModel.stopListeningForMetadataChanges()
         } else if (argumentListId != null) {
             viewModel.updateItems(argumentListId)
-            viewModel.startListeningForChanges(argumentListId)
+            viewModel.startListeningForItemsChanges(argumentListId)
+            viewModel.startListeningForMetadataChanges(argumentListId)
 
             listLiveData = viewModel.getShoppingList(argumentListId)
             listLiveData?.observe(viewLifecycleOwner, Observer {
@@ -225,7 +227,8 @@ class ShoppingListFragment : Fragment() {
     override fun onPause() {
         super.onPause()
 
-        viewModel.stopListeningForChanges()
+        viewModel.stopListeningForItemsChanges()
+        viewModel.stopListeningForMetadataChanges()
     }
 
     override fun onResume() {
@@ -233,7 +236,8 @@ class ShoppingListFragment : Fragment() {
 
         currentList?.let {
             viewModel.updateItems(it.id)
-            viewModel.startListeningForChanges(it.id)
+            viewModel.startListeningForItemsChanges(it.id)
+            viewModel.startListeningForMetadataChanges(it.id)
         }
     }
 

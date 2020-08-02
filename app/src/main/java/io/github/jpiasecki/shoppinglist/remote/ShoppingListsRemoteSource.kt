@@ -24,8 +24,9 @@ class ShoppingListsRemoteSource(private val context: Context) {
     private var defaultSource = Source.DEFAULT
     private val workingOnlineLiveData = MutableLiveData<Boolean>(true)
 
-    private var snapshotListener: ListenerRegistration? = null
-    
+    private var itemsSnapshotListener: ListenerRegistration? = null
+    private var metadataSnapshotListener: ListenerRegistration? = null
+
     private fun handleFirestoreException(e: FirebaseFirestoreException) {
         Log.w("ShoppingListsRemote", "Firestore error: ${e.code}")
 
@@ -569,12 +570,12 @@ class ShoppingListsRemoteSource(private val context: Context) {
         return result
     }
 
-    fun startListeningForChanges(listId: String, callback: (List<Item>) -> Unit) {
-        stopListeningForChanges()
+    fun startListeningForItemsChanges(listId: String, callback: (List<Item>) -> Unit) {
+        stopListeningForItemsChanges()
 
         val listenerStart = Calendar.getInstance().timeInMillis
 
-        snapshotListener = Firebase.firestore
+        itemsSnapshotListener = Firebase.firestore
             .collection("lists")
             .document(listId)
             .collection("items")
@@ -595,16 +596,45 @@ class ShoppingListsRemoteSource(private val context: Context) {
                         callback(items)
 
                         if (Calendar.getInstance().timeInMillis - listenerStart > Values.LISTENER_RESTART_TIMER || value.documents.size >= Values.LISTENER_RESTART_LIMIT)
-                            startListeningForChanges(listId, callback)
+                            startListeningForItemsChanges(listId, callback)
                     }
                 }
             }
     }
 
-    fun stopListeningForChanges() {
-        snapshotListener?.let {
+    fun startListeningForMetadataChanges(listId: String, callback: (ShoppingList) -> Unit) {
+        stopListeningForMetadataChanges()
+
+        itemsSnapshotListener = Firebase.firestore
+            .collection("lists")
+            .document(listId)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    Log.w("ShoppingListsRemote", "Listener error", error)
+                } else {
+                    if (value != null && !value.metadata.hasPendingWrites()) {
+                        val list = value.toObject<ShoppingList>()?.apply {
+                            this.id = value.id
+                        }
+
+                        if (list != null)
+                            callback(list)
+                    }
+                }
+            }
+    }
+
+    fun stopListeningForItemsChanges() {
+        itemsSnapshotListener?.let {
             it.remove()
-            snapshotListener = null
+            itemsSnapshotListener = null
+        }
+    }
+
+    fun stopListeningForMetadataChanges() {
+        metadataSnapshotListener?.let {
+            it.remove()
+            metadataSnapshotListener = null
         }
     }
 }
