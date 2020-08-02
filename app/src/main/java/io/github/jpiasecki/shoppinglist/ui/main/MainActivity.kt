@@ -118,13 +118,15 @@ class MainActivity : AppCompatActivity() {
 
         when (item.itemId) {
             android.R.id.home -> {
-                startActivityForResult(
-                    AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(listOf(AuthUI.IdpConfig.GoogleBuilder().build()))
-                        .build(),
-                    RC_SIGN_IN
-                )
+                if (FirebaseAuth.getInstance().currentUser == null) {
+                    startActivityForResult(
+                        AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(listOf(AuthUI.IdpConfig.GoogleBuilder().build()))
+                            .build(),
+                        RC_SIGN_IN
+                    )
+                }
             }
 
             R.id.menu_import_list -> {
