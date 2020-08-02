@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="?spinnerBorderColor" />
+            <corners android:topLeftRadius="4dp" android:topRightRadius="4dp" />
+        </shape>
+    </item>
+
+    <item>
+        <inset android:insetBottom="1.5dp">
+            <shape android:shape="rectangle">
+                <solid android:color="?spinnerBackgroundColor" />
+                <corners android:topLeftRadius="4dp" android:topRightRadius="4dp" />
+                <padding android:right="8dp" />
+            </shape>
+        </inset>
+    </item>
+    <item android:drawable="@drawable/ic_spinner_drop_down_24" android:gravity="end|center_vertical"  />
+</layer-list>

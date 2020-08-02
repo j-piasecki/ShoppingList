@@ -37,44 +37,58 @@
             android:layout_height="wrap_content"
             android:paddingBottom="96dp">
 
-            <EditText
-                android:id="@+id/activity_add_edit_list_name"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/activity_add_edit_list_name_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:ems="10"
                 android:hint="@string/activity_add_edit_list_name_hint"
-                android:inputType="text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/activity_add_edit_list_icon"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/activity_add_edit_list_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <ImageView
                 android:id="@+id/activity_add_edit_list_icon"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"
-                app:layout_constraintBottom_toBottomOf="@+id/activity_add_edit_list_name"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toBottomOf="@+id/activity_add_edit_list_name_layout"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/activity_add_edit_list_name"
+                app:layout_constraintTop_toTopOf="@+id/activity_add_edit_list_name_layout"
                 app:layout_constraintDimensionRatio="1:1"
                 app:srcCompat="@drawable/ic_list_default_24" />
 
-            <EditText
-                android:id="@+id/activity_add_edit_list_note"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/activity_add_edit_list_note_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:ems="10"
                 android:hint="@string/activity_add_edit_list_note_hint"
-                android:inputType="textMultiLine"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/activity_add_edit_list_name" />
+                app:layout_constraintTop_toBottomOf="@+id/activity_add_edit_list_name_layout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/activity_add_edit_list_note"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textMultiLine" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Spinner
                 android:id="@+id/activity_add_edit_list_currency"
@@ -83,9 +97,12 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
+                android:padding="8dp"
+                android:background="@drawable/spinner_background"
+                android:popupBackground="?backgroundColorElevated"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/activity_add_edit_list_note" />
+                app:layout_constraintTop_toBottomOf="@+id/activity_add_edit_list_note_layout" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>

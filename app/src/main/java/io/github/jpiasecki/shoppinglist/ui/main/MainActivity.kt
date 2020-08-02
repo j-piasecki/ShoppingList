@@ -39,6 +39,8 @@ import io.github.jpiasecki.shoppinglist.ui.editors.AddEditListActivity
 import io.github.jpiasecki.shoppinglist.ui.SettingsActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import java.lang.IllegalArgumentException
+import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -128,12 +130,20 @@ class MainActivity : AppCompatActivity() {
             R.id.menu_import_list -> {
                 if (Config.isNetworkConnected(this)) {
                     val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    viewModel.downloadList(clipboard.primaryClip?.getItemAt(0)?.text.toString())
-                        .observe(this, Observer {
-                            if (it == false) {
-                                showToast(getString(R.string.message_list_does_not_exist))
-                            }
-                        })
+                    val listId = clipboard.primaryClip?.getItemAt(0)?.text.toString()
+
+                    try {
+                        UUID.fromString(listId)
+
+                        viewModel.downloadList(listId)
+                            .observe(this, Observer {
+                                if (it == false) {
+                                    showToast(getString(R.string.message_list_does_not_exist))
+                                }
+                            })
+                    } catch (e: IllegalArgumentException) {
+                        showToast(getString(R.string.message_no_list_id_in_clipboard))
+                    }
                 } else {
                     showToast(getString(R.string.message_no_internet_connection))
                 }

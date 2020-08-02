@@ -9,6 +9,8 @@
         <item name="bottomSheetDialogTheme">@style/BottomSheetDialogTheme</item>
 
         <item name="backgroundColorElevated">@color/backgroundColorElevatedDark</item>
+        <item name="spinnerBackgroundColor">@color/spinnerBackgroundColorDark</item>
+        <item name="spinnerBorderColor">@color/spinnerBorderColorDark</item>
     </style>
 
     <style name="AppTheme.Splash" parent="AppTheme">

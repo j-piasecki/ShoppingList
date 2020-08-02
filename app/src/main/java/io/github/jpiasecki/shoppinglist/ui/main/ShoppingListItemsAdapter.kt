@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.checkbox.MaterialCheckBox
 import io.github.jpiasecki.shoppinglist.R
+import io.github.jpiasecki.shoppinglist.consts.Units
 import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.database.Item
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
@@ -202,8 +203,9 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
 
             view.findViewById<TextView>(R.id.row_shopping_list_item_name).text = item.name
             view.findViewById<TextView>(R.id.row_shopping_list_item_note).text = item.note
-            view.findViewById<TextView>(R.id.row_shopping_list_item_quantity).text = "Quantity: ${item.quantity}"
             view.findViewById<TextView>(R.id.row_shopping_list_item_last_update).text = view.context.getString(R.string.last_update, dateFormat.format(Date(item.timestamp)))
+            view.findViewById<TextView>(R.id.row_shopping_list_item_quantity).text =
+                    view.context.resources.getQuantityString(Units.getStringId(item.unit), item.quantity, item.quantity)
 
             if (item.price > 0) {
                 if (shoppingList.currency == null) {

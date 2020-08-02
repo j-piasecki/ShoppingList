@@ -84,7 +84,7 @@ class AddEditItemActivity : AppCompatActivity() {
                 addedBy = FirebaseAuth.getInstance().currentUser?.uid,
                 price = activity_add_edit_item_price.text.toString().toDoubleOrNull() ?: 0.0,
                 icon = Icons.DEFAULT,
-                unit = Units.NO_UNIT
+                unit = activity_add_edit_item_unit.selectedItemPosition
             )
 
             if (itemId != null) {
@@ -101,24 +101,20 @@ class AddEditItemActivity : AppCompatActivity() {
     }
 
     private fun populateUnitSpinner(quantity: Int, currentUnit: Int) {
-        val list = listOf("Unit 1", "Unit 2", "Unit 3", "Unit 4")
+        val list = ArrayList<String>()
+
+        for (unit in 0 until Units.UNITS_COUNT) {
+            if (unit == Units.NO_UNIT) {
+                list.add("-")
+            } else {
+                list.add(resources.getQuantityString(Units.getStringId(unit), quantity, -1).replace("-1", ""))
+            }
+        }
+
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list)
 
         activity_add_edit_item_unit.adapter = adapter
-        activity_add_edit_item_unit.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
-
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                showToast("item selected: $position")
-            }
-        }
+        activity_add_edit_item_unit.setSelection(currentUnit)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
