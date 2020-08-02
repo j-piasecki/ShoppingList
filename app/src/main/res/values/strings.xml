@@ -27,12 +27,15 @@
     <string name="activity_list_users_header_users">Users</string>
     <string name="activity_list_users_header_banned">Banned</string>
 
+    <string name="message_list_is_empty">The list is empty</string>
+    <string name="message_there_are_no_lists">You don\'t have any lists</string>
     <string name="message_list_edit_no_ownership">You can only edit lists of which you are the owner</string>
     <string name="message_need_internet_to_modify_list">You have to be online to modify synchronized lists</string>
     <string name="message_no_internet_connection">You don\'t have an Internet connection</string>
     <string name="message_no_list_id_in_clipboard">You don\'t have any list id in the clipboard</string>
     <string name="message_list_does_not_exist">That list does not exist, make sure you copied the right id</string>
     <string name="message_list_copied_to_clipboard">Copied to the clipboard</string>
+    <string name="message_not_logged_in">You have to log in first</string>
     <string name="message_error">Unexpected error occurred</string>
 
     <string name="dialog_item_options_delete">Delete</string>

@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
@@ -142,6 +143,8 @@ class ShoppingListFragment : Fragment() {
                         }
 
                     currentList = it
+
+                    view?.findViewById<TextView>(R.id.fragment_shopping_list_empty_text)?.visibility = if (it.items.isEmpty()) View.VISIBLE else View.GONE
                 } else {
                     showToast(getString(R.string.message_error))
 
@@ -249,20 +252,24 @@ class ShoppingListFragment : Fragment() {
     fun shareCurrentList() {
         currentList?.let {
             if (Config.isNetworkConnected(context)) {
-                if (!it.keepInSync) {
-                    viewModel.uploadList(it)
-                }
+                if (FirebaseAuth.getInstance().currentUser != null) {
+                    if (!it.keepInSync) {
+                        viewModel.uploadList(it)
+                    }
 
-                val clipboard =
-                    activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                clipboard.setPrimaryClip(
-                    ClipData.newPlainText(
-                        "listId",
-                        it.id
+                    val clipboard =
+                        activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    clipboard.setPrimaryClip(
+                        ClipData.newPlainText(
+                            "listId",
+                            it.id
+                        )
                     )
-                )
 
-                showToast(getString(R.string.message_list_copied_to_clipboard))
+                    showToast(getString(R.string.message_list_copied_to_clipboard))
+                } else {
+                    showToast(getString(R.string.message_not_logged_in))
+                }
             } else {
                 showToast(getString(R.string.message_no_internet_connection))
             }

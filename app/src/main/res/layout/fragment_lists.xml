@@ -8,12 +8,26 @@
     android:background="?android:attr/colorBackground"
     tools:context=".ui.main.ListsFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_lists_recycler_view"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="4dp"
-        android:paddingBottom="96dp"
-        android:clipToPadding="false"
-        android:layoutAnimation="@anim/recycler_view_animation" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/fragment_lists_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="4dp"
+            android:paddingBottom="96dp"
+            android:clipToPadding="false"
+            android:layoutAnimation="@anim/recycler_view_animation" />
+
+        <TextView
+            android:id="@+id/fragment_lists_empty_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/message_there_are_no_lists"
+            android:textSize="18sp"
+            android:textColor="?android:attr/textColorSecondary"/>
+    </RelativeLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

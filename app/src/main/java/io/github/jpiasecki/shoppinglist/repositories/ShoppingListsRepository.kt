@@ -516,7 +516,21 @@ class ShoppingListsRepository @Inject constructor(
             if (uid != null) {
                 for (list in shoppingListsDao.getAllPlain()) {
                     if (list.owner == null)
-                        shoppingListsDao.changeOwner(list.id, uid)
+                        list.owner = uid
+
+                    for (index in 0 until list.items.size) {
+                        var item = list.items[index]
+
+                        if (item.addedBy == null)
+                            item = item.copy(addedBy = uid)
+
+                        if (item.completed && item.completedBy == null)
+                            item = item.copy(completedBy = uid)
+
+                        list.items[index] = item
+                    }
+
+                    shoppingListsDao.update(list)
                 }
             }
 

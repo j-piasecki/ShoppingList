@@ -111,6 +111,7 @@ class UsersRepository @Inject constructor(
         GlobalScope.launch(Dispatchers.IO) {
             setUserNameIfNotSet()
 
+            updateProfilePicture()
             usersRemoteSource.createDataIfNotExists()
         }
     }

@@ -132,20 +132,25 @@ class MainActivity : AppCompatActivity() {
 
             R.id.menu_import_list -> {
                 if (Config.isNetworkConnected(this)) {
-                    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val listId = clipboard.primaryClip?.getItemAt(0)?.text.toString()
+                    if (FirebaseAuth.getInstance().currentUser != null) {
+                        val clipboard =
+                            getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val listId = clipboard.primaryClip?.getItemAt(0)?.text.toString()
 
-                    try {
-                        UUID.fromString(listId)
+                        try {
+                            UUID.fromString(listId)
 
-                        viewModel.downloadList(listId)
-                            .observe(this, Observer {
-                                if (it == false) {
-                                    showToast(getString(R.string.message_list_does_not_exist))
-                                }
-                            })
-                    } catch (e: IllegalArgumentException) {
-                        showToast(getString(R.string.message_no_list_id_in_clipboard))
+                            viewModel.downloadList(listId)
+                                .observe(this, Observer {
+                                    if (it == false) {
+                                        showToast(getString(R.string.message_list_does_not_exist))
+                                    }
+                                })
+                        } catch (e: IllegalArgumentException) {
+                            showToast(getString(R.string.message_no_list_id_in_clipboard))
+                        }
+                    } else {
+                        showToast(getString(R.string.message_not_logged_in))
                     }
                 } else {
                     showToast(getString(R.string.message_no_internet_connection))

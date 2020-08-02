@@ -50,6 +50,8 @@ class ListsFragment : Fragment() {
             adapter.submitList(it)
 
             shoppingLists = it
+
+            view.findViewById<TextView>(R.id.fragment_lists_empty_text).visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
         })
 
         viewModel.getAllUsers().observe(viewLifecycleOwner, Observer {
@@ -96,6 +98,8 @@ class ListsFragment : Fragment() {
                 adapter.submitList(it.filter { FirebaseAuth.getInstance().currentUser?.uid !in it.banned })
 
                 shoppingLists = it
+
+                view?.findViewById<TextView>(R.id.fragment_lists_empty_text)?.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
             })
 
             viewModel.getAllUsers().observe(viewLifecycleOwner, Observer {
@@ -145,8 +149,12 @@ class ListsFragment : Fragment() {
                         view.findViewById<View>(R.id.dialog_shopping_list_options_upload)
                             .setOnClickListener { v ->
                                 if (Config.isNetworkConnected(it)) {
-                                    viewModel.uploadList(list)
-                                    dialog.dismiss()
+                                    if (FirebaseAuth.getInstance().currentUser != null) {
+                                        viewModel.uploadList(list)
+                                        dialog.dismiss()
+                                    } else {
+                                        showToast(getString(R.string.message_not_logged_in))
+                                    }
                                 } else {
                                     showToast(getString(R.string.message_no_internet_connection))
                                 }
