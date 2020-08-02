@@ -62,6 +62,18 @@ class UsersRepository @Inject constructor(
         return liveData
     }
 
+    fun getLocalUser(id: String): LiveData<User> {
+        val liveData = MutableLiveData<User>(null)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            val localUser = usersDao.getById(id)
+
+            liveData.postValue(localUser)
+        }
+
+        return liveData
+    }
+
     fun getUserName(id: String): LiveData<String?> {
         val result = MutableLiveData<String?>(FirebaseAuth.getInstance().currentUser?.displayName)
 

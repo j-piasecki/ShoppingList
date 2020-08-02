@@ -32,6 +32,10 @@ class MainViewModel @ViewModelInject constructor(
 
     fun trySettingOwner() = shoppingListsRepository.trySettingOwner()
 
+    fun getLocalUser(userId: String) = usersRepository.getLocalUser(userId)
+
+    fun changeUserName(name: String) = usersRepository.changeUserName(name)
+
     fun deleteList(list: ShoppingList) {
         if (list.keepInSync) {
             GlobalScope.launch(Dispatchers.IO) {

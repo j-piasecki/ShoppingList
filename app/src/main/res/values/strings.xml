@@ -37,6 +37,7 @@
     <string name="message_list_copied_to_clipboard">Copied to the clipboard</string>
     <string name="message_not_logged_in">You have to log in first</string>
     <string name="message_error">Unexpected error occurred</string>
+    <string name="message_username_too_short">Username must be al least three characters long</string>
 
     <string name="dialog_item_options_delete">Delete</string>
     <string name="dialog_shopping_list_options_delete">Delete</string>
@@ -47,6 +48,9 @@
     <string name="dialog_user_options_ban">Ban</string>
     <string name="dialog_user_options_unban">Unban</string>
     <string name="dialog_options_default_header">Options</string>
+    <string name="dialog_profile_settings_header">Account settings</string>
+    <string name="dialog_profile_settings_save">Save</string>
+    <string name="dialog_profile_settings_username">Username</string>
 
     <plurals name="unit_no_unit">
         <item quantity="other">Quantity: %1$d</item>

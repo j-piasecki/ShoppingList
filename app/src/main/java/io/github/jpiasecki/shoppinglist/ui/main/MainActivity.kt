@@ -27,6 +27,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.firebase.ui.auth.AuthUI
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
@@ -127,6 +129,33 @@ class MainActivity : AppCompatActivity() {
                             .build(),
                         RC_SIGN_IN
                     )
+                } else {
+                    val dialog = BottomSheetDialog(this)
+                    val view = layoutInflater.inflate(R.layout.dialog_profile_settings, null)
+                    dialog.setContentView(view)
+
+                    viewModel.getLocalUser(FirebaseAuth.getInstance().currentUser!!.uid).also {
+                        it.observe(this, Observer { user ->
+                            if (user != null) {
+                                view.findViewById<TextView>(R.id.dialog_profile_settings_username).text = user.name
+                            }
+
+                            it.removeObservers(this)
+                        })
+                    }
+
+                    view.findViewById<MaterialButton>(R.id.dialog_profile_settings_save_button).setOnClickListener {
+                        val name = view.findViewById<TextView>(R.id.dialog_profile_settings_username).text.toString().trim()
+
+                        if (name.length >= 3) {
+                            viewModel.changeUserName(name)
+                            dialog.dismiss()
+                        } else {
+                            showToast(getString(R.string.message_username_too_short))
+                        }
+                    }
+
+                    dialog.show()
                 }
             }
 
