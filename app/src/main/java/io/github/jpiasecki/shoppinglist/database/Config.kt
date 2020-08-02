@@ -16,6 +16,8 @@ class Config(private val context: Context) {
         const val LISTS_AUTO_UPDATE_TIMESTAMP = "LISTS_METADATA_AUTO_UPDATE_TIMESTAMP"
         const val LISTS_MANUAL_UPDATE_TIMESTAMP = "LISTS_METADATA_MANUAL_UPDATE_TIMESTAMP"
 
+        const val SETTINGS_DARK_THEME_ENABLED = "SETTINGS_DARK_THEME_ENABLED"
+
         fun isNetworkConnected(context: Context?): Boolean {
             if (context == null)
                 return false
@@ -49,6 +51,8 @@ class Config(private val context: Context) {
 
     fun getListsManualUpdateTimestamp() = preferences.getLong(LISTS_MANUAL_UPDATE_TIMESTAMP, 0)
 
+    fun isDarkThemeEnabled() = preferences.getBoolean(SETTINGS_DARK_THEME_ENABLED, false)
+
     fun updateProfilePictureUpdateTimestamp() = preferences.edit().putLong(
         PROFILE_PICTURE_UPDATE_TIMESTAMP,
         Calendar.getInstance().timeInMillis
@@ -62,5 +66,10 @@ class Config(private val context: Context) {
     fun updateListsManualUpdateTimestamp() = preferences.edit().putLong(
         LISTS_MANUAL_UPDATE_TIMESTAMP,
         Calendar.getInstance().timeInMillis
+    ).apply()
+
+    fun setDarkThemeEnabled(value: Boolean) = preferences.edit().putBoolean(
+        SETTINGS_DARK_THEME_ENABLED,
+        value
     ).apply()
 }

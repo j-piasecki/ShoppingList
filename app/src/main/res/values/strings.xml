@@ -51,6 +51,8 @@
     <string name="dialog_profile_settings_header">Account settings</string>
     <string name="dialog_profile_settings_save">Save</string>
     <string name="dialog_profile_settings_username">Username</string>
+    <string name="activity_settings_header">Settings</string>
+    <string name="activity_settings_dark_theme">Dark theme</string>
 
     <plurals name="unit_no_unit">
         <item quantity="other">Quantity: %1$d</item>
