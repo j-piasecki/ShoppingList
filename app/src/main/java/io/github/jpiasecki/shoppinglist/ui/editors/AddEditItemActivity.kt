@@ -71,7 +71,10 @@ class AddEditItemActivity : AppCompatActivity() {
         }
 
         activity_add_edit_item_quantity.addTextChangedListener {
-            populateUnitSpinner(it.toString().toIntOrNull() ?: 0, activity_add_edit_item_unit.selectedItemPosition)
+            populateUnitSpinner(
+                it.toString().toIntOrNull() ?: 0,
+                if (activity_add_edit_item_unit.selectedItemPosition >= 0) Units.ALL[activity_add_edit_item_unit.selectedItemPosition] else Units.NO_UNIT
+            )
         }
 
         activity_add_edit_item_icon.setOnClickListener {
@@ -79,25 +82,31 @@ class AddEditItemActivity : AppCompatActivity() {
         }
 
         activity_add_edit_item_fab.setOnClickListener {
-            var item = Item(
-                name = activity_add_edit_item_name.text.toString(),
-                note = activity_add_edit_item_note.text.toString(),
-                quantity = activity_add_edit_item_quantity.text.toString().toIntOrNull() ?: 0,
-                addedBy = FirebaseAuth.getInstance().currentUser?.uid,
-                price = activity_add_edit_item_price.text.toString().toDoubleOrNull() ?: 0.0,
-                icon = Icons.DEFAULT,
-                unit = activity_add_edit_item_unit.selectedItemPosition
-            )
+            val name = activity_add_edit_item_name.text.toString().trim()
 
-            if (itemId != null) {
-                item = item.copy(id = itemId)
-            }
+            if (name.isNotEmpty()) {
+                var item = Item(
+                    name = name,
+                    note = activity_add_edit_item_note.text.toString(),
+                    quantity = activity_add_edit_item_quantity.text.toString().toIntOrNull() ?: 0,
+                    addedBy = FirebaseAuth.getInstance().currentUser?.uid,
+                    price = activity_add_edit_item_price.text.toString().toDoubleOrNull() ?: 0.0,
+                    icon = Icons.DEFAULT,
+                    unit = Units.ALL[activity_add_edit_item_unit.selectedItemPosition]
+                )
 
-            if (!listSynced || Config.isNetworkConnected(this)) {
-                viewModel.addItemToList(listId!!, item)
-                finish()
+                if (itemId != null) {
+                    item = item.copy(id = itemId)
+                }
+
+                if (!listSynced || Config.isNetworkConnected(this)) {
+                    viewModel.addItemToList(listId!!, item)
+                    finish()
+                } else {
+                    showToast(getString(R.string.message_need_internet_to_modify_list))
+                }
             } else {
-                showToast(getString(R.string.message_need_internet_to_modify_list))
+                showToast(getString(R.string.message_item_must_have_name))
             }
         }
     }
@@ -116,7 +125,7 @@ class AddEditItemActivity : AppCompatActivity() {
         val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list)
 
         activity_add_edit_item_unit.adapter = adapter
-        activity_add_edit_item_unit.setSelection(currentUnit)
+        activity_add_edit_item_unit.setSelection(Units.ALL.indexOf(currentUnit))
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

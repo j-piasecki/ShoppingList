@@ -36,6 +36,10 @@ class MainViewModel @ViewModelInject constructor(
 
     fun changeUserName(name: String) = usersRepository.changeUserName(name)
 
+    fun getListsSortType() = config.getListsSortType()
+
+    fun getItemsSortType() = config.getItemsSortType()
+
     fun deleteList(list: ShoppingList) {
         if (list.keepInSync) {
             GlobalScope.launch(Dispatchers.IO) {

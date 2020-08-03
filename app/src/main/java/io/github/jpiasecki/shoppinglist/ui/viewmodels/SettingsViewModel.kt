@@ -13,4 +13,12 @@ class SettingsViewModel @ViewModelInject constructor(
     fun isDarkThemeEnabled() = config.isDarkThemeEnabled()
 
     fun setDarkThemeEnabled(value: Boolean) = config.setDarkThemeEnabled(value)
+
+    fun getListsSortType() = config.getListsSortType()
+
+    fun setListsSortType(type: Int) = config.setListsSortType(type)
+
+    fun getItemsSortType() = config.getItemsSortType()
+
+    fun setItemsSortType(type: Int) = config.setItemsSortType(type)
 }

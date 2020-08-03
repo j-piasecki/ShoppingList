@@ -73,19 +73,26 @@ class AddEditListActivity : AppCompatActivity() {
         }
 
         activity_add_edit_list_fab.setOnClickListener {
-            currentList.name = activity_add_edit_list_name.text.toString()
-            currentList.note = activity_add_edit_list_note.text.toString()
-            currentList.currency = currencyList[activity_add_edit_list_currency.selectedItemPosition].currencyCode
-            currentList.timestamp = Calendar.getInstance().timeInMillis
+            val name = activity_add_edit_list_name.text.toString().trim()
 
-            if (createNew) {
-                viewModel.createList(currentList)
-                finish()
-            } else if (!listSynced || Config.isNetworkConnected(this)) {
-                viewModel.updateList(currentList)
-                finish()
+            if (name.isNotBlank()) {
+                currentList.name = name
+                currentList.note = activity_add_edit_list_note.text.toString()
+                currentList.currency =
+                    currencyList[activity_add_edit_list_currency.selectedItemPosition].currencyCode
+                currentList.timestamp = Calendar.getInstance().timeInMillis
+
+                if (createNew) {
+                    viewModel.createList(currentList)
+                    finish()
+                } else if (!listSynced || Config.isNetworkConnected(this)) {
+                    viewModel.updateList(currentList)
+                    finish()
+                } else {
+                    showToast(getString(R.string.message_need_internet_to_modify_list))
+                }
             } else {
-                showToast(getString(R.string.message_need_internet_to_modify_list))
+                showToast(getString(R.string.message_list_must_have_name))
             }
         }
     }

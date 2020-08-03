@@ -1,6 +1,7 @@
 package io.github.jpiasecki.shoppinglist.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -47,11 +48,7 @@ class ListsFragment : Fragment() {
         initRecyclerView(view)
 
         viewModel.getAllShoppingLists().observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
-
-            shoppingLists = it
-
-            view.findViewById<TextView>(R.id.fragment_lists_empty_text).visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+            setCurrentList(it)
         })
 
         viewModel.getAllUsers().observe(viewLifecycleOwner, Observer {
@@ -95,17 +92,31 @@ class ListsFragment : Fragment() {
             refreshLiveData = null
         } else {
             viewModel.getAllShoppingLists().observe(viewLifecycleOwner, Observer {
-                adapter.submitList(it.filter { FirebaseAuth.getInstance().currentUser?.uid !in it.banned })
-
-                shoppingLists = it
-
-                view?.findViewById<TextView>(R.id.fragment_lists_empty_text)?.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+                setCurrentList(it)
             })
 
             viewModel.getAllUsers().observe(viewLifecycleOwner, Observer {
                 adapter.setUsers(it)
             })
         }
+    }
+
+    private fun setCurrentList(list: List<ShoppingList>) {
+        shoppingLists = if (viewModel.getListsSortType() == Config.SORT_TYPE_ALPHABETICALLY) {
+            list.sortedBy { it.name }
+        } else {
+            list.sortedByDescending { it.timestamp }
+        }
+
+        adapter.submitList(shoppingLists.filter { FirebaseAuth.getInstance().currentUser?.uid !in it.banned })
+
+        view?.findViewById<TextView>(R.id.fragment_lists_empty_text)?.visibility = if (list.isEmpty()) View.VISIBLE else View.GONE
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        setCurrentList(shoppingLists)
     }
 
     private fun createAdapter() =

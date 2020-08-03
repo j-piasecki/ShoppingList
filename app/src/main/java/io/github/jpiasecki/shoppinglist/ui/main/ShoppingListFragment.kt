@@ -109,7 +109,11 @@ class ShoppingListFragment : Fragment() {
                 if (it != null) {
                     it.items.sortWith(Comparator { o1, o2 ->
                         if ((o1.completed && o2.completed) || (!o1.completed && !o2.completed)) {
-                            (o2.timestamp - o1.timestamp).sign
+                            if (viewModel.getItemsSortType() == Config.SORT_TYPE_ALPHABETICALLY) {
+                                o1.name?.compareTo(o2.name ?: "") ?: 0
+                            } else {
+                                (o2.timestamp - o1.timestamp).sign
+                            }
                         } else if (o1.completed && !o2.completed) {
                             1
                         } else {

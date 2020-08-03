@@ -17,6 +17,11 @@ class Config(private val context: Context) {
         const val LISTS_MANUAL_UPDATE_TIMESTAMP = "LISTS_METADATA_MANUAL_UPDATE_TIMESTAMP"
 
         const val SETTINGS_DARK_THEME_ENABLED = "SETTINGS_DARK_THEME_ENABLED"
+        const val SETTINGS_LISTS_SORT_TYPE = "SETTINGS_LISTS_SORT_TYPE"
+        const val SETTINGS_ITEMS_SORT_TYPE = "SETTINGS_ITEMS_SORT_TYPE"
+
+        const val SORT_TYPE_NEWEST = 0
+        const val SORT_TYPE_ALPHABETICALLY = 1
 
         fun isNetworkConnected(context: Context?): Boolean {
             if (context == null)
@@ -53,6 +58,10 @@ class Config(private val context: Context) {
 
     fun isDarkThemeEnabled() = preferences.getBoolean(SETTINGS_DARK_THEME_ENABLED, false)
 
+    fun getListsSortType() = preferences.getInt(SETTINGS_LISTS_SORT_TYPE, SORT_TYPE_NEWEST)
+
+    fun getItemsSortType() = preferences.getInt(SETTINGS_ITEMS_SORT_TYPE, SORT_TYPE_NEWEST)
+
     fun updateProfilePictureUpdateTimestamp() = preferences.edit().putLong(
         PROFILE_PICTURE_UPDATE_TIMESTAMP,
         Calendar.getInstance().timeInMillis
@@ -71,5 +80,15 @@ class Config(private val context: Context) {
     fun setDarkThemeEnabled(value: Boolean) = preferences.edit().putBoolean(
         SETTINGS_DARK_THEME_ENABLED,
         value
+    ).apply()
+
+    fun setListsSortType(type: Int) = preferences.edit().putInt(
+        SETTINGS_LISTS_SORT_TYPE,
+        type
+    ).apply()
+
+    fun setItemsSortType(type: Int) = preferences.edit().putInt(
+        SETTINGS_ITEMS_SORT_TYPE,
+        type
     ).apply()
 }
