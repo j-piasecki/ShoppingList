@@ -105,7 +105,7 @@ class AddEditItemActivity : AppCompatActivity() {
     private fun populateUnitSpinner(quantity: Int, currentUnit: Int) {
         val list = ArrayList<String>()
 
-        for (unit in 0 until Units.UNITS_COUNT) {
+        for (unit in Units.ALL) {
             if (unit == Units.NO_UNIT) {
                 list.add("-")
             } else {
