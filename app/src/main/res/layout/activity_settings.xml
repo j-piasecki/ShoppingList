@@ -16,7 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:title="@string/activity_settings_header"/>
+            app:title="@string/activity_settings_header"
+            style="@style/ToolbarStyle"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 

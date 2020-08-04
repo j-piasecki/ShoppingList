@@ -19,7 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:title="@string/activity_add_edit_item_add_new_item"
-            app:layout_scrollFlags="scroll"/>
+            app:layout_scrollFlags="scroll"
+            style="@style/ToolbarStyle"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 

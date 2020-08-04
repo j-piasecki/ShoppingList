@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDialogTheme</item>
+
+        <item name="android:statusBarColor">@color/backgroundColorElevatedLight</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+        <item name="backgroundColorElevated">@color/backgroundColorElevatedLight</item>
+        <item name="spinnerBackgroundColor">@color/spinnerBackgroundColorLight</item>
+        <item name="spinnerBorderColor">@color/spinnerBorderColorLight</item>
+    </style>
+</resources>

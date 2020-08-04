@@ -15,7 +15,8 @@
             android:id="@+id/activity_add_edit_list_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="@string/activity_add_edit_list_add_new_list"/>
+            app:title="@string/activity_add_edit_list_add_new_list"
+            style="@style/ToolbarStyle"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
