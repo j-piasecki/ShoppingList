@@ -104,7 +104,7 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
 
         shoppingList = list
 
-        val checkSum = (list.owner?.sumBy { it.toInt() } ?: 0) + (list.name?.sumBy { it.toInt() } ?: 0) + (if (list.keepInSync) 1 else 2)
+        val checkSum = (list.owner?.sumBy { it.toInt() } ?: 0) + (list.name?.sumBy { it.toInt() } ?: 0) + (if (list.keepInSync) 1 else 2) + list.icon
 
         submitList(list.items.filter { !it.deleted }.toMutableList().also {
             it.add(0,
@@ -138,7 +138,7 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
 
             view.findViewById<ImageView>(R.id.row_shopping_list_header_synced_icon).setImageResource(if (shoppingList.keepInSync) R.drawable.ic_cloud_24 else R.drawable.ic_smartphone_24)
 
-            view.findViewById<ImageView>(R.id.row_shopping_list_header_icon).setImageResource(R.drawable.ic_list_default_24)
+            view.findViewById<ImageView>(R.id.row_shopping_list_header_icon).setImageResource(Icons.getListIconId(shoppingList.icon))
 
             createUserList()
         }

@@ -1,5 +1,6 @@
 package io.github.jpiasecki.shoppinglist.ui.editors
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
@@ -18,6 +19,7 @@ import io.github.jpiasecki.shoppinglist.consts.Units
 import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.database.Item
+import io.github.jpiasecki.shoppinglist.ui.main.MainActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.AddEditItemViewModel
 import kotlinx.android.synthetic.main.activity_add_edit_item.*
 
@@ -97,7 +99,14 @@ class AddEditItemActivity : AppCompatActivity() {
         }
 
         activity_add_edit_item_icon.setOnClickListener {
-            //showToast("change icon")
+            startActivityForResult(
+                Intent(this, SelectIconActivity::class.java)
+                    .putExtra(Values.SHOPPING_LIST_ID, listId)
+                    .putExtra(Values.ITEM_ID, itemId)
+                    .putExtra(Values.NAME, activity_add_edit_item_name.text.toString()),
+                Values.RC_SELECT_ICON,
+                MainActivity.getAnimationBundle(activity_add_edit_item_icon)
+            )
         }
 
         activity_add_edit_item_fab.setOnClickListener {
@@ -126,6 +135,19 @@ class AddEditItemActivity : AppCompatActivity() {
                 }
             } else {
                 showToast(getString(R.string.message_item_must_have_name))
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == Values.RC_SELECT_ICON) {
+            val icon = data?.getIntExtra(Values.ICON, -1) ?: -1
+
+            if (icon != -1) {
+                selectedIcon = icon
+                activity_add_edit_item_icon.setImageResource(Icons.getItemIconId(icon))
             }
         }
     }

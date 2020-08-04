@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.editors.ListUsersActivity"></activity>
+        <activity android:name=".ui.editors.SelectIconActivity" />
+        <activity android:name=".ui.editors.ListUsersActivity" />
         <activity android:name=".ui.SettingsActivity" />
         <activity android:name=".ui.editors.AddEditListActivity" />
         <activity android:name=".ui.editors.AddEditItemActivity" />

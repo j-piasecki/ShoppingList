@@ -27,6 +27,8 @@
     <string name="activity_list_users_header_users">Users</string>
     <string name="activity_list_users_header_banned">Banned</string>
 
+    <string name="activity_select_icon_header">Select icon</string>
+
     <string name="activity_settings_header">Settings</string>
     <string name="activity_settings_dark_theme">Dark theme</string>
     <string name="activity_settings_lists_sort_type_text">Sort lists by</string>
@@ -170,5 +172,14 @@
 
     <string-array name="watermelon_keywords">
         <item>watermelon</item>
+    </string-array>
+
+    <string-array name="raspberry_keywords">
+        <item>raspberry</item>
+        <item>raspberries</item>
+    </string-array>
+
+    <string-array name="peach_keywords">
+        <item>peach</item>
     </string-array>
 </resources>

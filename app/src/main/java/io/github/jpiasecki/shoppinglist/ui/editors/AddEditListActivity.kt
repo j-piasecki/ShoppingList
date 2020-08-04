@@ -1,5 +1,6 @@
 package io.github.jpiasecki.shoppinglist.ui.editors
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
@@ -16,7 +17,9 @@ import io.github.jpiasecki.shoppinglist.consts.Icons
 import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
+import io.github.jpiasecki.shoppinglist.ui.main.MainActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.AddEditListViewModel
+import kotlinx.android.synthetic.main.activity_add_edit_item.*
 import kotlinx.android.synthetic.main.activity_add_edit_list.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -72,7 +75,13 @@ class AddEditListActivity : AppCompatActivity() {
         }
 
         activity_add_edit_list_icon.setOnClickListener {
-            //showToast("change icon")
+            startActivityForResult(
+                Intent(this, SelectIconActivity::class.java)
+                    .putExtra(Values.SHOPPING_LIST_ID, listId)
+                    .putExtra(Values.NAME, activity_add_edit_list_name.text.toString()),
+                Values.RC_SELECT_ICON,
+                MainActivity.getAnimationBundle(activity_add_edit_list_icon)
+            )
         }
 
         activity_add_edit_list_fab.setOnClickListener {
@@ -97,6 +106,19 @@ class AddEditListActivity : AppCompatActivity() {
                 }
             } else {
                 showToast(getString(R.string.message_list_must_have_name))
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == Values.RC_SELECT_ICON) {
+            val icon = data?.getIntExtra(Values.ICON, -1) ?: -1
+
+            if (icon != -1) {
+                selectedIcon = icon
+                activity_add_edit_list_icon.setImageResource(Icons.getItemIconId(icon))
             }
         }
     }
