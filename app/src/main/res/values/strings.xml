@@ -133,4 +133,42 @@
     <string-array name="banana_keywords">
         <item>banana</item>
     </string-array>
+
+    <string-array name="cherry_keywords">
+        <item>cherry</item>
+        <item>cherries</item>
+    </string-array>
+
+    <string-array name="lemon_keywords">
+        <item>lemon</item>
+    </string-array>
+
+    <string-array name="orange_keywords">
+        <item>orange</item>
+    </string-array>
+
+    <string-array name="pear_keywords">
+        <item>pear</item>
+    </string-array>
+
+    <string-array name="pineapple_keywords">
+        <item>pineapple</item>
+    </string-array>
+
+    <string-array name="plum_keywords">
+        <item>plum</item>
+    </string-array>
+
+    <string-array name="strawberry_keywords">
+        <item>strawberry</item>
+        <item>strawberries</item>
+    </string-array>
+
+    <string-array name="grapes_keywords">
+        <item>grape</item>
+    </string-array>
+
+    <string-array name="watermelon_keywords">
+        <item>watermelon</item>
+    </string-array>
 </resources>

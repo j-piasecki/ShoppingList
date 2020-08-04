@@ -9,6 +9,15 @@ object Icons {
     const val DEFAULT = 0
     const val APPLE = 1
     const val BANANA = 2
+    const val CHERRY = 3
+    const val LEMON = 4
+    const val ORANGE = 5
+    const val PEAR = 6
+    const val PINEAPPLE = 7
+    const val PLUM = 8
+    const val STRAWBERRY = 9
+    const val GRAPES = 10
+    const val WATERMELON = 11
 
     private val keywords: HashMap<Int, Array<String>> = HashMap()
 
@@ -16,6 +25,16 @@ object Icons {
         return when (icon) {
             APPLE -> R.drawable.ic_apple_24
             BANANA -> R.drawable.ic_banana_24
+            CHERRY -> R.drawable.ic_cherry_24
+            LEMON -> R.drawable.ic_lemon_24
+            ORANGE -> R.drawable.ic_orange
+            PEAR -> R.drawable.ic_pear_24
+            PINEAPPLE -> R.drawable.ic_pineapple_24
+            PLUM -> R.drawable.ic_plum_24
+            STRAWBERRY -> R.drawable.ic_strawberry
+            GRAPES -> R.drawable.ic_grapes_24
+            WATERMELON -> R.drawable.ic_watermelon_24
+
             else -> R.drawable.ic_item_default_24
         }
     }
@@ -45,7 +64,7 @@ object Icons {
             for (keyword in entry.value) {
                 for (word in words) {
                     if (word.contains(keyword, ignoreCase = true))
-                        currentMatch++
+                        currentMatch += keyword.length
                 }
             }
 
@@ -61,5 +80,14 @@ object Icons {
     private fun loadKeywords(context: Context) {
         keywords[APPLE] = context.resources.getStringArray(R.array.apple_keywords)
         keywords[BANANA] = context.resources.getStringArray(R.array.banana_keywords)
+        keywords[CHERRY] = context.resources.getStringArray(R.array.cherry_keywords)
+        keywords[LEMON] = context.resources.getStringArray(R.array.lemon_keywords)
+        keywords[ORANGE] = context.resources.getStringArray(R.array.orange_keywords)
+        keywords[PEAR] = context.resources.getStringArray(R.array.pear_keywords)
+        keywords[PINEAPPLE] = context.resources.getStringArray(R.array.pineapple_keywords)
+        keywords[PLUM] = context.resources.getStringArray(R.array.plum_keywords)
+        keywords[STRAWBERRY] = context.resources.getStringArray(R.array.strawberry_keywords)
+        keywords[GRAPES] = context.resources.getStringArray(R.array.grapes_keywords)
+        keywords[WATERMELON] = context.resources.getStringArray(R.array.watermelon_keywords)
     }
 }
