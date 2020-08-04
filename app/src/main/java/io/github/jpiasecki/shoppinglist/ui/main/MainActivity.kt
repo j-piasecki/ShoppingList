@@ -138,9 +138,9 @@ class MainActivity : AppCompatActivity() {
                         it.observe(this, Observer { user ->
                             if (user != null) {
                                 view.findViewById<TextView>(R.id.dialog_profile_settings_username).text = user.name
-                            }
 
-                            it.removeObservers(this)
+                                it.removeObservers(this)
+                            }
                         })
                     }
 
