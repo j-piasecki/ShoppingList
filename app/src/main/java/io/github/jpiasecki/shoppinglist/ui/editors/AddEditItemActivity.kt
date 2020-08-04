@@ -1,12 +1,9 @@
 package io.github.jpiasecki.shoppinglist.ui.editors
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Gravity
 import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
@@ -29,6 +26,7 @@ class AddEditItemActivity : AppCompatActivity() {
 
     private val viewModel: AddEditItemViewModel by viewModels()
     private var listSynced = false
+    private var autoSetIcon = true
 
     private var selectedIcon = Icons.DEFAULT
 
@@ -41,6 +39,11 @@ class AddEditItemActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_24)
 
+        val autoSetIconType = viewModel.getAutoSetIcons()
+
+        if (autoSetIconType == Config.AUTO_SET_NEVER)
+            autoSetIcon = false
+
         val listId = intent.getStringExtra(Values.SHOPPING_LIST_ID)
         val itemId = intent.getStringExtra(Values.ITEM_ID)
 
@@ -48,6 +51,8 @@ class AddEditItemActivity : AppCompatActivity() {
             finish()
 
         if (itemId != null) {
+            autoSetIcon = autoSetIconType == Config.AUTO_SET_ALWAYS
+
             viewModel.getShoppingList(listId!!).observe(this, Observer {
                 listSynced = it.keepInSync
 
@@ -80,8 +85,19 @@ class AddEditItemActivity : AppCompatActivity() {
             )
         }
 
+        activity_add_edit_item_name.addTextChangedListener {
+            if (autoSetIcon) {
+                val newIcon = Icons.getIconFromName(it.toString(), this)
+
+                if (selectedIcon != newIcon) {
+                    selectedIcon = newIcon
+                    activity_add_edit_item_icon.setImageResource(Icons.getItemIconId(newIcon))
+                }
+            }
+        }
+
         activity_add_edit_item_icon.setOnClickListener {
-            showToast("change icon")
+            //showToast("change icon")
         }
 
         activity_add_edit_item_fab.setOnClickListener {

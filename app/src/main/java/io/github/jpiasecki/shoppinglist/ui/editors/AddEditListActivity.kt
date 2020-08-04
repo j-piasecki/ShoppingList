@@ -72,7 +72,7 @@ class AddEditListActivity : AppCompatActivity() {
         }
 
         activity_add_edit_list_icon.setOnClickListener {
-            showToast("change icon")
+            //showToast("change icon")
         }
 
         activity_add_edit_list_fab.setOnClickListener {

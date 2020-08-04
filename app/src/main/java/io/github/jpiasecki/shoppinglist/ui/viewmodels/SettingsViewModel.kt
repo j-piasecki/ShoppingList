@@ -21,4 +21,8 @@ class SettingsViewModel @ViewModelInject constructor(
     fun getItemsSortType() = config.getItemsSortType()
 
     fun setItemsSortType(type: Int) = config.setItemsSortType(type)
+
+    fun getAutoSetIcons() = config.getAutoSetIcons()
+
+    fun setAutoSetIcons(type: Int) = config.setAutoSetIcons(type)
 }

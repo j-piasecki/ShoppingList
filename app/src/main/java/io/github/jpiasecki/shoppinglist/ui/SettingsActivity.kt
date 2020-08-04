@@ -34,6 +34,7 @@ class SettingsActivity : AppCompatActivity() {
         setupDarkThemeToggle()
         setupListsSortTypeSpinner()
         setupItemsSortTypeSpinner()
+        setupAutoSetIconsSpinner()
     }
 
     private fun setupDarkThemeToggle() {
@@ -78,6 +79,22 @@ class SettingsActivity : AppCompatActivity() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 viewModel.setItemsSortType(position)
+            }
+        }
+    }
+
+    private fun setupAutoSetIconsSpinner() {
+        val values = listOf(getString(R.string.auto_set_icons_always), getString(R.string.auto_set_icons_never), getString(R.string.auto_set_icons_when_new))
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, values)
+
+        activity_settings_auto_set_icons_spinner.adapter = adapter
+        activity_settings_auto_set_icons_spinner.setSelection(viewModel.getAutoSetIcons())
+
+        activity_settings_auto_set_icons_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                viewModel.setAutoSetIcons(position)
             }
         }
     }

@@ -31,9 +31,14 @@
     <string name="activity_settings_dark_theme">Dark theme</string>
     <string name="activity_settings_lists_sort_type_text">Sort lists by</string>
     <string name="activity_settings_items_sort_type_text">Sort items by</string>
+    <string name="activity_settings_auto_set_icons_text">Set icons automatically</string>
 
     <string name="sort_type_newest_first">Newest to oldest</string>
     <string name="sort_type_alphabetically">Alphabetically</string>
+
+    <string name="auto_set_icons_always">Always</string>
+    <string name="auto_set_icons_never">Never</string>
+    <string name="auto_set_icons_when_new">When creating new</string>
 
     <string name="message_list_is_empty">The list is empty</string>
     <string name="message_there_are_no_lists">You don\'t have any lists</string>
@@ -120,4 +125,12 @@
         <item quantity="one">%1$d milliliter</item>
         <item quantity="other">%1$d milliliters</item>
     </plurals>
+
+    <string-array name="apple_keywords">
+        <item>apple</item>
+    </string-array>
+
+    <string-array name="banana_keywords">
+        <item>banana</item>
+    </string-array>
 </resources>
