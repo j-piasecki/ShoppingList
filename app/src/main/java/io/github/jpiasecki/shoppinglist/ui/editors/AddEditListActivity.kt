@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
+import io.github.jpiasecki.shoppinglist.consts.Icons
 import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
@@ -38,6 +39,7 @@ class AddEditListActivity : AppCompatActivity() {
     )
     private var createNew = true
     private var listSynced = false
+    private var selectedIcon = Icons.DEFAULT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +64,8 @@ class AddEditListActivity : AppCompatActivity() {
                 activity_add_edit_list_note.setText(it.note)
                 setSelectedCurrency(it.currency)
 
-                activity_add_edit_list_icon.setImageResource(R.drawable.ic_list_default_24)
+                selectedIcon = Icons.DEFAULT
+                activity_add_edit_list_icon.setImageResource(Icons.getListIconId(it.icon))
             })
 
             supportActionBar?.title = getString(R.string.activity_add_edit_list_edit_list)
@@ -81,6 +84,7 @@ class AddEditListActivity : AppCompatActivity() {
                 currentList.currency =
                     currencyList[activity_add_edit_list_currency.selectedItemPosition].currencyCode
                 currentList.timestamp = Calendar.getInstance().timeInMillis
+                currentList.icon = selectedIcon
 
                 if (createNew) {
                     viewModel.createList(currentList)

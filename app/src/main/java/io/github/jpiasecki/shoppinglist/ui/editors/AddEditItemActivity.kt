@@ -30,6 +30,8 @@ class AddEditItemActivity : AppCompatActivity() {
     private val viewModel: AddEditItemViewModel by viewModels()
     private var listSynced = false
 
+    private var selectedIcon = Icons.DEFAULT
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_edit_item)
@@ -61,7 +63,8 @@ class AddEditItemActivity : AppCompatActivity() {
                     if (it.price > 0)
                         activity_add_edit_item_price.setText(it.price.toString())
 
-                    activity_add_edit_item_icon.setImageResource(R.drawable.ic_item_default_24)
+                    selectedIcon = it.icon
+                    activity_add_edit_item_icon.setImageResource(Icons.getItemIconId(it.icon))
                 }
             })
 
@@ -91,7 +94,7 @@ class AddEditItemActivity : AppCompatActivity() {
                     quantity = activity_add_edit_item_quantity.text.toString().toIntOrNull() ?: 0,
                     addedBy = FirebaseAuth.getInstance().currentUser?.uid,
                     price = activity_add_edit_item_price.text.toString().toDoubleOrNull() ?: 0.0,
-                    icon = Icons.DEFAULT,
+                    icon = selectedIcon,
                     unit = Units.ALL[activity_add_edit_item_unit.selectedItemPosition]
                 )
 
