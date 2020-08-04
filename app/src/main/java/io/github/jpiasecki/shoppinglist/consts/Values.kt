@@ -15,6 +15,7 @@ object Values {
     const val PROFILE_PICTURE_UPDATE_PERIOD = 48 * 60 * 60 * 1000
     const val LISTS_AUTO_UPDATE_PERIOD = 10 * 60 * 1000
     const val LISTS_MANUAL_UPDATE_PERIOD = 30 * 1000
+    const val ITEM_COMPLETION_CHANGE_TIMER = 400
     const val STALE_ITEM_DELETION_DELAY = 5 * 24 * 60 * 60 * 1000
 
     const val LISTENER_RESTART_TIMER = 10 * 1000

@@ -19,6 +19,7 @@ import com.google.android.material.checkbox.MaterialCheckBox
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Icons
 import io.github.jpiasecki.shoppinglist.consts.Units
+import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.database.Item
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
@@ -52,6 +53,8 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
     private var usersList: List<User> = emptyList()
     private var shoppingList: ShoppingList = ShoppingList()
     private var priceFormat = NumberFormat.getCurrencyInstance()
+
+    private var lastCheckTimeStamp = 0L
 
     init {
         setHasStableIds(true)
@@ -240,32 +243,46 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
             }
 
             view.findViewById<View>(R.id.row_shopping_list_item_check_box_overlay).setOnClickListener {
-                if (!shoppingList.keepInSync || Config.isNetworkConnected(view.context)) {
-                    val checkBox =
-                        view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box)
-                    checkBox.isChecked = !checkBox.isChecked
+                if (Calendar.getInstance().timeInMillis - lastCheckTimeStamp > Values.ITEM_COMPLETION_CHANGE_TIMER) {
+                    if (!shoppingList.keepInSync || Config.isNetworkConnected(view.context)) {
+                        val checkBox =
+                            view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box)
+                        checkBox.isChecked = !checkBox.isChecked
 
-                    itemCompletionChangeCallback(item.id, checkBox.isChecked)
+                        itemCompletionChangeCallback(item.id, checkBox.isChecked)
 
-                    view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility =
-                        View.VISIBLE
-                } else {
-                    showToast(view.context, view.context.getString(R.string.message_need_internet_to_modify_list))
+                        view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility =
+                            View.VISIBLE
+                    } else {
+                        showToast(
+                            view.context,
+                            view.context.getString(R.string.message_need_internet_to_modify_list)
+                        )
+                    }
+
+                    lastCheckTimeStamp = Calendar.getInstance().timeInMillis
                 }
             }
 
             view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay_hitbox).setOnClickListener {
-                if (!shoppingList.keepInSync || Config.isNetworkConnected(view.context)) {
-                    val checkBox =
-                        view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box)
-                    checkBox.isChecked = false
+                if (Calendar.getInstance().timeInMillis - lastCheckTimeStamp > Values.ITEM_COMPLETION_CHANGE_TIMER) {
+                    if (!shoppingList.keepInSync || Config.isNetworkConnected(view.context)) {
+                        val checkBox =
+                            view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box)
+                        checkBox.isChecked = false
 
-                    itemCompletionChangeCallback(item.id, false)
+                        itemCompletionChangeCallback(item.id, false)
 
-                    view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility =
-                        View.GONE
-                } else {
-                    showToast(view.context, view.context.getString(R.string.message_need_internet_to_modify_list))
+                        view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility =
+                            View.GONE
+                    } else {
+                        showToast(
+                            view.context,
+                            view.context.getString(R.string.message_need_internet_to_modify_list)
+                        )
+                    }
+
+                    lastCheckTimeStamp = Calendar.getInstance().timeInMillis
                 }
             }
 
@@ -288,6 +305,7 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
 
         fun unbind() {
             view.findViewById<View>(R.id.row_shopping_list_item_check_box_overlay).setOnClickListener(null)
+            view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay_hitbox).setOnClickListener(null)
         }
 
         private fun setProfilePictures(item: Item) {
