@@ -204,10 +204,16 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
             val item = getItem(position)
 
             view.findViewById<TextView>(R.id.row_shopping_list_item_name).text = item.name
-            view.findViewById<TextView>(R.id.row_shopping_list_item_note).text = item.note
             view.findViewById<TextView>(R.id.row_shopping_list_item_last_update).text = view.context.getString(R.string.last_update, dateFormat.format(Date(item.timestamp)))
             view.findViewById<TextView>(R.id.row_shopping_list_item_quantity).text =
                     view.context.resources.getQuantityString(Units.getStringId(item.unit), item.quantity, item.quantity)
+
+            if (item.note?.isNotEmpty() == true) {
+                view.findViewById<TextView>(R.id.row_shopping_list_item_note).visibility = View.VISIBLE
+                view.findViewById<TextView>(R.id.row_shopping_list_item_note).text = item.note
+            } else {
+                view.findViewById<TextView>(R.id.row_shopping_list_item_note).visibility = View.GONE
+            }
 
             if (item.price > 0) {
                 if (shoppingList.currency == null) {

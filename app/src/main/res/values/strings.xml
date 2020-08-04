@@ -70,4 +70,54 @@
         <item quantity="one">%1$d piece</item>
         <item quantity="other">%1$d pieces</item>
     </plurals>
+
+    <plurals name="unit_box">
+        <item quantity="one">%1$d box</item>
+        <item quantity="other">%1$d boxes</item>
+    </plurals>
+
+    <plurals name="unit_bottle">
+        <item quantity="one">%1$d bottle</item>
+        <item quantity="other">%1$d bottles</item>
+    </plurals>
+
+    <plurals name="unit_jar">
+        <item quantity="one">%1$d jar</item>
+        <item quantity="other">%1$d jars</item>
+    </plurals>
+
+    <plurals name="unit_can">
+        <item quantity="one">%1$d can</item>
+        <item quantity="other">%1$d cans</item>
+    </plurals>
+
+    <plurals name="unit_pack">
+        <item quantity="one">%1$d pack</item>
+        <item quantity="other">%1$d packs</item>
+    </plurals>
+
+    <plurals name="unit_kilogram">
+        <item quantity="one">%1$d kilogram</item>
+        <item quantity="other">%1$d kilograms</item>
+    </plurals>
+
+    <plurals name="unit_decagram">
+        <item quantity="one">%1$d decagram</item>
+        <item quantity="other">%1$d decagrams</item>
+    </plurals>
+
+    <plurals name="unit_gram">
+        <item quantity="one">%1$d gram</item>
+        <item quantity="other">%1$d grams</item>
+    </plurals>
+
+    <plurals name="unit_liter">
+        <item quantity="one">%1$d liter</item>
+        <item quantity="other">%1$d liters</item>
+    </plurals>
+
+    <plurals name="unit_milliliter">
+        <item quantity="one">%1$d milliliter</item>
+        <item quantity="other">%1$d milliliters</item>
+    </plurals>
 </resources>
