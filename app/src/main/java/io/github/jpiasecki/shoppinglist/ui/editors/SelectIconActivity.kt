@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
 import kotlinx.android.synthetic.main.activity_select_icon.*
-import kotlinx.android.synthetic.main.activity_settings.*
 
 class SelectIconActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +31,8 @@ class SelectIconActivity : AppCompatActivity() {
             finish()
         }
 
-        activity_select_icon_recycler_view.layoutManager = GridLayoutManager(this, 4)
+        //screen size in dp / 88dp; 88 = 12 margin + 64 width + 12 margin
+        activity_select_icon_recycler_view.layoutManager = GridLayoutManager(this, (resources.displayMetrics.widthPixels / resources.displayMetrics.density / 88).toInt())
         activity_select_icon_recycler_view.setHasFixedSize(true)
     }
 

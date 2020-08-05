@@ -4,36 +4,6 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
   <path
-      android:pathData="M4.6879,7.5688h2.2304v1.5798h-2.2304z"
-      android:strokeWidth="0.01"
-      android:fillColor="#ffffff"
-      android:strokeLineCap="round"/>
-  <path
-      android:pathData="M10.8885,7.2435h2.2304v1.5798h-2.2304z"
-      android:strokeWidth="0.01"
-      android:fillColor="#ffffff"
-      android:strokeLineCap="round"/>
-  <path
-      android:pathData="M17.6777,7.3519h2.2304v1.5798h-2.2304z"
-      android:strokeWidth="0.01"
-      android:fillColor="#ffffff"
-      android:strokeLineCap="round"/>
-  <path
-      android:pathData="M14.0843,12.5819h2.2304v1.5798h-2.2304z"
-      android:strokeWidth="0.01"
-      android:fillColor="#ffffff"
-      android:strokeLineCap="round"/>
-  <path
-      android:pathData="M8.1005,12.6852h2.2304v1.5798h-2.2304z"
-      android:strokeWidth="0.01"
-      android:fillColor="#ffffff"
-      android:strokeLineCap="round"/>
-  <path
-      android:pathData="M11.3273,17.4453h2.2304v1.5798h-2.2304z"
-      android:strokeWidth="0.01"
-      android:fillColor="#ffffff"
-      android:strokeLineCap="round"/>
-  <path
       android:pathData="M3.4182,2.6663C7.4954,2.6903 7.0415,0.0512 7.0415,0.0512 4.1017,-0.296 3.1206,1.1879 2.8012,2.0512c0.1682,0.3441 0.2006,0.3745 0.617,0.6151z"
       android:strokeWidth="4.16665"
       android:fillColor="#00d200"/>
