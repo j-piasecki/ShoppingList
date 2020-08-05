@@ -13,8 +13,6 @@
     <ImageView
         android:id="@+id/row_shopping_list_header_icon"
         android:src="@drawable/ic_list_default_24"
-        android:tint="?android:attr/textColorPrimary"
-        android:tintMode="multiply"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"

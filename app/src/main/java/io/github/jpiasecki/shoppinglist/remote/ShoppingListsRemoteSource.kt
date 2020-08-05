@@ -326,6 +326,27 @@ class ShoppingListsRemoteSource(private val context: Context) {
         return success
     }
 
+    suspend fun changeListCategories(id: String, newCategories: List<Map<String, String>>): Boolean {
+        var success = false
+
+        try {
+            Firebase.firestore
+                .collection("lists")
+                .document(id)
+                .update(mapOf(
+                    "categories" to newCategories,
+                    "timestamp" to Calendar.getInstance().timeInMillis
+                ))
+                .addOnSuccessListener {
+                    success = true
+                }.await()
+        } catch (e: FirebaseFirestoreException) {
+            handleFirestoreException(e)
+        }
+
+        return success
+    }
+
     suspend fun changeListMetadata(list: ShoppingList): Boolean {
         var success = false
 
@@ -338,6 +359,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
                     "note" to list.note,
                     "icon" to list.icon,
                     "currency" to list.currency,
+                    "categories" to list.categories,
                     "timestamp" to Calendar.getInstance().timeInMillis
                 ))
                 .addOnSuccessListener {

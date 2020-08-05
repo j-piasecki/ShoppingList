@@ -20,6 +20,7 @@ data class ShoppingList(
     var items: ArrayList<Item> = ArrayList(),
     @get:Exclude
     var users: ArrayList<String> = ArrayList(),
+    var categories: ArrayList<Map<String, String>> = ArrayList(),
     var banned: ArrayList<String> = ArrayList(),
     var timestamp: Long = Calendar.getInstance().timeInMillis,
     var icon: Int = Icons.DEFAULT,
@@ -62,5 +63,35 @@ data class ShoppingList(
             list.remove(owner)
 
         return list.distinct()
+    }
+
+    @Exclude
+    fun hasCategory(id: String?): Boolean {
+        if (id == null)
+            return false
+
+        for (map in categories) {
+            if (map.containsKey("id") && map.containsKey("name")) {
+                if (map["id"] == id)
+                    return true
+            }
+        }
+
+        return false
+    }
+
+    @Exclude
+    fun getCategoryName(id: String?): String? {
+        if (id == null)
+            return null
+
+        for (map in categories) {
+            if (map.containsKey("id") && map.containsKey("name")) {
+                if (map["id"] == id)
+                    return map["name"]
+            }
+        }
+
+        return null
     }
 }
