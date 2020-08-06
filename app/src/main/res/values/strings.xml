@@ -194,4 +194,132 @@
     <string-array name="peach_keywords">
         <item>peach</item>
     </string-array>
+
+    <string-array name="walnut_keywords">
+        <item>walnut</item>
+    </string-array>
+
+    <string-array name="blackberry_keywords">
+        <item>blackberry</item>
+        <item>blackberries</item>
+    </string-array>
+
+    <string-array name="asparagus_keywords">
+        <item>asparagus</item>
+    </string-array>
+
+    <string-array name="aubergine_keywords">
+        <item>aubergine</item>
+        <item>eggplant</item>
+    </string-array>
+
+    <string-array name="avocado_keywords">
+        <item>avocado</item>
+    </string-array>
+
+    <string-array name="beans_keywords">
+        <item>bean</item>
+    </string-array>
+
+    <string-array name="beetroot_keywords">
+        <item>beetroot</item>
+    </string-array>
+
+    <string-array name="broccoli_keywords">
+        <item>broccoli</item>
+    </string-array>
+
+    <string-array name="cabbage_keywords">
+        <item>cabbage</item>
+    </string-array>
+
+    <string-array name="carrot_keywords">
+        <item>carrot</item>
+    </string-array>
+
+    <string-array name="cauliflower_keywords">
+        <item>cauliflower</item>
+    </string-array>
+
+    <string-array name="chili_pepper_keywords">
+        <item>chili</item>
+        <item>pepper</item>
+    </string-array>
+
+    <string-array name="corn_keywords">
+        <item>corn</item>
+        <item>maize</item>
+    </string-array>
+
+    <string-array name="garlic_keywords">
+        <item>garlic</item>
+    </string-array>
+
+    <string-array name="green_beans_keywords">
+        <item>green</item>
+        <item>bean</item>
+    </string-array>
+
+    <string-array name="green_pepper_keywords">
+        <item>green</item>
+        <item>pepper</item>
+    </string-array>
+
+    <string-array name="lettuce_keywords">
+        <item>lettuce</item>
+    </string-array>
+
+    <string-array name="olives_keywords">
+        <item>olive</item>
+    </string-array>
+
+    <string-array name="onion_keywords">
+        <item>onion</item>
+    </string-array>
+
+    <string-array name="potato_keywords">
+        <item>potato</item>
+    </string-array>
+
+    <string-array name="pumpkin_keywords">
+        <item>pumpkin</item>
+    </string-array>
+
+    <string-array name="radish_keywords">
+        <item>radish</item>
+    </string-array>
+
+    <string-array name="red_pepper_keywords">
+        <item>red</item>
+        <item>pepper</item>
+    </string-array>
+
+    <string-array name="tomato_keywords">
+        <item>tomato</item>
+    </string-array>
+
+    <string-array name="yellow_pepper_keywords">
+        <item>yellow</item>
+        <item>pepper</item>
+    </string-array>
+
+    <string-array name="zucchini_keywords">
+        <item>zucchini</item>
+    </string-array>
+
+    <string-array name="eggs_keywords">
+        <item>egg</item>
+    </string-array>
+
+    <string-array name="juice_keywords">
+        <item>juice</item>
+    </string-array>
+
+    <string-array name="milk_keywords">
+        <item>milk</item>
+    </string-array>
+
+    <string-array name="water_keywords">
+        <item>water</item>
+    </string-array>
 </resources>
