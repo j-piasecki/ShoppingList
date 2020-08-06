@@ -34,7 +34,7 @@ private const val VIEW_TYPE_ITEM = 1
 private const val VIEW_TYPE_HEADER = 2
 private const val VIEW_TYPE_CATEGORY = 3
 
-class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterItem, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<ShoppingListItemsAdapter.AdapterItem>() {
+class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterItem, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<AdapterItem>() {
     override fun areItemsTheSame(oldItem: AdapterItem, newItem: AdapterItem): Boolean {
         return oldItem.type == newItem.type && (
                     (oldItem.type == VIEW_TYPE_ITEM && oldItem.item?.id == newItem.item?.id) ||
@@ -126,6 +126,10 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
         }
 
         submitList(content)
+
+        for (i in 0 until itemCount)
+            if (getItem(i).type == VIEW_TYPE_CATEGORY)
+                notifyItemChanged(i)
     }
 
     @Synchronized
