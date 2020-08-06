@@ -19,6 +19,7 @@ import io.github.jpiasecki.shoppinglist.consts.Units
 import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.database.Item
+import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.ui.main.MainActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.AddEditItemViewModel
 import kotlinx.android.synthetic.main.activity_add_edit_item.*
@@ -27,6 +28,7 @@ import kotlinx.android.synthetic.main.activity_add_edit_item.*
 class AddEditItemActivity : AppCompatActivity() {
 
     private val viewModel: AddEditItemViewModel by viewModels()
+    private lateinit var currentList: ShoppingList
     private var listSynced = false
     private var autoSetIcon = true
 
@@ -52,11 +54,13 @@ class AddEditItemActivity : AppCompatActivity() {
         if (listId == null)
             finish()
 
-        if (itemId != null) {
-            autoSetIcon = autoSetIconType == Config.AUTO_SET_ALWAYS
+        viewModel.getShoppingList(listId!!).observe(this, Observer {
+            currentList = it
+            listSynced = it.keepInSync
 
-            viewModel.getShoppingList(listId!!).observe(this, Observer {
-                listSynced = it.keepInSync
+            if (itemId != null) {
+                supportActionBar?.setTitle(R.string.activity_add_edit_item_edit_item)
+                autoSetIcon = autoSetIconType == Config.AUTO_SET_ALWAYS
 
                 it.items.firstOrNull { it.id == itemId }?.let {
                     activity_add_edit_item_name.setText(it.name)
@@ -65,6 +69,7 @@ class AddEditItemActivity : AppCompatActivity() {
                     if (it.quantity > 0)
                         activity_add_edit_item_quantity.setText(it.quantity.toString())
 
+                    populateCategorySpinner(it.category)
                     populateUnitSpinner(it.quantity, it.unit)
 
                     if (it.price > 0)
@@ -73,12 +78,11 @@ class AddEditItemActivity : AppCompatActivity() {
                     selectedIcon = it.icon
                     activity_add_edit_item_icon.setImageResource(Icons.getItemIconId(it.icon))
                 }
-            })
-
-            supportActionBar?.setTitle(R.string.activity_add_edit_item_edit_item)
-        } else {
-            populateUnitSpinner(0, Units.NO_UNIT)
-        }
+            } else {
+                populateCategorySpinner()
+                populateUnitSpinner(0, Units.NO_UNIT)
+            }
+        })
 
         activity_add_edit_item_quantity.addTextChangedListener {
             populateUnitSpinner(
@@ -120,7 +124,8 @@ class AddEditItemActivity : AppCompatActivity() {
                     addedBy = FirebaseAuth.getInstance().currentUser?.uid,
                     price = activity_add_edit_item_price.text.toString().toDoubleOrNull() ?: 0.0,
                     icon = selectedIcon,
-                    unit = Units.ALL[activity_add_edit_item_unit.selectedItemPosition]
+                    unit = Units.ALL[activity_add_edit_item_unit.selectedItemPosition],
+                    category = getSelectedCategory()
                 )
 
                 if (itemId != null) {
@@ -150,6 +155,31 @@ class AddEditItemActivity : AppCompatActivity() {
                 activity_add_edit_item_icon.setImageResource(Icons.getItemIconId(icon))
             }
         }
+    }
+
+    private fun populateCategorySpinner(currentCategory: String? = null) {
+        val list = ArrayList<String>()
+        list.add(getString(R.string.activity_add_edit_item_no_category))
+
+        for (category in currentList.categories) {
+            list.add(category["name"] ?: getString(R.string.activity_add_edit_item_category_error))
+        }
+
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, list)
+
+        activity_add_edit_item_category.adapter = adapter
+
+        if (currentCategory != null)
+            activity_add_edit_item_category.setSelection(currentList.categories.indexOfFirst { it["id"] == currentCategory } + 1, true)
+        else
+            activity_add_edit_item_category.setSelection(0, true)
+    }
+
+    private fun getSelectedCategory(): String? {
+        if (activity_add_edit_item_category.selectedItemPosition == 0)
+            return null
+
+        return currentList.categories[activity_add_edit_item_category.selectedItemPosition - 1]["id"]
     }
 
     private fun populateUnitSpinner(quantity: Int, currentUnit: Int) {

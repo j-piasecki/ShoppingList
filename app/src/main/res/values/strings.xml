@@ -16,6 +16,8 @@
     <string name="activity_add_edit_item_price_hint">Price</string>
     <string name="activity_add_edit_item_icon_description">Item icon</string>
     <string name="activity_add_edit_item_fab_description">Save</string>
+    <string name="activity_add_edit_item_no_category">No category</string>
+    <string name="activity_add_edit_item_category_error">No category name</string>
 
     <string name="activity_add_edit_list_add_new_list">Create list</string>
     <string name="activity_add_edit_list_edit_list">Edit list</string>
