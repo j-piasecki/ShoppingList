@@ -21,6 +21,9 @@
     <string name="activity_add_edit_list_edit_list">Edit list</string>
     <string name="activity_add_edit_list_name_hint">Name</string>
     <string name="activity_add_edit_list_note_hint">Description</string>
+    <string name="activity_add_edit_list_category_deleted">You have removed a category</string>
+    <string name="activity_add_edit_list_undo">Undo</string>
+    <string name="activity_add_edit_list_add_category">Add category</string>
 
     <string name="activity_list_users_title">List users</string>
     <string name="activity_list_users_header_owner">Owner</string>
@@ -55,6 +58,7 @@
     <string name="message_username_too_short">Username must be al least three characters long</string>
     <string name="message_item_must_have_name">You must enter the name of the item</string>
     <string name="message_list_must_have_name">You must enter the name of the list</string>
+    <string name="message_category_name_too_short">Category name must be al least three characters long</string>
 
     <string name="dialog_item_options_delete">Delete</string>
     <string name="dialog_shopping_list_options_delete">Delete</string>
@@ -68,6 +72,10 @@
     <string name="dialog_profile_settings_header">Account settings</string>
     <string name="dialog_profile_settings_save">Save</string>
     <string name="dialog_profile_settings_username">Username</string>
+    <string name="dialog_add_category_header">Add category</string>
+    <string name="dialog_add_category_header_edit">Edit category</string>
+    <string name="dialog_add_category_name_hint">Category</string>
+    <string name="dialog_add_category_save">Save</string>
 
     <plurals name="unit_no_unit">
         <item quantity="other">Quantity: %1$d</item>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="?android:attr/windowBackground">
+
+    <RelativeLayout
+        android:id="@+id/row_item_category_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:id="@+id/row_item_category_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_category_24"
+            android:tintMode="multiply"
+            android:tint="?android:attr/textColorPrimary"
+            android:layout_alignParentStart="true"/>
+
+        <TextView
+            android:id="@+id/row_item_category_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/row_item_category_icon"
+            android:layout_toStartOf="@id/row_item_category_handle"
+            android:layout_alignTop="@id/row_item_category_icon"
+            android:layout_alignBottom="@id/row_item_category_icon"
+            android:layout_marginEnd="8dp"
+            android:gravity="center_vertical"
+            android:text="Category"
+            android:textSize="16sp"
+            android:textColor="?android:attr/textColorPrimary"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+        <ImageView
+            android:id="@+id/row_item_category_handle"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:scaleType="center"
+            android:layout_margin="4dp"
+            android:src="@drawable/ic_drag_handle_24"
+            android:tintMode="multiply"
+            android:tint="?android:attr/textColorSecondary"
+            android:layout_alignParentEnd="true"/>
+
+    </RelativeLayout>
+</LinearLayout>

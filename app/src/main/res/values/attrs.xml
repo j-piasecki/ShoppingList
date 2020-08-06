@@ -3,4 +3,5 @@
     <attr name="backgroundColorElevated" />
     <attr name="spinnerBackgroundColor" />
     <attr name="spinnerBorderColor" />
+    <attr name="categoriesRecyclerViewBackgroundColor" />
 </resources>

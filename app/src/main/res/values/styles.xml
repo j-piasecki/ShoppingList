@@ -14,6 +14,7 @@
         <item name="backgroundColorElevated">@color/backgroundColorElevatedLight</item>
         <item name="spinnerBackgroundColor">@color/spinnerBackgroundColorLight</item>
         <item name="spinnerBorderColor">@color/spinnerBorderColorLight</item>
+        <item name="categoriesRecyclerViewBackgroundColor">@color/categoriesRecyclerViewBackgroundColorLight</item>
     </style>
 
     <style name="AppTheme.Splash" parent="AppTheme">

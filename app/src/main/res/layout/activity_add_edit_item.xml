@@ -28,10 +28,10 @@
         android:id="@+id/activity_add_edit_item_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_margin="16dp"
         android:clickable="true"
         android:focusable="true"
-        android:layout_gravity="bottom|center_horizontal"
+        android:layout_gravity="bottom|end"
         android:contentDescription="@string/activity_add_edit_item_fab_description"
         app:srcCompat="@drawable/ic_done_24" />
 
