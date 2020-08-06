@@ -4,4 +4,5 @@
     <attr name="spinnerBackgroundColor" />
     <attr name="spinnerBorderColor" />
     <attr name="categoriesRecyclerViewBackgroundColor" />
+    <attr name="itemCompletedOverlayColor" />
 </resources>

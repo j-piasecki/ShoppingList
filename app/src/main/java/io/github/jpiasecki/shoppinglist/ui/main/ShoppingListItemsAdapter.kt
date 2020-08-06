@@ -1,7 +1,6 @@
 package io.github.jpiasecki.shoppinglist.ui.main
 
 import android.content.Context
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -28,25 +27,40 @@ import java.lang.Exception
 import java.text.DateFormat
 import java.text.NumberFormat
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
-class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Item>() {
-    override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
-        return oldItem.id == newItem.id
+private const val VIEW_TYPE_ITEM = 1
+private const val VIEW_TYPE_HEADER = 2
+private const val VIEW_TYPE_CATEGORY = 3
+
+class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterItem, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<ShoppingListItemsAdapter.AdapterItem>() {
+    override fun areItemsTheSame(oldItem: AdapterItem, newItem: AdapterItem): Boolean {
+        return oldItem.type == newItem.type && (
+                    (oldItem.type == VIEW_TYPE_ITEM && oldItem.item?.id == newItem.item?.id) ||
+                    (oldItem.type == VIEW_TYPE_HEADER && oldItem.header == newItem.header) ||
+                    (oldItem.type == VIEW_TYPE_CATEGORY && oldItem.category == newItem.category))
     }
 
-    override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
-        return oldItem == newItem
+    override fun areContentsTheSame(oldItem: AdapterItem, newItem: AdapterItem): Boolean {
+        return oldItem.type == newItem.type && (
+                    (oldItem.type == VIEW_TYPE_ITEM && oldItem.item == newItem.item) ||
+                    (oldItem.type == VIEW_TYPE_HEADER && oldItem.header == newItem.header) ||
+                    (oldItem.type == VIEW_TYPE_CATEGORY && oldItem.category == newItem.category))
     }
 }) {
+
+    data class AdapterItem(
+        val type: Int,
+        val item: Item? = null,
+        val header: Long? = null,
+        val category: String? = null
+    )
 
     lateinit var clickCallback: (id: String, view: View) -> Unit
     lateinit var longClickCallback: (item: Item, view: View) -> Unit
     lateinit var itemCompletionChangeCallback: (id: String, completed: Boolean) -> Unit
     lateinit var userListClickCallback: (id: String, view: View) -> Unit
-
-    private val VIEW_TYPE_ITEM = 1
-    private val VIEW_TYPE_HEADER = 2
 
     private val dateFormat: DateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT)
 
@@ -56,13 +70,10 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
 
     private var lastCheckTimeStamp = 0L
 
-    init {
-        setHasStableIds(true)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TYPE_HEADER -> HeaderViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_shopping_list_header, parent, false))
+            VIEW_TYPE_CATEGORY -> CategoryViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_shopping_list_category, parent, false))
             else -> ItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_shopping_list_item, parent, false))
         }
     }
@@ -72,22 +83,12 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
             holder.bind()
         else if (holder is ItemViewHolder)
             holder.bind(position)
-    }
-
-    override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
-        if (holder is ItemViewHolder)
-            holder.unbind()
-    }
-
-    override fun getItemId(position: Int): Long {
-        return UUID.fromString(getItem(position).id).mostSignificantBits
+        else if (holder is CategoryViewHolder)
+            holder.bind(position)
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position == 0)
-            VIEW_TYPE_HEADER
-        else
-            VIEW_TYPE_ITEM
+        return getItem(position).type
     }
 
     @Synchronized
@@ -107,16 +108,24 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
 
         shoppingList = list
 
-        val checkSum = (list.owner?.sumBy { it.toInt() } ?: 0) + (list.name?.sumBy { it.toInt() } ?: 0) + (if (list.keepInSync) 1 else 2) + list.icon
+        val content = ArrayList<AdapterItem>()
+        content.add(AdapterItem(VIEW_TYPE_HEADER, header = 0L + (list.owner?.sumBy { it.toInt() } ?: 0) + (list.name?.sumBy { it.toInt() } ?: 0) + (if (list.keepInSync) 1 else 2) + list.icon + list.getAllUsersNoOwner().size))
 
-        submitList(list.items.filter { !it.deleted }.toMutableList().also {
-            it.add(0,
-                Item(
-                    id = "00000000-0000-0000-0000-000000000000",
-                    timestamp = UUID.fromString(list.id).mostSignificantBits + list.getAllUsersNoOwner().size + checkSum
-                )
-            )
-        })
+        var previousItem: Item? = null
+
+        for (item in shoppingList.items) {
+            if (previousItem == null ||
+                previousItem.completed != item.completed ||
+                (previousItem.category != item.category && shoppingList.hasCategory(previousItem.category))) {
+                content.add(AdapterItem(VIEW_TYPE_CATEGORY, category = item.category))
+            }
+
+            content.add(AdapterItem(VIEW_TYPE_ITEM, item = item))
+
+            previousItem = item
+        }
+
+        submitList(content)
     }
 
     @Synchronized
@@ -125,10 +134,20 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
 
         for (user in list) {
             for ((index, item) in currentList.iterator().withIndex()) {
-                if (user.id == item.addedBy || user.id == item.completedBy) {
+                if (item.type == VIEW_TYPE_ITEM && (user.id == item.item?.addedBy || user.id == item.item?.completedBy)) {
                     notifyItemChanged(index)
                 }
             }
+        }
+    }
+
+    inner class CategoryViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+
+        fun bind(position: Int) {
+            val category = getItem(position).category
+            val name = shoppingList.getCategoryName(category) ?: view.context.getString(R.string.activity_main_no_category)
+
+            view.findViewById<TextView>(R.id.row_shopping_list_category_text).text = name
         }
     }
 
@@ -205,12 +224,11 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
     inner class ItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(position: Int) {
-            val item = getItem(position)
+            val item = getItem(position).item ?: return
 
             view.findViewById<TextView>(R.id.row_shopping_list_item_name).text = item.name
             view.findViewById<TextView>(R.id.row_shopping_list_item_note).text = item.note
             view.findViewById<TextView>(R.id.row_shopping_list_item_last_update).text = view.context.getString(R.string.last_update, dateFormat.format(Date(item.timestamp)))
-            view.findViewById<TextView>(R.id.row_shopping_list_item_category).text = shoppingList.getCategoryName(item.category)
             view.findViewById<TextView>(R.id.row_shopping_list_item_quantity).text =
                     view.context.resources.getQuantityString(Units.getStringId(item.unit), item.quantity, item.quantity)
 
@@ -302,11 +320,6 @@ class ShoppingListItemsAdapter() : ListAdapter<Item, RecyclerView.ViewHolder>(ob
 
                 true
             }
-        }
-
-        fun unbind() {
-            view.findViewById<View>(R.id.row_shopping_list_item_check_box_overlay).setOnClickListener(null)
-            view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay_hitbox).setOnClickListener(null)
         }
 
         private fun setProfilePictures(item: Item) {

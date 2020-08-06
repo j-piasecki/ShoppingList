@@ -17,6 +17,8 @@
     <color name="categoriesRecyclerViewBackgroundColorLight">#dddddd</color>
     <color name="categoriesRecyclerViewBackgroundColorDark">#222222</color>
 
+    <color name="itemCompletedOverlayLight">#44000000</color>
+    <color name="itemCompletedOverlayDark">#66000000</color>
+
     <color name="userProfilePictureTransparentTint">#ccffffff</color>
-    <color name="itemCompletedOverlay">#66000000</color>
 </resources>

@@ -396,13 +396,20 @@ class ShoppingListsRepository @Inject constructor(
                 if (index != -1) {
                     if (list.keepInSync) {
                         val item = list.items[index].copy(completed = true, completedBy = FirebaseAuth.getInstance().currentUser?.uid, timestamp = Calendar.getInstance().timeInMillis)
+                        list.items[index] = item
+                        list.timestamp = Calendar.getInstance().timeInMillis
+
+                        shoppingListsDao.insert(list)
 
                         if (shoppingListsRemoteSource.addItemToList(listId, item)) {
-                            list.items[index] = item
+                            result.postValue(true)
+                        } else {
+                            list.items[index] = list.items[index].copy(completed = false, completedBy = null, timestamp = Calendar.getInstance().timeInMillis)
                             list.timestamp = Calendar.getInstance().timeInMillis
 
                             shoppingListsDao.insert(list)
-                            result.postValue(true)
+
+                            result.postValue(false)
                         }
                     } else {
                         list.items[index] = list.items[index].copy(completed = true, completedBy = FirebaseAuth.getInstance().currentUser?.uid, timestamp = Calendar.getInstance().timeInMillis)
@@ -431,14 +438,21 @@ class ShoppingListsRepository @Inject constructor(
 
                 if (index != -1) {
                     if (list.keepInSync) {
+                        val previousCompletedBy = list.items[index].completedBy
                         val item = list.items[index].copy(completed = false, completedBy = null, timestamp = Calendar.getInstance().timeInMillis)
+                        list.items[index] = item
+                        list.timestamp = Calendar.getInstance().timeInMillis
+
+                        shoppingListsDao.insert(list)
 
                         if (shoppingListsRemoteSource.addItemToList(listId, item)) {
-                            list.items[index] = item
+                            result.postValue(true)
+                        } else {
+                            list.items[index] = list.items[index].copy(completed = true, completedBy = previousCompletedBy, timestamp = Calendar.getInstance().timeInMillis)
                             list.timestamp = Calendar.getInstance().timeInMillis
 
                             shoppingListsDao.insert(list)
-                            result.postValue(true)
+                            result.postValue(false)
                         }
                     } else {
                         list.items[index] = list.items[index].copy(completed = false, completedBy = null, timestamp = Calendar.getInstance().timeInMillis)
@@ -450,6 +464,8 @@ class ShoppingListsRepository @Inject constructor(
                 } else {
                     result.postValue(false)
                 }
+            } else {
+                result.postValue(false)
             }
         }
 

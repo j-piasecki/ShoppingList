@@ -98,13 +98,13 @@ data class ShoppingList(
     @Exclude
     fun getCategoryPosition(id: String?): Int {
         if (id == null)
-            return Int.MAX_VALUE
+            return categories.size
 
         for ((index, data) in categories.iterator().withIndex()) {
             if (data["id"] == id)
                 return index
         }
 
-        return Int.MAX_VALUE
+        return categories.size
     }
 }

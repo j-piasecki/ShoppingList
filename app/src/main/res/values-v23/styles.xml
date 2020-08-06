@@ -17,5 +17,6 @@
         <item name="spinnerBackgroundColor">@color/spinnerBackgroundColorLight</item>
         <item name="spinnerBorderColor">@color/spinnerBorderColorLight</item>
         <item name="categoriesRecyclerViewBackgroundColor">@color/categoriesRecyclerViewBackgroundColorLight</item>
+        <item name="itemCompletedOverlayColor">@color/itemCompletedOverlayLight</item>
     </style>
 </resources>
