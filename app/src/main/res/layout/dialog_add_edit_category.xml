@@ -37,7 +37,8 @@
             android:id="@+id/dialog_add_category_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text|textCapSentences" />
+            android:inputType="text|textCapSentences"
+            android:maxLength="96"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton

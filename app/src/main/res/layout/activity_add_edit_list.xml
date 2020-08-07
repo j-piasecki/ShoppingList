@@ -55,7 +55,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:inputType="text|textCapSentences" />
+                    android:inputType="text|textCapSentences"
+                    android:maxLength="96"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <ImageView
@@ -88,7 +89,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:inputType="textMultiLine|textCapSentences" />
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:maxLength="256"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <Spinner
