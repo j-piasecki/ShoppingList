@@ -322,4 +322,29 @@
     <string-array name="water_keywords">
         <item>water</item>
     </string-array>
+
+    <string-array name="cucumber_keywords">
+        <item>cucumber</item>
+    </string-array>
+
+    <string-array name="kiwi_keywords">
+        <item>kiwi</item>
+    </string-array>
+
+    <string-array name="mango_keywords">
+        <item>mango</item>
+    </string-array>
+
+    <string-array name="melon_keywords">
+        <item>melon</item>
+    </string-array>
+
+    <string-array name="bread_keywords">
+        <item>bread</item>
+    </string-array>
+
+    <string-array name="bread_roll_keywords">
+        <item>bread</item>
+        <item>roll</item>
+    </string-array>
 </resources>

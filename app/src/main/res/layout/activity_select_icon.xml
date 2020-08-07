@@ -25,7 +25,7 @@
         android:id="@+id/activity_select_icon_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layoutAnimation="@anim/recycler_view_animation"
+        android:layoutAnimation="@anim/item_icons_list_animation"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

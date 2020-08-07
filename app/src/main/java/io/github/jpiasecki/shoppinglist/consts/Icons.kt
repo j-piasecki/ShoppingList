@@ -6,7 +6,7 @@ import io.github.jpiasecki.shoppinglist.other.normalize
 import kotlin.collections.HashMap
 
 object Icons {
-    const val ICONS_COUNT = 44
+    const val ICONS_COUNT = 50
 
     const val DEFAULT = 0
     const val APPLE = 1
@@ -52,6 +52,12 @@ object Icons {
     const val JUICE = 41
     const val MILK = 42
     const val WATER = 43
+    const val CUCUMBER = 44
+    const val KIWI = 45
+    const val MANGO = 46
+    const val MELON = 47
+    const val BREAD = 48
+    const val BREAD_ROLL = 49
 
     private val keywords: HashMap<Int, Array<String>> = HashMap()
 
@@ -100,6 +106,12 @@ object Icons {
             JUICE -> R.drawable.ic_juice_24
             MILK -> R.drawable.ic_milk_24
             WATER -> R.drawable.ic_water_24
+            CUCUMBER -> R.drawable.ic_cucumber_24
+            KIWI -> R.drawable.ic_kiwi_24
+            MANGO -> R.drawable.ic_mango_24
+            MELON -> R.drawable.ic_melon_24
+            BREAD -> R.drawable.ic_bread_24
+            BREAD_ROLL -> R.drawable.ic_bread_roll_24
 
             else -> R.drawable.ic_item_default_24
         }
@@ -183,5 +195,11 @@ object Icons {
         keywords[JUICE] = context.resources.getStringArray(R.array.juice_keywords)
         keywords[MILK] = context.resources.getStringArray(R.array.milk_keywords)
         keywords[WATER] = context.resources.getStringArray(R.array.water_keywords)
+        keywords[CUCUMBER] = context.resources.getStringArray(R.array.cucumber_keywords)
+        keywords[KIWI] = context.resources.getStringArray(R.array.kiwi_keywords)
+        keywords[MANGO] = context.resources.getStringArray(R.array.mango_keywords)
+        keywords[MELON] = context.resources.getStringArray(R.array.melon_keywords)
+        keywords[BREAD] = context.resources.getStringArray(R.array.bread_keywords)
+        keywords[BREAD_ROLL] = context.resources.getStringArray(R.array.bread_roll_keywords)
     }
 }
