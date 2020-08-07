@@ -2,7 +2,7 @@ package io.github.jpiasecki.shoppinglist.consts
 
 import android.content.Context
 import io.github.jpiasecki.shoppinglist.R
-import java.text.Normalizer
+import io.github.jpiasecki.shoppinglist.other.normalize
 import kotlin.collections.HashMap
 
 object Icons {
@@ -118,11 +118,7 @@ object Icons {
 
         var result = DEFAULT
         var match = 0
-        val words = Normalizer.normalize(name, Normalizer.Form.NFD)
-            .replace("\\p{M}".toRegex(), "")
-            .replace("ł", "l")
-            .replace("Ł", "L")
-            .split(" ")
+        val words = name.normalize().split(" ")
 
         for (entry in keywords) {
             var currentMatch = 0

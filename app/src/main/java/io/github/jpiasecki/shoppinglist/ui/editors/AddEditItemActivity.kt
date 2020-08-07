@@ -3,6 +3,7 @@ package io.github.jpiasecki.shoppinglist.ui.editors
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
 import android.widget.ArrayAdapter
@@ -121,6 +122,8 @@ class AddEditItemActivity : AppCompatActivity() {
             currentList = it
             listSynced = it.keepInSync
 
+            setupAutoComplete()
+
             if (itemId != null) {
                 supportActionBar?.setTitle(R.string.activity_add_edit_item_edit_item)
                 autoSetIcon = viewModel.getAutoSetIcons() == Config.AUTO_SET_ALWAYS
@@ -210,6 +213,32 @@ class AddEditItemActivity : AppCompatActivity() {
             } else {
                 showToast(getString(R.string.message_item_must_have_name))
             }
+        }
+    }
+
+    private fun setupAutoComplete() {
+        val adapter = ItemsAutoCompleteAdapter(this, currentList.items)
+        activity_add_edit_item_name.threshold = 1
+        activity_add_edit_item_name.setAdapter(adapter)
+        activity_add_edit_item_name.setOnItemClickListener { parent, view, position, id ->
+            val item = parent.getItemAtPosition(position) as Item
+
+            activity_add_edit_item_name.setText(item.name)
+            activity_add_edit_item_note.setText(item.note)
+
+            if (item.quantity > 0)
+                activity_add_edit_item_quantity.setText(item.quantity.toString())
+
+            populateUnitSpinner(item.quantity, item.unit)
+
+            if (currentList.hasCategory(item.category))
+                populateCategorySpinner(item.category)
+
+            if (item.price > 0)
+                activity_add_edit_item_price.setText(item.price.toString())
+
+            selectedIcon = item.icon
+            activity_add_edit_item_icon.setImageResource(Icons.getItemIconId(item.icon))
         }
     }
 

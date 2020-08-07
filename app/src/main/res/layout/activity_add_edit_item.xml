@@ -72,9 +72,11 @@
                 android:hint="@string/activity_add_edit_item_name_hint"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/activity_add_edit_item_icon"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:endIconMode="none"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                     android:id="@+id/activity_add_edit_item_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

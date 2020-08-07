@@ -8,6 +8,7 @@ import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.ui.main.ListsFragment
 import io.github.jpiasecki.shoppinglist.ui.main.MainActivity
 import io.github.jpiasecki.shoppinglist.ui.main.ShoppingListFragment
+import java.text.Normalizer
 
 fun FragmentManager.changeFragment(target: MainActivity.FragmentType, arguments: Bundle? = null): FragmentTransaction {
     val transaction = beginTransaction()
@@ -32,4 +33,11 @@ fun FragmentManager.changeFragment(target: MainActivity.FragmentType, arguments:
     transaction.setReorderingAllowed(true)
 
     return transaction
+}
+
+fun String.normalize(): String {
+    return Normalizer.normalize(this, Normalizer.Form.NFD)
+        .replace("\\p{M}".toRegex(), "")
+        .replace("ł", "l")
+        .replace("Ł", "L")
 }

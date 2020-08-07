@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/row_auto_complete_item_icon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_item_default_24"
+        android:layout_margin="8dp"/>
+
+    <TextView
+        android:id="@+id/row_auto_complete_item_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_toEndOf="@id/row_auto_complete_item_icon"
+        android:layout_alignTop="@id/row_auto_complete_item_icon"
+        android:layout_alignBottom="@id/row_auto_complete_item_icon"
+        android:gravity="center_vertical"
+        android:text="Name"
+        android:textSize="16sp"
+        android:textColor="?android:attr/textColorPrimary"
+        android:maxLines="1"
+        android:ellipsize="end"/>
+
+</RelativeLayout>
