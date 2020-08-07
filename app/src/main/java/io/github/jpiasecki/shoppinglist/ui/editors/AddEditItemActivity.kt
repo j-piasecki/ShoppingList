@@ -24,6 +24,7 @@ import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.ui.main.MainActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.AddEditItemViewModel
 import kotlinx.android.synthetic.main.activity_add_edit_item.*
+import kotlinx.coroutines.*
 
 @AndroidEntryPoint
 class AddEditItemActivity : AppCompatActivity() {
@@ -60,6 +61,8 @@ class AddEditItemActivity : AppCompatActivity() {
         setupIcon(listId, itemId)
 
         setupFab(listId, itemId)
+
+        setupAutoComplete()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -121,8 +124,6 @@ class AddEditItemActivity : AppCompatActivity() {
         viewModel.getShoppingList(listId).observe(this, Observer {
             currentList = it
             listSynced = it.keepInSync
-
-            setupAutoComplete()
 
             if (itemId != null) {
                 supportActionBar?.setTitle(R.string.activity_add_edit_item_edit_item)
@@ -205,8 +206,11 @@ class AddEditItemActivity : AppCompatActivity() {
                 }
 
                 if (!listSynced || Config.isNetworkConnected(this)) {
-                    viewModel.addItemToList(listId, item)
-                    finish()
+                    GlobalScope.launch(Dispatchers.Main) {
+                        viewModel.addItemToList(listId, item)
+                        delay(30)
+                        finish()
+                    }
                 } else {
                     showToast(getString(R.string.message_need_internet_to_modify_list))
                 }
@@ -217,28 +221,36 @@ class AddEditItemActivity : AppCompatActivity() {
     }
 
     private fun setupAutoComplete() {
-        val adapter = ItemsAutoCompleteAdapter(this, currentList.items)
-        activity_add_edit_item_name.threshold = 1
-        activity_add_edit_item_name.setAdapter(adapter)
-        activity_add_edit_item_name.setOnItemClickListener { parent, view, position, id ->
-            val item = parent.getItemAtPosition(position) as Item
+        GlobalScope.launch(Dispatchers.Main) {
+            var items = emptyList<Item>()
 
-            activity_add_edit_item_name.setText(item.name)
-            activity_add_edit_item_note.setText(item.note)
+            withContext(Dispatchers.IO) {
+                items = viewModel.getForAutoComplete()
+            }
 
-            if (item.quantity > 0)
-                activity_add_edit_item_quantity.setText(item.quantity.toString())
+            val adapter = ItemsAutoCompleteAdapter(this@AddEditItemActivity, items)
+            activity_add_edit_item_name.threshold = 1
+            activity_add_edit_item_name.setAdapter(adapter)
+            activity_add_edit_item_name.setOnItemClickListener { parent, view, position, id ->
+                val item = parent.getItemAtPosition(position) as Item
 
-            populateUnitSpinner(item.quantity, item.unit)
+                activity_add_edit_item_name.setText(item.name)
+                activity_add_edit_item_note.setText(item.note)
 
-            if (currentList.hasCategory(item.category))
-                populateCategorySpinner(item.category)
+                if (item.quantity > 0)
+                    activity_add_edit_item_quantity.setText(item.quantity.toString())
 
-            if (item.price > 0)
-                activity_add_edit_item_price.setText(item.price.toString())
+                populateUnitSpinner(item.quantity, item.unit)
 
-            selectedIcon = item.icon
-            activity_add_edit_item_icon.setImageResource(Icons.getItemIconId(item.icon))
+                if (currentList.hasCategory(item.category))
+                    populateCategorySpinner(item.category)
+
+                if (item.price > 0)
+                    activity_add_edit_item_price.setText(item.price.toString())
+
+                selectedIcon = item.icon
+                activity_add_edit_item_icon.setImageResource(Icons.getItemIconId(item.icon))
+            }
         }
     }
 

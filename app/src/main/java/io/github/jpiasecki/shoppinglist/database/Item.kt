@@ -1,11 +1,13 @@
 package io.github.jpiasecki.shoppinglist.database
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.firebase.firestore.Exclude
 import io.github.jpiasecki.shoppinglist.consts.Icons
 import io.github.jpiasecki.shoppinglist.consts.Units
 import java.util.*
 
-
+@Entity(tableName = "items")
 data class Item(
     val name: String? = null,
     val note: String? = null,
@@ -21,5 +23,6 @@ data class Item(
     val deleted: Boolean = false,
 
     @get:Exclude
+    @PrimaryKey(autoGenerate = false)
     val id: String = UUID.randomUUID().toString()
 )
