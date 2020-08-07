@@ -10,10 +10,12 @@ import io.github.jpiasecki.shoppinglist.database.ShoppingListsDao
 import io.github.jpiasecki.shoppinglist.remote.ShoppingListsRemoteSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class ShoppingListsRepository @Inject constructor(
     private val shoppingListsRemoteSource: ShoppingListsRemoteSource,
@@ -662,9 +664,18 @@ class ShoppingListsRepository @Inject constructor(
     suspend fun syncAllListsBlocking(): Boolean {
         val allLists = shoppingListsDao.getAllIds()
 
+        val jobs = ArrayList<Job>()
+
         for (id in allLists) {
-            syncListBlocking(id)
+            jobs.add(
+                GlobalScope.launch(Dispatchers.IO) {
+                    syncListBlocking(id)
+                }
+            )
         }
+
+        for (job in jobs)
+            job.join()
 
         return true
     }

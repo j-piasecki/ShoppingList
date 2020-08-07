@@ -253,7 +253,13 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
 
             setupCheckBox(item)
 
-            if (item.note == null || item.note.isEmpty()) {
+            showOrHideViews(item)
+
+            setListeners(item)
+        }
+
+        private fun showOrHideViews(item: Item) {
+            if (!item.completed && (item.note == null || item.note.isEmpty())) {
                 view.findViewById<TextView>(R.id.row_shopping_list_item_note).visibility = View.GONE
             } else {
                 view.findViewById<TextView>(R.id.row_shopping_list_item_note).visibility = View.VISIBLE
@@ -271,22 +277,6 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
             } else {
                 view.findViewById<ImageView>(R.id.row_shopping_list_item_added_by_icon).setImageBitmap(null)
                 view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon).visibility = View.GONE
-            }
-
-            view.setOnClickListener {
-                clickCallback(item.id, it)
-            }
-
-            view.setOnLongClickListener {
-                longClickCallback(item, it)
-
-                true
-            }
-
-            view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay)?.setOnLongClickListener {
-                longClickCallback(item, it)
-
-                true
             }
         }
 
@@ -381,6 +371,24 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
                 }
 
                 TooltipCompat.setTooltipText(view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon), completedBy.name)
+            }
+        }
+
+        private fun setListeners(item: Item) {
+            view.setOnClickListener {
+                clickCallback(item.id, it)
+            }
+
+            view.setOnLongClickListener {
+                longClickCallback(item, it)
+
+                true
+            }
+
+            view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay)?.setOnLongClickListener {
+                longClickCallback(item, it)
+
+                true
             }
         }
     }
