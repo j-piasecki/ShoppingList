@@ -62,6 +62,8 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
     lateinit var itemCompletionChangeCallback: (id: String, completed: Boolean) -> Unit
     lateinit var userListClickCallback: (id: String, view: View) -> Unit
 
+    var timestampSetting = Config.SHOW_TIMESTAMP_WHEN_SYNCED
+
     private val dateFormat: DateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT)
 
     private var usersList: List<User> = emptyList()
@@ -235,6 +237,7 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
             view.findViewById<TextView>(R.id.row_shopping_list_item_last_update).text = view.context.getString(R.string.last_update, dateFormat.format(Date(item.timestamp)))
             view.findViewById<TextView>(R.id.row_shopping_list_item_quantity).text =
                     view.context.resources.getQuantityString(Units.getStringId(item.unit), item.quantity, item.quantity)
+            view.findViewById<ImageView>(R.id.row_shopping_list_item_icon).setImageResource(Icons.getItemIconId(item.icon))
 
             if (item.price > 0) {
                 if (shoppingList.currency == null) {
@@ -248,21 +251,52 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
                 view.findViewById<TextView>(R.id.row_shopping_list_item_price).text = ""
             }
 
-            view.findViewById<ImageView>(R.id.row_shopping_list_item_icon).setImageResource(Icons.getItemIconId(item.icon))
+            setupCheckBox(item)
 
-            view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box).isChecked = item.completed
-
-            if (item.completed) {
-                view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility = View.VISIBLE
+            if (item.note == null || item.note.isEmpty()) {
+                view.findViewById<TextView>(R.id.row_shopping_list_item_note).visibility = View.GONE
             } else {
-                view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility = View.GONE
+                view.findViewById<TextView>(R.id.row_shopping_list_item_note).visibility = View.VISIBLE
+            }
+
+            when (timestampSetting) {
+                Config.SHOW_TIMESTAMP_ALWAYS -> view.findViewById<TextView>(R.id.row_shopping_list_item_last_update).visibility = View.VISIBLE
+                Config.SHOW_TIMESTAMP_WHEN_SYNCED -> view.findViewById<TextView>(R.id.row_shopping_list_item_last_update).visibility = if (shoppingList.keepInSync) View.VISIBLE else View.GONE
+
+                else -> view.findViewById<TextView>(R.id.row_shopping_list_item_last_update).visibility = View.GONE
             }
 
             if (shoppingList.keepInSync) {
                 setProfilePictures(item)
             } else {
                 view.findViewById<ImageView>(R.id.row_shopping_list_item_added_by_icon).setImageBitmap(null)
-                view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon).setImageBitmap(null)
+                view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon).visibility = View.GONE
+            }
+
+            view.setOnClickListener {
+                clickCallback(item.id, it)
+            }
+
+            view.setOnLongClickListener {
+                longClickCallback(item, it)
+
+                true
+            }
+
+            view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay)?.setOnLongClickListener {
+                longClickCallback(item, it)
+
+                true
+            }
+        }
+
+        private fun setupCheckBox(item: Item) {
+            view.findViewById<MaterialCheckBox>(R.id.row_shopping_list_item_completed_check_box).isChecked = item.completed
+
+            if (item.completed) {
+                view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility = View.VISIBLE
+            } else {
+                view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay).visibility = View.GONE
             }
 
             view.findViewById<View>(R.id.row_shopping_list_item_check_box_overlay).setOnClickListener {
@@ -308,22 +342,6 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
                     lastCheckTimeStamp = Calendar.getInstance().timeInMillis
                 }
             }
-
-            view.setOnClickListener {
-                clickCallback(item.id, it)
-            }
-
-            view.setOnLongClickListener {
-                longClickCallback(item, it)
-
-                true
-            }
-
-            view.findViewById<View>(R.id.row_shopping_list_item_completed_overlay)?.setOnLongClickListener {
-                longClickCallback(item, it)
-
-                true
-            }
         }
 
         private fun setProfilePictures(item: Item) {
@@ -346,8 +364,10 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
             val completedBy = usersList.find { it.id == item.completedBy }
 
             if (completedBy == null) {
-                view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon).setImageBitmap(null)
+                view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon).visibility = View.GONE
             } else {
+                view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon).visibility = View.VISIBLE
+
                 if (completedBy.profilePicture != null) {
                     view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon)
                         .setImageBitmap(completedBy.profilePicture)

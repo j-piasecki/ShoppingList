@@ -25,4 +25,8 @@ class SettingsViewModel @ViewModelInject constructor(
     fun getAutoSetIcons() = config.getAutoSetIcons()
 
     fun setAutoSetIcons(type: Int) = config.setAutoSetIcons(type)
+
+    fun getTimestampDisplay() = config.getTimestampDisplay()
+
+    fun setTimestampDisplay(type: Int) = config.setTimestampDisplay(type)
 }

@@ -35,6 +35,7 @@ class SettingsActivity : AppCompatActivity() {
         setupListsSortTypeSpinner()
         setupItemsSortTypeSpinner()
         setupAutoSetIconsSpinner()
+        setupShowTimestampSpinner()
     }
 
     private fun setupDarkThemeToggle() {
@@ -95,6 +96,22 @@ class SettingsActivity : AppCompatActivity() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 viewModel.setAutoSetIcons(position)
+            }
+        }
+    }
+
+    private fun setupShowTimestampSpinner() {
+        val values = listOf(getString(R.string.show_timestamp_always), getString(R.string.show_timestamp_never), getString(R.string.show_timestamp_when_synced))
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, values)
+
+        activity_settings_show_timestamp_spinner.adapter = adapter
+        activity_settings_show_timestamp_spinner.setSelection(viewModel.getTimestampDisplay())
+
+        activity_settings_show_timestamp_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                viewModel.setTimestampDisplay(position)
             }
         }
     }

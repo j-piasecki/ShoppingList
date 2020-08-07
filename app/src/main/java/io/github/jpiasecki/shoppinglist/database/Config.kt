@@ -20,6 +20,7 @@ class Config(private val context: Context) {
         const val SETTINGS_LISTS_SORT_TYPE = "SETTINGS_LISTS_SORT_TYPE"
         const val SETTINGS_ITEMS_SORT_TYPE = "SETTINGS_ITEMS_SORT_TYPE"
         const val SETTINGS_AUTO_SET_ICONS = "SETTINGS_AUTO_SET_ICONS"
+        const val SETTINGS_SHOW_TIMESTAMP = "SETTINGS_SHOW_TIMESTAMP"
 
         const val SORT_TYPE_NEWEST = 0
         const val SORT_TYPE_ALPHABETICALLY = 1
@@ -27,6 +28,10 @@ class Config(private val context: Context) {
         const val AUTO_SET_ALWAYS = 0
         const val AUTO_SET_NEVER = 1
         const val AUTO_SET_WHEN_NEW = 2
+
+        const val SHOW_TIMESTAMP_ALWAYS = 0
+        const val SHOW_TIMESTAMP_NEVER = 1
+        const val SHOW_TIMESTAMP_WHEN_SYNCED = 2
 
         fun isNetworkConnected(context: Context?): Boolean {
             if (context == null)
@@ -69,6 +74,8 @@ class Config(private val context: Context) {
 
     fun getAutoSetIcons() = preferences.getInt(SETTINGS_AUTO_SET_ICONS, AUTO_SET_WHEN_NEW)
 
+    fun getTimestampDisplay() = preferences.getInt(SETTINGS_SHOW_TIMESTAMP, SHOW_TIMESTAMP_WHEN_SYNCED)
+
     fun updateProfilePictureUpdateTimestamp() = preferences.edit().putLong(
         PROFILE_PICTURE_UPDATE_TIMESTAMP,
         Calendar.getInstance().timeInMillis
@@ -101,6 +108,11 @@ class Config(private val context: Context) {
 
     fun setAutoSetIcons(type: Int) = preferences.edit().putInt(
         SETTINGS_AUTO_SET_ICONS,
+        type
+    ).apply()
+
+    fun setTimestampDisplay(type: Int) = preferences.edit().putInt(
+        SETTINGS_SHOW_TIMESTAMP,
         type
     ).apply()
 }

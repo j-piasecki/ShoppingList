@@ -115,6 +115,28 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/activity_settings_spinners_width_guideline"
                 app:layout_constraintTop_toTopOf="@+id/activity_settings_auto_set_icons_text" />
+
+            <TextView
+                android:id="@+id/activity_settings_show_timestamp_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/activity_settings_show_timestamp_text"
+                android:textSize="16sp"
+                android:textColor="?android:attr/textColorPrimary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activity_settings_auto_set_icons_spinner" />
+
+            <Spinner
+                android:id="@+id/activity_settings_show_timestamp_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/activity_settings_show_timestamp_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/activity_settings_spinners_width_guideline"
+                app:layout_constraintTop_toTopOf="@+id/activity_settings_show_timestamp_text" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
