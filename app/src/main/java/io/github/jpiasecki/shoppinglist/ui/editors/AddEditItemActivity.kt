@@ -43,9 +43,7 @@ class AddEditItemActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_24)
 
-        val autoSetIconType = viewModel.getAutoSetIcons()
-
-        if (autoSetIconType == Config.AUTO_SET_NEVER)
+        if (viewModel.getAutoSetIcons() == Config.AUTO_SET_NEVER)
             autoSetIcon = false
 
         val listId = intent.getStringExtra(Values.SHOPPING_LIST_ID)
@@ -54,94 +52,13 @@ class AddEditItemActivity : AppCompatActivity() {
         if (listId == null)
             finish()
 
-        viewModel.getShoppingList(listId!!).observe(this, Observer {
-            currentList = it
-            listSynced = it.keepInSync
+        tryLoadingItem(listId!!, itemId)
 
-            if (itemId != null) {
-                supportActionBar?.setTitle(R.string.activity_add_edit_item_edit_item)
-                autoSetIcon = autoSetIconType == Config.AUTO_SET_ALWAYS
+        setupTextListeners()
 
-                it.items.firstOrNull { it.id == itemId }?.let {
-                    activity_add_edit_item_name.setText(it.name)
-                    activity_add_edit_item_note.setText(it.note)
+        setupIcon(listId, itemId)
 
-                    if (it.quantity > 0)
-                        activity_add_edit_item_quantity.setText(it.quantity.toString())
-
-                    populateCategorySpinner(it.category)
-                    populateUnitSpinner(it.quantity, it.unit)
-
-                    if (it.price > 0)
-                        activity_add_edit_item_price.setText(it.price.toString())
-
-                    selectedIcon = it.icon
-                    activity_add_edit_item_icon.setImageResource(Icons.getItemIconId(it.icon))
-                }
-            } else {
-                populateCategorySpinner()
-                populateUnitSpinner(0, Units.NO_UNIT)
-            }
-        })
-
-        activity_add_edit_item_quantity.addTextChangedListener {
-            populateUnitSpinner(
-                it.toString().toIntOrNull() ?: 0,
-                if (activity_add_edit_item_unit.selectedItemPosition >= 0) Units.ALL[activity_add_edit_item_unit.selectedItemPosition] else Units.NO_UNIT
-            )
-        }
-
-        activity_add_edit_item_name.addTextChangedListener {
-            if (autoSetIcon) {
-                val newIcon = Icons.getIconFromName(it.toString(), this)
-
-                if (selectedIcon != newIcon) {
-                    selectedIcon = newIcon
-                    activity_add_edit_item_icon.setImageResource(Icons.getItemIconId(newIcon))
-                }
-            }
-        }
-
-        activity_add_edit_item_icon.setOnClickListener {
-            startActivityForResult(
-                Intent(this, SelectIconActivity::class.java)
-                    .putExtra(Values.SHOPPING_LIST_ID, listId)
-                    .putExtra(Values.ITEM_ID, itemId)
-                    .putExtra(Values.NAME, activity_add_edit_item_name.text.toString()),
-                Values.RC_SELECT_ICON,
-                MainActivity.getAnimationBundle(activity_add_edit_item_icon)
-            )
-        }
-
-        activity_add_edit_item_fab.setOnClickListener {
-            val name = activity_add_edit_item_name.text.toString().trim()
-
-            if (name.isNotEmpty()) {
-                var item = Item(
-                    name = name,
-                    note = activity_add_edit_item_note.text.toString(),
-                    quantity = activity_add_edit_item_quantity.text.toString().toIntOrNull() ?: 0,
-                    addedBy = FirebaseAuth.getInstance().currentUser?.uid,
-                    price = activity_add_edit_item_price.text.toString().toDoubleOrNull() ?: 0.0,
-                    icon = selectedIcon,
-                    unit = Units.ALL[activity_add_edit_item_unit.selectedItemPosition],
-                    category = getSelectedCategory()
-                )
-
-                if (itemId != null) {
-                    item = item.copy(id = itemId)
-                }
-
-                if (!listSynced || Config.isNetworkConnected(this)) {
-                    viewModel.addItemToList(listId!!, item)
-                    finish()
-                } else {
-                    showToast(getString(R.string.message_need_internet_to_modify_list))
-                }
-            } else {
-                showToast(getString(R.string.message_item_must_have_name))
-            }
-        }
+        setupFab(listId, itemId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -197,6 +114,103 @@ class AddEditItemActivity : AppCompatActivity() {
 
         activity_add_edit_item_unit.adapter = adapter
         activity_add_edit_item_unit.setSelection(Units.ALL.indexOf(currentUnit))
+    }
+
+    private fun tryLoadingItem(listId: String, itemId: String?) {
+        viewModel.getShoppingList(listId).observe(this, Observer {
+            currentList = it
+            listSynced = it.keepInSync
+
+            if (itemId != null) {
+                supportActionBar?.setTitle(R.string.activity_add_edit_item_edit_item)
+                autoSetIcon = viewModel.getAutoSetIcons() == Config.AUTO_SET_ALWAYS
+
+                it.items.firstOrNull { it.id == itemId }?.let {
+                    activity_add_edit_item_name.setText(it.name)
+                    activity_add_edit_item_note.setText(it.note)
+
+                    if (it.quantity > 0)
+                        activity_add_edit_item_quantity.setText(it.quantity.toString())
+
+                    populateCategorySpinner(it.category)
+                    populateUnitSpinner(it.quantity, it.unit)
+
+                    if (it.price > 0)
+                        activity_add_edit_item_price.setText(it.price.toString())
+
+                    selectedIcon = it.icon
+                    activity_add_edit_item_icon.setImageResource(Icons.getItemIconId(it.icon))
+                }
+            } else {
+                populateCategorySpinner()
+                populateUnitSpinner(0, Units.NO_UNIT)
+            }
+        })
+    }
+
+    private fun setupTextListeners() {
+        activity_add_edit_item_quantity.addTextChangedListener {
+            populateUnitSpinner(
+                it.toString().toIntOrNull() ?: 0,
+                if (activity_add_edit_item_unit.selectedItemPosition >= 0) Units.ALL[activity_add_edit_item_unit.selectedItemPosition] else Units.NO_UNIT
+            )
+        }
+
+        activity_add_edit_item_name.addTextChangedListener {
+            if (autoSetIcon) {
+                val newIcon = Icons.getIconFromName(it.toString(), this)
+
+                if (selectedIcon != newIcon) {
+                    selectedIcon = newIcon
+                    activity_add_edit_item_icon.setImageResource(Icons.getItemIconId(newIcon))
+                }
+            }
+        }
+    }
+
+    private fun setupIcon(listId: String, itemId: String?) {
+        activity_add_edit_item_icon.setOnClickListener {
+            startActivityForResult(
+                Intent(this, SelectIconActivity::class.java)
+                    .putExtra(Values.SHOPPING_LIST_ID, listId)
+                    .putExtra(Values.ITEM_ID, itemId)
+                    .putExtra(Values.NAME, activity_add_edit_item_name.text.toString()),
+                Values.RC_SELECT_ICON,
+                MainActivity.getAnimationBundle(activity_add_edit_item_icon)
+            )
+        }
+    }
+
+    private fun setupFab(listId: String, itemId: String?) {
+        activity_add_edit_item_fab.setOnClickListener {
+            val name = activity_add_edit_item_name.text.toString().trim()
+
+            if (name.isNotEmpty()) {
+                var item = Item(
+                    name = name,
+                    note = activity_add_edit_item_note.text.toString(),
+                    quantity = activity_add_edit_item_quantity.text.toString().toIntOrNull() ?: 0,
+                    addedBy = FirebaseAuth.getInstance().currentUser?.uid,
+                    price = activity_add_edit_item_price.text.toString().toDoubleOrNull() ?: 0.0,
+                    icon = selectedIcon,
+                    unit = Units.ALL[activity_add_edit_item_unit.selectedItemPosition],
+                    category = getSelectedCategory()
+                )
+
+                if (itemId != null) {
+                    item = item.copy(id = itemId)
+                }
+
+                if (!listSynced || Config.isNetworkConnected(this)) {
+                    viewModel.addItemToList(listId, item)
+                    finish()
+                } else {
+                    showToast(getString(R.string.message_need_internet_to_modify_list))
+                }
+            } else {
+                showToast(getString(R.string.message_item_must_have_name))
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

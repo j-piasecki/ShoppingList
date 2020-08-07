@@ -63,6 +63,18 @@ class AddEditListActivity : AppCompatActivity() {
 
         initCategoriesRecyclerView()
 
+        tryLoadingList(listId)
+
+        activity_add_edit_list_add_category_button.setOnClickListener {
+            addCategory()
+        }
+
+        setupIcon(listId)
+
+        setupFab()
+    }
+
+    private fun tryLoadingList(listId: String?) {
         if (listId != null) {
             viewModel.getList(listId).observe(this, Observer {
                 currentList = it
@@ -81,11 +93,9 @@ class AddEditListActivity : AppCompatActivity() {
 
             supportActionBar?.title = getString(R.string.activity_add_edit_list_edit_list)
         }
+    }
 
-        activity_add_edit_list_add_category_button.setOnClickListener {
-            addCategory()
-        }
-
+    private fun setupIcon(listId: String?) {
         activity_add_edit_list_icon.setOnClickListener {
             startActivityForResult(
                 Intent(this, SelectIconActivity::class.java)
@@ -94,32 +104,6 @@ class AddEditListActivity : AppCompatActivity() {
                 Values.RC_SELECT_ICON,
                 MainActivity.getAnimationBundle(activity_add_edit_list_icon)
             )
-        }
-
-        activity_add_edit_list_fab.setOnClickListener {
-            val name = activity_add_edit_list_name.text.toString().trim()
-
-            if (name.isNotBlank()) {
-                currentList.name = name
-                currentList.note = activity_add_edit_list_note.text.toString()
-                currentList.currency =
-                    currencyList[activity_add_edit_list_currency.selectedItemPosition].currencyCode
-                currentList.timestamp = Calendar.getInstance().timeInMillis
-                currentList.icon = selectedIcon
-                currentList.categories = adapter.getCategories()
-
-                if (createNew) {
-                    viewModel.createList(currentList)
-                    finish()
-                } else if (!listSynced || Config.isNetworkConnected(this)) {
-                    viewModel.updateList(currentList)
-                    finish()
-                } else {
-                    showToast(getString(R.string.message_need_internet_to_modify_list))
-                }
-            } else {
-                showToast(getString(R.string.message_list_must_have_name))
-            }
         }
     }
 
@@ -177,6 +161,34 @@ class AddEditListActivity : AppCompatActivity() {
         }
 
         dialog.show()
+    }
+
+    private fun setupFab() {
+        activity_add_edit_list_fab.setOnClickListener {
+            val name = activity_add_edit_list_name.text.toString().trim()
+
+            if (name.isNotBlank()) {
+                currentList.name = name
+                currentList.note = activity_add_edit_list_note.text.toString()
+                currentList.currency =
+                    currencyList[activity_add_edit_list_currency.selectedItemPosition].currencyCode
+                currentList.timestamp = Calendar.getInstance().timeInMillis
+                currentList.icon = selectedIcon
+                currentList.categories = adapter.getCategories()
+
+                if (createNew) {
+                    viewModel.createList(currentList)
+                    finish()
+                } else if (!listSynced || Config.isNetworkConnected(this)) {
+                    viewModel.updateList(currentList)
+                    finish()
+                } else {
+                    showToast(getString(R.string.message_need_internet_to_modify_list))
+                }
+            } else {
+                showToast(getString(R.string.message_list_must_have_name))
+            }
+        }
     }
 
     private fun initCategoriesRecyclerView() {
