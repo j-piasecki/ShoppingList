@@ -18,6 +18,8 @@ object Values {
     const val ITEM_COMPLETION_CHANGE_TIMER = 400
     const val STALE_ITEM_DELETION_DELAY = 5 * 24 * 60 * 60 * 1000
 
+    const val ITEMS_PER_AD = 10
+
     const val LISTENER_RESTART_TIMER = 10 * 1000
     const val LISTENER_RESTART_LIMIT = 3
 

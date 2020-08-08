@@ -14,7 +14,10 @@ import androidx.appcompat.widget.TooltipCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.ads.formats.UnifiedNativeAd
+import com.google.android.gms.ads.formats.UnifiedNativeAdView
 import com.google.android.material.checkbox.MaterialCheckBox
+import io.github.jpiasecki.shoppinglist.AdProvider
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Icons
 import io.github.jpiasecki.shoppinglist.consts.Units
@@ -33,20 +36,23 @@ import kotlin.math.roundToInt
 private const val VIEW_TYPE_ITEM = 1
 private const val VIEW_TYPE_HEADER = 2
 private const val VIEW_TYPE_CATEGORY = 3
+private const val VIEW_TYPE_AD = 4
 
 class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterItem, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<AdapterItem>() {
     override fun areItemsTheSame(oldItem: AdapterItem, newItem: AdapterItem): Boolean {
         return oldItem.type == newItem.type && (
                     (oldItem.type == VIEW_TYPE_ITEM && oldItem.item?.id == newItem.item?.id) ||
                     (oldItem.type == VIEW_TYPE_HEADER && oldItem.header == newItem.header) ||
-                    (oldItem.type == VIEW_TYPE_CATEGORY && oldItem.category == newItem.category))
+                    (oldItem.type == VIEW_TYPE_CATEGORY && oldItem.category == newItem.category) ||
+                    (oldItem.type == VIEW_TYPE_AD))
     }
 
     override fun areContentsTheSame(oldItem: AdapterItem, newItem: AdapterItem): Boolean {
         return oldItem.type == newItem.type && (
                     (oldItem.type == VIEW_TYPE_ITEM && oldItem.item == newItem.item) ||
                     (oldItem.type == VIEW_TYPE_HEADER && oldItem.header == newItem.header) ||
-                    (oldItem.type == VIEW_TYPE_CATEGORY && oldItem.category == newItem.category))
+                    (oldItem.type == VIEW_TYPE_CATEGORY && oldItem.category == newItem.category) ||
+                    (oldItem.type == VIEW_TYPE_AD && oldItem.addId == newItem.addId && oldItem.addId >= 0))
     }
 }) {
 
@@ -54,7 +60,8 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
         val type: Int,
         val item: Item? = null,
         val header: Long? = null,
-        val category: String? = null
+        val category: String? = null,
+        var addId: Int = -1
     )
 
     lateinit var clickCallback: (id: String, view: View) -> Unit
@@ -63,6 +70,7 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
     lateinit var userListClickCallback: (id: String, view: View) -> Unit
 
     var timestampSetting = Config.SHOW_TIMESTAMP_WHEN_SYNCED
+    var displayAds = true
 
     private val dateFormat: DateFormat = DateFormat.getDateTimeInstance(DateFormat.DEFAULT, DateFormat.SHORT)
 
@@ -76,6 +84,7 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
         return when (viewType) {
             VIEW_TYPE_HEADER -> HeaderViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_shopping_list_header, parent, false))
             VIEW_TYPE_CATEGORY -> CategoryViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_shopping_list_category, parent, false))
+            VIEW_TYPE_AD -> AdViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_shopping_list_ad, parent, false))
             else -> ItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_shopping_list_item, parent, false))
         }
     }
@@ -86,6 +95,8 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
         else if (holder is ItemViewHolder)
             holder.bind(position)
         else if (holder is CategoryViewHolder)
+            holder.bind(position)
+        else if (holder is AdViewHolder)
             holder.bind(position)
     }
 
@@ -115,7 +126,7 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
 
         var previousItem: Item? = null
 
-        for (item in shoppingList.items) {
+        for ((index, item) in shoppingList.items.iterator().withIndex()) {
             if (previousItem == null ||
                 previousItem.completed != item.completed ||
                 (previousItem.category != item.category && shoppingList.hasCategory(previousItem.category))) {
@@ -123,6 +134,9 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
             }
 
             content.add(AdapterItem(VIEW_TYPE_ITEM, item = item))
+
+            if (displayAds && (index + 1) % Values.ITEMS_PER_AD == 0)
+                content.add(AdapterItem(VIEW_TYPE_AD))
 
             previousItem = item
         }
@@ -389,6 +403,57 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
                 longClickCallback(item, it)
 
                 true
+            }
+        }
+    }
+
+    inner class AdViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+
+        fun bind(position: Int) {
+            if (getItem(position).addId == -1)
+                getItem(position).addId = AdProvider.getNextAdId()
+
+            val ad = AdProvider.getAd(getItem(position).addId)
+
+            if (ad != null) {
+                setAd(ad)
+            } else {
+                view.findViewById<UnifiedNativeAdView>(R.id.row_shopping_list_ad_view).visibility = View.GONE
+            }
+        }
+
+        private fun setAd(ad: UnifiedNativeAd) {
+            val adView = view.findViewById<UnifiedNativeAdView>(R.id.row_shopping_list_ad_view)
+            adView.visibility = View.VISIBLE
+            adView.setNativeAd(ad)
+
+            if (ad.icon == null) {
+                view.findViewById<ImageView>(R.id.row_shopping_list_ad_icon).visibility = View.GONE
+            } else {
+                view.findViewById<ImageView>(R.id.row_shopping_list_ad_icon).apply {
+                    visibility = View.VISIBLE
+                    setImageDrawable(ad.icon.drawable)
+                    adView.iconView = this
+                }
+            }
+
+            view.findViewById<TextView>(R.id.row_shopping_list_ad_headline).apply {
+                text = ad.headline
+                adView.headlineView = this
+            }
+            view.findViewById<TextView>(R.id.row_shopping_list_ad_body).apply {
+                text = ad.body
+                adView.bodyView = this
+            }
+
+            view.findViewById<TextView>(R.id.row_shopping_list_ad_call_to_action).apply {
+                text = ad.callToAction
+                adView.callToActionView = this
+            }
+
+            view.findViewById<TextView>(R.id.row_shopping_list_ad_advertiser).apply {
+                text = ad.advertiser
+                adView.advertiserView = this
             }
         }
     }

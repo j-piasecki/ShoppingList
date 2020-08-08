@@ -126,6 +126,7 @@ class ShoppingListFragment : Fragment() {
                     })
 
                     adapter.timestampSetting = viewModel.getTimestampDisplay()
+                    adapter.displayAds = viewModel.areAdsEnabled()
                     adapter.setList(it)
                     if (currentList == null)
                         view?.findViewById<RecyclerView>(R.id.fragment_shopping_list_recycler_view)?.apply {

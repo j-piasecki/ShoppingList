@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
+import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.jpiasecki.shoppinglist.AdProvider
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.ui.main.MainActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.SplashViewModel
@@ -25,6 +27,10 @@ class SplashActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_splash)
+
+        MobileAds.initialize(applicationContext)
+        if (viewModel.areAdsEnabled())
+            AdProvider.loadAds(this)
 
         viewModel.onSplashLaunch()
 

@@ -213,4 +213,6 @@ class MainViewModel @ViewModelInject constructor(
     fun stopListeningForMetadataChanges() = shoppingListsRepository.stopListeningForMetadataChanges()
 
     fun getTimestampDisplay() = config.getTimestampDisplay()
+
+    fun areAdsEnabled() = config.areAdsEnabled()
 }

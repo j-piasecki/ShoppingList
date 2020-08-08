@@ -31,6 +31,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.jpiasecki.shoppinglist.AdProvider
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.consts.Values.RC_SIGN_IN
@@ -334,6 +335,12 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_activity_main_lists_bottom_app_bar, menu)
 
         return true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        AdProvider.destroyAds()
     }
 
     private fun loadUserProfilePicture() {

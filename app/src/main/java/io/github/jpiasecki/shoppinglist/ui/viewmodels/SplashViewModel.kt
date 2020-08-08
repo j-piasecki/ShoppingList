@@ -17,6 +17,8 @@ class SplashViewModel @ViewModelInject constructor(
     private val config: Config
 ) : ViewModel() {
 
+    fun areAdsEnabled() = config.areAdsEnabled()
+
     fun isDarkThemeEnabled() = config.isDarkThemeEnabled()
 
     fun onSplashLaunch() {
