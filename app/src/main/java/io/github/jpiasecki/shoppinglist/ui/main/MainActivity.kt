@@ -275,13 +275,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initFragments() {
-        val listsFragment = ListsFragment()
-        val shoppingListFragment = ShoppingListFragment()
-
         val transaction = supportFragmentManager.beginTransaction()
 
-        transaction.add(R.id.activity_main_frame_layout, shoppingListFragment, Values.FRAGMENT_SHOPPING_LIST_TAG)
-        transaction.add(R.id.activity_main_frame_layout, listsFragment, Values.FRAGMENT_LISTS_TAG)
+        val shoppingListFragment = supportFragmentManager.findFragmentByTag(Values.FRAGMENT_SHOPPING_LIST_TAG) ?: ShoppingListFragment().also {
+            transaction.add(R.id.activity_main_frame_layout, it, Values.FRAGMENT_SHOPPING_LIST_TAG)
+        }
+
+        val listsFragment = supportFragmentManager.findFragmentByTag(Values.FRAGMENT_LISTS_TAG) ?: ListsFragment().also {
+            transaction.add(R.id.activity_main_frame_layout, it, Values.FRAGMENT_LISTS_TAG)
+        }
 
         transaction.hide(shoppingListFragment)
         transaction.setPrimaryNavigationFragment(listsFragment)
