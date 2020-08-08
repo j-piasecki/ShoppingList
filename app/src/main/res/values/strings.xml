@@ -352,4 +352,16 @@
         <item>bread</item>
         <item>roll</item>
     </string-array>
+
+    <string-array name="cheese_keywords">
+        <item>cheese</item>
+    </string-array>
+
+    <string-array name="cookie_keywords">
+        <item>cookie</item>
+    </string-array>
+
+    <string-array name="meat_keywords">
+        <item>meat</item>
+    </string-array>
 </resources>
