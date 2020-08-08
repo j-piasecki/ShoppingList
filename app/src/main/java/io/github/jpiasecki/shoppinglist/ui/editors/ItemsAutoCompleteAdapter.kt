@@ -12,15 +12,15 @@ import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Icons
 import io.github.jpiasecki.shoppinglist.database.Item
 
-class ItemsAutoCompleteAdapter(context: Context, private val data: List<Item>) :
-    ArrayAdapter<Item>(context, R.layout.row_auto_complete_item, data.toMutableList()) {
+class ItemsAutoCompleteAdapter(context: Context, private val data: Map<String?, List<Item>>) :
+    ArrayAdapter<List<Item>>(context, R.layout.row_auto_complete_item, ArrayList()) {
 
-    private val suggestions = ArrayList<Item>()
+    private val suggestions = ArrayList<List<Item>>()
 
     private val filter = object : Filter() {
         override fun convertResultToString(resultValue: Any?): CharSequence {
-            val item = resultValue as Item
-            return item.name ?: ""
+            val item = resultValue as List<Item>
+            return item.firstOrNull()?.name ?: ""
         }
 
         override fun performFiltering(constraint: CharSequence?): FilterResults {
@@ -29,9 +29,9 @@ class ItemsAutoCompleteAdapter(context: Context, private val data: List<Item>) :
             if (constraint != null) {
                 val str = constraint.toString()
 
-                for (item in data) {
-                    if (item.name?.startsWith(str, ignoreCase = true) == true) {
-                        suggestions.add(item)
+                for (entry in data) {
+                    if (entry.key?.startsWith(str, ignoreCase = true) == true) {
+                        suggestions.add(entry.value)
 
                         if (suggestions.size >= 15)
                             break
@@ -49,7 +49,7 @@ class ItemsAutoCompleteAdapter(context: Context, private val data: List<Item>) :
             clear()
 
             if (results != null) {
-                val items = results.values as ArrayList<Item>
+                val items = results.values as ArrayList<List<Item>>
 
                 for (item in items) {
                     add(item)
@@ -64,8 +64,8 @@ class ItemsAutoCompleteAdapter(context: Context, private val data: List<Item>) :
         var view = convertView ?: LayoutInflater.from(context).inflate(R.layout.row_auto_complete_item, parent, false)
         val item = getItem(position)
 
-        view.findViewById<ImageView>(R.id.row_auto_complete_item_icon).setImageResource(Icons.getItemIconId(item?.icon ?: Icons.DEFAULT))
-        view.findViewById<TextView>(R.id.row_auto_complete_item_text).text = item?.name
+        view.findViewById<ImageView>(R.id.row_auto_complete_item_icon).setImageResource(Icons.getItemIconId(item?.firstOrNull()?.icon ?: Icons.DEFAULT))
+        view.findViewById<TextView>(R.id.row_auto_complete_item_text).text = item?.firstOrNull()?.name
 
         return view
     }

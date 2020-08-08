@@ -23,5 +23,5 @@ class ItemsRepository @Inject constructor(
         }
     }
 
-    suspend fun getForAutoComplete() = itemsDao.getForAutoComplete().distinctBy { it.name }
+    suspend fun getForAutoComplete() = itemsDao.getForAutoComplete().groupBy { it.name }
 }

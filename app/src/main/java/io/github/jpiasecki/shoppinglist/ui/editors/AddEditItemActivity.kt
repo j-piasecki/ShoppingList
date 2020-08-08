@@ -222,7 +222,7 @@ class AddEditItemActivity : AppCompatActivity() {
 
     private fun setupAutoComplete() {
         GlobalScope.launch(Dispatchers.Main) {
-            var items = emptyList<Item>()
+            var items = emptyMap<String?, List<Item>>()
 
             withContext(Dispatchers.IO) {
                 items = viewModel.getForAutoComplete()
@@ -232,24 +232,31 @@ class AddEditItemActivity : AppCompatActivity() {
             activity_add_edit_item_name.threshold = 1
             activity_add_edit_item_name.setAdapter(adapter)
             activity_add_edit_item_name.setOnItemClickListener { parent, view, position, id ->
-                val item = parent.getItemAtPosition(position) as Item
+                val allItems = parent.getItemAtPosition(position) as List<Item>
+                val item = allItems.firstOrNull()
 
-                activity_add_edit_item_name.setText(item.name)
-                activity_add_edit_item_note.setText(item.note)
+                if (item != null) {
+                    activity_add_edit_item_name.setText(item.name)
+                    activity_add_edit_item_note.setText(item.note)
 
-                if (item.quantity > 0)
-                    activity_add_edit_item_quantity.setText(item.quantity.toString())
+                    if (item.quantity > 0)
+                        activity_add_edit_item_quantity.setText(item.quantity.toString())
 
-                populateUnitSpinner(item.quantity, item.unit)
+                    populateUnitSpinner(item.quantity, item.unit)
 
-                if (currentList.hasCategory(item.category))
-                    populateCategorySpinner(item.category)
+                    if (item.price > 0)
+                        activity_add_edit_item_price.setText(item.price.toString())
 
-                if (item.price > 0)
-                    activity_add_edit_item_price.setText(item.price.toString())
+                    selectedIcon = item.icon
+                    activity_add_edit_item_icon.setImageResource(Icons.getItemIconId(item.icon))
 
-                selectedIcon = item.icon
-                activity_add_edit_item_icon.setImageResource(Icons.getItemIconId(item.icon))
+                    for (candidate in allItems) {
+                        if (currentList.hasCategory(candidate.category)) {
+                            populateCategorySpinner(candidate.category)
+                            break
+                        }
+                    }
+                }
             }
         }
     }
