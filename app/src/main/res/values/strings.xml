@@ -373,4 +373,12 @@
     <string-array name="meat_keywords">
         <item>meat</item>
     </string-array>
+
+    <string-array name="pasta_keywords">
+        <item>pasta</item>
+    </string-array>
+
+    <string-array name="mushroom_keywords">
+        <item>mushroom</item>
+    </string-array>
 </resources>

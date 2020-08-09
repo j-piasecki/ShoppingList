@@ -237,18 +237,20 @@ class AddEditItemActivity : AppCompatActivity() {
 
                 if (item != null) {
                     activity_add_edit_item_name.setText(item.name)
-                    activity_add_edit_item_note.setText(item.note)
+                    activity_add_edit_item_note.setText(allItems.firstOrNull { it.note != null }?.note)
 
-                    if (item.quantity > 0)
-                        activity_add_edit_item_quantity.setText(item.quantity.toString())
+                    val quantityItem = allItems.firstOrNull { it.quantity > 0 }
+                    if (quantityItem != null)
+                        activity_add_edit_item_quantity.setText(quantityItem.quantity.toString())
 
-                    populateUnitSpinner(item.quantity, item.unit)
+                    populateUnitSpinner(activity_add_edit_item_quantity.text.toString().toIntOrNull() ?: 0, allItems.firstOrNull { it.unit != Units.NO_UNIT }?.unit ?: Units.NO_UNIT)
 
-                    if (item.price > 0)
-                        activity_add_edit_item_price.setText(item.price.toString())
+                    val priceItem = allItems.firstOrNull { it.price > 0 }
+                    if (priceItem != null)
+                        activity_add_edit_item_price.setText(priceItem.price.toString())
 
-                    selectedIcon = item.icon
-                    activity_add_edit_item_icon.setImageResource(Icons.getItemIconId(item.icon))
+                    selectedIcon = allItems.firstOrNull { it.icon != Icons.DEFAULT }?.icon ?: Icons.DEFAULT
+                    activity_add_edit_item_icon.setImageResource(Icons.getItemIconId(selectedIcon))
 
                     for (candidate in allItems) {
                         if (currentList.hasCategory(candidate.category)) {

@@ -64,7 +64,7 @@ class ItemsAutoCompleteAdapter(context: Context, private val data: Map<String?, 
         var view = convertView ?: LayoutInflater.from(context).inflate(R.layout.row_auto_complete_item, parent, false)
         val item = getItem(position)
 
-        view.findViewById<ImageView>(R.id.row_auto_complete_item_icon).setImageResource(Icons.getItemIconId(item?.firstOrNull()?.icon ?: Icons.DEFAULT))
+        view.findViewById<ImageView>(R.id.row_auto_complete_item_icon).setImageResource(Icons.getItemIconId(item?.firstOrNull { it.icon != Icons.DEFAULT }?.icon ?: Icons.DEFAULT))
         view.findViewById<TextView>(R.id.row_auto_complete_item_text).text = item?.firstOrNull()?.name
 
         return view

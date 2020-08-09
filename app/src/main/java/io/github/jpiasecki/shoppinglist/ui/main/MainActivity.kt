@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -287,6 +288,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         transaction.hide(shoppingListFragment)
+        transaction.show(listsFragment)
         transaction.setPrimaryNavigationFragment(listsFragment)
 
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)

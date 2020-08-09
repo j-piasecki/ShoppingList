@@ -126,7 +126,7 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
 
         var previousItem: Item? = null
 
-        for ((index, item) in shoppingList.items.iterator().withIndex()) {
+        for ((index, item) in shoppingList.items.filter { !it.deleted }.iterator().withIndex()) {
             if (previousItem == null ||
                 previousItem.completed != item.completed ||
                 (previousItem.category != item.category && shoppingList.hasCategory(previousItem.category))) {

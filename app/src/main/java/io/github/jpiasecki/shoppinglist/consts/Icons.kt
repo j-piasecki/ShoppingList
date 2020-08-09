@@ -6,7 +6,7 @@ import io.github.jpiasecki.shoppinglist.other.normalize
 import kotlin.collections.HashMap
 
 object Icons {
-    const val ICONS_COUNT = 53
+    const val ICONS_COUNT = 55
 
     const val DEFAULT = 0
     const val APPLE = 1
@@ -61,6 +61,8 @@ object Icons {
     const val CHEESE = 50
     const val COOKIE = 51
     const val MEAT = 52
+    const val PASTA = 53
+    const val MUSHROOM = 54
 
     private val keywords: HashMap<Int, Array<String>> = HashMap()
 
@@ -118,6 +120,8 @@ object Icons {
             CHEESE -> R.drawable.ic_cheese_24
             COOKIE -> R.drawable.ic_cookie_24
             MEAT -> R.drawable.ic_meat_24
+            PASTA -> R.drawable.ic_pasta_24
+            MUSHROOM -> R.drawable.ic_mushroom_24
 
             else -> R.drawable.ic_item_default_24
         }
@@ -210,5 +214,7 @@ object Icons {
         keywords[CHEESE] = context.resources.getStringArray(R.array.cheese_keywords)
         keywords[COOKIE] = context.resources.getStringArray(R.array.cookie_keywords)
         keywords[MEAT] = context.resources.getStringArray(R.array.meat_keywords)
+        keywords[PASTA] = context.resources.getStringArray(R.array.pasta_keywords)
+        keywords[MUSHROOM] = context.resources.getStringArray(R.array.mushroom_keywords)
     }
 }

@@ -100,74 +100,78 @@ class ShoppingListFragment : Fragment() {
             viewModel.stopListeningForItemsChanges()
             viewModel.stopListeningForMetadataChanges()
         } else if (argumentListId != null) {
-            viewModel.updateItems(argumentListId)
-            viewModel.startListeningForItemsChanges(argumentListId)
-            viewModel.startListeningForMetadataChanges(argumentListId)
-
-            listLiveData = viewModel.getShoppingList(argumentListId)
-            listLiveData?.observe(viewLifecycleOwner, Observer {
-                if (it != null) {
-                    it.items.sortWith(Comparator { o1, o2 ->
-                        if ((o1.completed && o2.completed) || (!o1.completed && !o2.completed)) {
-                            if (o1.category == o2.category || (o1.category == null && !it.hasCategory(o2.category)) || (o2.category == null && !it.hasCategory(o1.category))) {
-                                if (viewModel.getItemsSortType() == Config.SORT_TYPE_ALPHABETICALLY) {
-                                    o1.name?.compareTo(o2.name ?: "") ?: 0
-                                } else {
-                                    (o2.timestamp - o1.timestamp).sign
-                                }
-                            } else {
-                                it.getCategoryPosition(o1.category) - it.getCategoryPosition(o2.category)
-                            }
-                        } else if (o1.completed && !o2.completed) {
-                            1
-                        } else {
-                            -1
-                        }
-                    })
-
-                    adapter.timestampSetting = viewModel.getTimestampDisplay()
-                    adapter.displayAds = viewModel.areAdsEnabled()
-                    adapter.setList(it)
-                    if (currentList == null)
-                        view?.findViewById<RecyclerView>(R.id.fragment_shopping_list_recycler_view)?.apply {
-                            layoutAnimation =
-                                AnimationUtils.loadLayoutAnimation(
-                                    context,
-                                    R.anim.recycler_view_animation
-                                )
-
-                            layoutAnimationListener = object : Animation.AnimationListener {
-                                override fun onAnimationRepeat(animation: Animation?) {}
-
-                                override fun onAnimationEnd(animation: Animation?) {}
-
-                                override fun onAnimationStart(animation: Animation?) {
-                                    //wait until there are items in adapter, zero is safe because there is always header
-                                    if (adapter?.itemCount == 0) {
-                                        GlobalScope.launch(Dispatchers.Main) {
-                                            delay(10)
-                                            startLayoutAnimation()
-                                        }
-                                    }
-                                    //layoutManager?.findViewByPosition(0)?.clearAnimation()
-                                }
-                            }
-                        }
-
-                    currentList = it
-
-                    view?.findViewById<TextView>(R.id.fragment_shopping_list_empty_text)?.visibility = if (it.items.isEmpty()) View.VISIBLE else View.GONE
-                } else {
-                    showToast(getString(R.string.message_error))
-
-                    parentFragmentManager.changeFragment(MainActivity.FragmentType.Lists).addToBackStack(null).commit()
-                }
-            })
-
-            viewModel.getAllUsers().observe(viewLifecycleOwner, Observer {
-                adapter.setUsers(it)
-            })
+            openList(argumentListId)
         }
+    }
+
+    private fun openList(listId: String) {
+        viewModel.updateItems(listId)
+        viewModel.startListeningForItemsChanges(listId)
+        viewModel.startListeningForMetadataChanges(listId)
+
+        listLiveData = viewModel.getShoppingList(listId)
+        listLiveData?.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                it.items.sortWith(Comparator { o1, o2 ->
+                    if ((o1.completed && o2.completed) || (!o1.completed && !o2.completed)) {
+                        if (o1.category == o2.category || (o1.category == null && !it.hasCategory(o2.category)) || (o2.category == null && !it.hasCategory(o1.category))) {
+                            if (viewModel.getItemsSortType() == Config.SORT_TYPE_ALPHABETICALLY) {
+                                o1.name?.compareTo(o2.name ?: "") ?: 0
+                            } else {
+                                (o2.timestamp - o1.timestamp).sign
+                            }
+                        } else {
+                            it.getCategoryPosition(o1.category) - it.getCategoryPosition(o2.category)
+                        }
+                    } else if (o1.completed && !o2.completed) {
+                        1
+                    } else {
+                        -1
+                    }
+                })
+
+                adapter.timestampSetting = viewModel.getTimestampDisplay()
+                adapter.displayAds = viewModel.areAdsEnabled()
+                adapter.setList(it)
+                if (currentList == null)
+                    view?.findViewById<RecyclerView>(R.id.fragment_shopping_list_recycler_view)?.apply {
+                        layoutAnimation =
+                            AnimationUtils.loadLayoutAnimation(
+                                context,
+                                R.anim.recycler_view_animation
+                            )
+
+                        layoutAnimationListener = object : Animation.AnimationListener {
+                            override fun onAnimationRepeat(animation: Animation?) {}
+
+                            override fun onAnimationEnd(animation: Animation?) {}
+
+                            override fun onAnimationStart(animation: Animation?) {
+                                //wait until there are items in adapter, zero is safe because there is always header
+                                if (adapter?.itemCount == 0) {
+                                    GlobalScope.launch(Dispatchers.Main) {
+                                        delay(10)
+                                        startLayoutAnimation()
+                                    }
+                                }
+                                //layoutManager?.findViewByPosition(0)?.clearAnimation()
+                            }
+                        }
+                    }
+
+                currentList = it
+
+                view?.findViewById<TextView>(R.id.fragment_shopping_list_empty_text)?.visibility = if (it.items.isEmpty()) View.VISIBLE else View.GONE
+            } else {
+                showToast(getString(R.string.message_error))
+
+                parentFragmentManager.changeFragment(MainActivity.FragmentType.Lists).addToBackStack(null).commit()
+            }
+        })
+
+        viewModel.getAllUsers().observe(viewLifecycleOwner, Observer {
+            adapter.setUsers(it)
+        })
     }
 
     private fun createAdapter() =
@@ -244,10 +248,17 @@ class ShoppingListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        currentList?.let {
-            viewModel.updateItems(it.id)
-            viewModel.startListeningForItemsChanges(it.id)
-            viewModel.startListeningForMetadataChanges(it.id)
+        if (currentList == null) {
+            val argumentListId = arguments?.getString(Values.SHOPPING_LIST_ID)
+
+            if (argumentListId != null)
+                openList(argumentListId)
+        } else {
+            currentList?.let {
+                viewModel.updateItems(it.id)
+                viewModel.startListeningForItemsChanges(it.id)
+                viewModel.startListeningForMetadataChanges(it.id)
+            }
         }
     }
 
