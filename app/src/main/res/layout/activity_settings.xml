@@ -28,7 +28,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp">
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/activity_settings_spinners_width_guideline"
@@ -50,6 +51,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/activity_settings_personalized_ads_toggle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/activity_settings_personalized_ads"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/activity_settings_dark_theme_toggle"/>
+
             <TextView
                 android:id="@+id/activity_settings_lists_sort_type_text"
                 android:layout_width="wrap_content"
@@ -60,7 +73,7 @@
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/activity_settings_dark_theme_toggle" />
+                app:layout_constraintTop_toBottomOf="@+id/activity_settings_personalized_ads_toggle" />
 
             <Spinner
                 android:id="@+id/activity_settings_lists_sort_type_spinner"
@@ -137,6 +150,32 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/activity_settings_spinners_width_guideline"
                 app:layout_constraintTop_toTopOf="@+id/activity_settings_show_timestamp_text" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/activity_settings_privacy_policy_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/privacy_policy"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginTop="24dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/activity_settings_show_timestamp_text"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/activity_settings_terms_and_conditions_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/terms_and_conditions"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginTop="16dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/activity_settings_privacy_policy_button"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

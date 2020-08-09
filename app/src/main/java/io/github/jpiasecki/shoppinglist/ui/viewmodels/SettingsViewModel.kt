@@ -29,4 +29,8 @@ class SettingsViewModel @ViewModelInject constructor(
     fun getTimestampDisplay() = config.getTimestampDisplay()
 
     fun setTimestampDisplay(type: Int) = config.setTimestampDisplay(type)
+
+    fun getAdsType() = config.getAdsType()
+
+    fun setAdsType(type: Int) = config.setAdsType(type)
 }

@@ -17,6 +17,7 @@ class Config(private val context: Context) {
         const val LISTS_MANUAL_UPDATE_TIMESTAMP = "LISTS_METADATA_MANUAL_UPDATE_TIMESTAMP"
 
         const val SETTINGS_DARK_THEME_ENABLED = "SETTINGS_DARK_THEME_ENABLED"
+        const val SETTINGS_PERSONALIZED_ADS = "SETTINGS_PERSONALIZED_ADS"
         const val SETTINGS_LISTS_SORT_TYPE = "SETTINGS_LISTS_SORT_TYPE"
         const val SETTINGS_ITEMS_SORT_TYPE = "SETTINGS_ITEMS_SORT_TYPE"
         const val SETTINGS_AUTO_SET_ICONS = "SETTINGS_AUTO_SET_ICONS"
@@ -32,6 +33,10 @@ class Config(private val context: Context) {
         const val SHOW_TIMESTAMP_ALWAYS = 0
         const val SHOW_TIMESTAMP_NEVER = 1
         const val SHOW_TIMESTAMP_WHEN_SYNCED = 2
+
+        const val ADS_UNDEFINED = 0
+        const val ADS_PERSONALIZED = 1
+        const val ADS_NOT_PERSONALIZED = 2
 
         fun isNetworkConnected(context: Context?): Boolean {
             if (context == null)
@@ -68,6 +73,8 @@ class Config(private val context: Context) {
 
     fun getListsManualUpdateTimestamp() = preferences.getLong(LISTS_MANUAL_UPDATE_TIMESTAMP, 0)
 
+    fun getAdsType() = preferences.getInt(SETTINGS_PERSONALIZED_ADS, ADS_UNDEFINED)
+
     fun isDarkThemeEnabled() = preferences.getBoolean(SETTINGS_DARK_THEME_ENABLED, false)
 
     fun getListsSortType() = preferences.getInt(SETTINGS_LISTS_SORT_TYPE, SORT_TYPE_NEWEST)
@@ -91,6 +98,11 @@ class Config(private val context: Context) {
     fun updateListsManualUpdateTimestamp() = preferences.edit().putLong(
         LISTS_MANUAL_UPDATE_TIMESTAMP,
         Calendar.getInstance().timeInMillis
+    ).apply()
+
+    fun setAdsType(value: Int) = preferences.edit().putInt(
+        SETTINGS_PERSONALIZED_ADS,
+        value
     ).apply()
 
     fun setDarkThemeEnabled(value: Boolean) = preferences.edit().putBoolean(

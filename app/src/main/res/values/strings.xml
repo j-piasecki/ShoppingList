@@ -8,6 +8,9 @@
     <string name="menu_edit">Edit</string>
     <string name="menu_settings">Settings</string>
 
+    <string name="privacy_policy">Privacy policy</string>
+    <string name="terms_and_conditions">Terms and conditions</string>
+
     <string name="activity_main_no_category">No category</string>
 
     <string name="activity_add_edit_item_add_new_item">Add new item</string>
@@ -38,6 +41,7 @@
 
     <string name="activity_settings_header">Settings</string>
     <string name="activity_settings_dark_theme">Dark theme</string>
+    <string name="activity_settings_personalized_ads">Personalized ads</string>
     <string name="activity_settings_lists_sort_type_text">Sort lists by</string>
     <string name="activity_settings_items_sort_type_text">Sort items by</string>
     <string name="activity_settings_auto_set_icons_text">Set icons automatically</string>
@@ -85,6 +89,11 @@
     <string name="dialog_add_category_header_edit">Edit category</string>
     <string name="dialog_add_category_name_hint">Category</string>
     <string name="dialog_add_category_save">Save</string>
+
+    <string name="dialog_ask_consent_header">Can we continue to use your data to tailor ads for you?</string>
+    <string name="dialog_ask_consent_info">You can change your choice anytime in the settings. Our partners will collect data and use a unique identifier on your device to show you ads. Learn more how we and our partners collect and user data.</string>
+    <string name="dialog_ask_consent_yes">Yes, continue to see relevant ads</string>
+    <string name="dialog_ask_consent_no">No, see ads that are less relevant</string>
 
     <plurals name="unit_no_unit">
         <item quantity="other">Quantity: %1$d</item>

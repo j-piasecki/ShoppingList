@@ -1,5 +1,6 @@
 package io.github.jpiasecki.shoppinglist.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -11,6 +12,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
+import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.SettingsViewModel
 import kotlinx.android.synthetic.main.activity_add_edit_list.*
@@ -32,10 +34,12 @@ class SettingsActivity : AppCompatActivity() {
 
 
         setupDarkThemeToggle()
+        setupPersonalizedAdsToggle()
         setupListsSortTypeSpinner()
         setupItemsSortTypeSpinner()
         setupAutoSetIconsSpinner()
         setupShowTimestampSpinner()
+        setupButtons()
     }
 
     private fun setupDarkThemeToggle() {
@@ -49,6 +53,14 @@ class SettingsActivity : AppCompatActivity() {
                 else
                     AppCompatDelegate.MODE_NIGHT_NO
             )
+        }
+    }
+
+    private fun setupPersonalizedAdsToggle() {
+        activity_settings_personalized_ads_toggle.isChecked = viewModel.getAdsType() == Config.ADS_PERSONALIZED
+
+        activity_settings_personalized_ads_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            viewModel.setAdsType(if (isChecked) Config.ADS_PERSONALIZED else Config.ADS_NOT_PERSONALIZED)
         }
     }
 
@@ -113,6 +125,22 @@ class SettingsActivity : AppCompatActivity() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 viewModel.setTimestampDisplay(position)
             }
+        }
+    }
+
+    fun setupButtons() {
+        activity_settings_privacy_policy_button.setOnClickListener {
+            startActivity(
+                Intent(this, WebViewActivity::class.java)
+                    .putExtra(Values.WEB_VIEW_TYPE, Values.WEB_VIEW_PRIVACY_POLICY)
+            )
+        }
+
+        activity_settings_terms_and_conditions_button.setOnClickListener {
+            startActivity(
+                Intent(this, WebViewActivity::class.java)
+                    .putExtra(Values.WEB_VIEW_TYPE, Values.WEB_VIEW_TERMS_AND_CONDITIONS)
+            )
         }
     }
 

@@ -413,7 +413,7 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
             if (getItem(position).addId == -1)
                 getItem(position).addId = AdProvider.getNextAdId()
 
-            val ad = AdProvider.getAd(getItem(position).addId)
+            val ad = AdProvider.getAd(getItem(position).addId, view.context)
 
             if (ad != null) {
                 setAd(ad)

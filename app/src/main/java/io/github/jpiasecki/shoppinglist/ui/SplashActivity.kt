@@ -28,9 +28,10 @@ class SplashActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_splash)
 
+        AdProvider.config = viewModel.getConfig()
         MobileAds.initialize(applicationContext)
         if (viewModel.areAdsEnabled())
-            AdProvider.loadAds(this)
+            AdProvider.loadAds(applicationContext)
 
         viewModel.onSplashLaunch()
 

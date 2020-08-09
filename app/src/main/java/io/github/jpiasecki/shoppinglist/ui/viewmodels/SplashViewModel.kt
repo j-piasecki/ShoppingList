@@ -58,4 +58,6 @@ class SplashViewModel @ViewModelInject constructor(
             }
         }
     }
+
+    fun getConfig() = config
 }
