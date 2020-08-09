@@ -6,7 +6,7 @@ import io.github.jpiasecki.shoppinglist.other.normalize
 import kotlin.collections.HashMap
 
 object Icons {
-    const val ICONS_COUNT = 55
+    const val ICONS_COUNT = 70
 
     const val DEFAULT = 0
     const val APPLE = 1
@@ -63,6 +63,21 @@ object Icons {
     const val MEAT = 52
     const val PASTA = 53
     const val MUSHROOM = 54
+    const val ALMOND = 55
+    const val BACON = 56
+    const val BAGUETTE = 57
+    const val BEEF = 58
+    const val BUTTER = 59
+    const val CHICKEN_BREAST = 60
+    const val FISH = 61
+    const val HONEY = 62
+    const val LENTILS = 63
+    const val MAYONNAISE = 64
+    const val SAUCE = 65
+    const val SAUSAGE = 66
+    const val SUGAR = 67
+    const val TOILET_PAPER = 68
+    const val YOGURT = 69
 
     private val keywords: HashMap<Int, Array<String>> = HashMap()
 
@@ -122,6 +137,21 @@ object Icons {
             MEAT -> R.drawable.ic_meat_24
             PASTA -> R.drawable.ic_pasta_24
             MUSHROOM -> R.drawable.ic_mushroom_24
+            ALMOND -> R.drawable.ic_almond_24
+            BACON -> R.drawable.ic_bacon_24
+            BAGUETTE -> R.drawable.ic_baguette_24
+            BEEF -> R.drawable.ic_beef_24
+            BUTTER -> R.drawable.ic_butter_24
+            CHICKEN_BREAST -> R.drawable.ic_chicken_breasts_24
+            FISH -> R.drawable.ic_fish_24
+            HONEY -> R.drawable.ic_honey_24
+            LENTILS -> R.drawable.ic_lentils_24
+            MAYONNAISE -> R.drawable.ic_mayonnaise_24
+            SAUCE -> R.drawable.ic_sauce_24
+            SAUSAGE -> R.drawable.ic_sausage_24
+            SUGAR -> R.drawable.ic_sugar_24
+            TOILET_PAPER -> R.drawable.ic_toilet_paper_24
+            YOGURT -> R.drawable.ic_yogurt_24
 
             else -> R.drawable.ic_item_default_24
         }
@@ -216,5 +246,20 @@ object Icons {
         keywords[MEAT] = context.resources.getStringArray(R.array.meat_keywords)
         keywords[PASTA] = context.resources.getStringArray(R.array.pasta_keywords)
         keywords[MUSHROOM] = context.resources.getStringArray(R.array.mushroom_keywords)
+        keywords[ALMOND] = context.resources.getStringArray(R.array.almond_keywords)
+        keywords[BACON] = context.resources.getStringArray(R.array.bacon_keywords)
+        keywords[BAGUETTE] = context.resources.getStringArray(R.array.baguette_keywords)
+        keywords[BEEF] = context.resources.getStringArray(R.array.beef_keywords)
+        keywords[BUTTER] = context.resources.getStringArray(R.array.butter_keywords)
+        keywords[CHICKEN_BREAST] = context.resources.getStringArray(R.array.chicken_breasts_keywords)
+        keywords[FISH] = context.resources.getStringArray(R.array.fish_keywords)
+        keywords[HONEY] = context.resources.getStringArray(R.array.honey_keywords)
+        keywords[LENTILS] = context.resources.getStringArray(R.array.lentils_keywords)
+        keywords[MAYONNAISE] = context.resources.getStringArray(R.array.mayonnaise_keywords)
+        keywords[SAUCE] = context.resources.getStringArray(R.array.sauce_keywords)
+        keywords[SAUSAGE] = context.resources.getStringArray(R.array.sausage_keywords)
+        keywords[SUGAR] = context.resources.getStringArray(R.array.sugar_keywords)
+        keywords[TOILET_PAPER] = context.resources.getStringArray(R.array.toilet_paper_keywords)
+        keywords[YOGURT] = context.resources.getStringArray(R.array.yogurt_keywords)
     }
 }

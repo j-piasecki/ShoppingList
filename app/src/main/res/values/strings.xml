@@ -381,4 +381,68 @@
     <string-array name="mushroom_keywords">
         <item>mushroom</item>
     </string-array>
+
+    <string-array name="almond_keywords">
+        <item>almond</item>
+    </string-array>
+
+    <string-array name="bacon_keywords">
+        <item>bacon</item>
+    </string-array>
+
+    <string-array name="baguette_keywords">
+        <item>baguette</item>
+    </string-array>
+
+    <string-array name="beef_keywords">
+        <item>beef</item>
+    </string-array>
+
+    <string-array name="butter_keywords">
+        <item>butter</item>
+    </string-array>
+
+    <string-array name="chicken_breasts_keywords">
+        <item>chicken</item>
+        <item>breast</item>
+    </string-array>
+
+    <string-array name="fish_keywords">
+        <item>fish</item>
+    </string-array>
+
+    <string-array name="honey_keywords">
+        <item>honey</item>
+    </string-array>
+
+    <string-array name="lentils_keywords">
+        <item>lentils</item>
+    </string-array>
+
+    <string-array name="mayonnaise_keywords">
+        <item>mayonnaise</item>
+        <item>mayo</item>
+    </string-array>
+
+    <string-array name="sauce_keywords">
+        <item>sauce</item>
+    </string-array>
+
+    <string-array name="sausage_keywords">
+        <item>sausage</item>
+    </string-array>
+
+    <string-array name="sugar_keywords">
+        <item>sugar</item>
+    </string-array>
+
+    <string-array name="toilet_paper_keywords">
+        <item>toilet</item>
+        <item>paper</item>
+    </string-array>
+
+    <string-array name="yogurt_keywords">
+        <item>yogurt</item>
+        <item>cream</item>
+    </string-array>
 </resources>
