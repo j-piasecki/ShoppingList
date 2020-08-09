@@ -78,7 +78,7 @@ class AdProvider {
             if (ads.isEmpty())
                 return -1
 
-            val result = nextAdIndex
+            val result = nextAdIndex % ads.size
             nextAdIndex = (nextAdIndex + 1) % ads.size
 
             return result
