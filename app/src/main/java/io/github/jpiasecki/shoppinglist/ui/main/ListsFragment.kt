@@ -151,8 +151,11 @@ class ListsFragment : Fragment() {
 
                         view.findViewById<TextView>(R.id.dialog_item_options_header_text).text = list.name
 
-                        if (list.keepInSync)
+                        if (list.keepInSync) {
                             view.findViewById<TextView>(R.id.dialog_shopping_list_create_copy_text).text = getString(R.string.dialog_shopping_list_options_create_local_copy)
+
+                            view.findViewById<View>(R.id.dialog_shopping_list_options_upload).visibility = View.GONE
+                        }
 
                         view.findViewById<View>(R.id.dialog_shopping_list_options_delete)
                             .setOnClickListener { v ->

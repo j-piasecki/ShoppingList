@@ -161,16 +161,16 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_settings_privacy_policy_button"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/privacy_policy"
                 android:layout_marginStart="24dp"
+                android:layout_marginTop="48dp"
                 android:layout_marginEnd="24dp"
-                android:layout_marginTop="24dp"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/privacy_policy"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/activity_settings_show_timestamp_text"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/activity_settings_show_timestamp_text" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_settings_terms_and_conditions_button"

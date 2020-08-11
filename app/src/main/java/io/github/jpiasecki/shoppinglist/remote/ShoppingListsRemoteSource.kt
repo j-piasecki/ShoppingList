@@ -627,7 +627,7 @@ class ShoppingListsRemoteSource(private val context: Context) {
     fun startListeningForMetadataChanges(listId: String, callback: (ShoppingList) -> Unit) {
         stopListeningForMetadataChanges()
 
-        itemsSnapshotListener = Firebase.firestore
+        metadataSnapshotListener = Firebase.firestore
             .collection("lists")
             .document(listId)
             .addSnapshotListener { value, error ->
