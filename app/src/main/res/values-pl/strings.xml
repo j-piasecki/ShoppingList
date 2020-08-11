@@ -1,0 +1,467 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Lista na zakupy</string>
+    <string name="unknown_name">Nieznane</string>
+    <string name="last_update">Ostatnia aktualizacja: %1$s</string>
+
+    <string name="menu_import_list">Pobierz listę</string>
+    <string name="menu_share">Udostępnij</string>
+    <string name="menu_edit">Edytuj</string>
+    <string name="menu_settings">Ustawienia</string>
+
+    <string name="privacy_policy">Polityka prywatności</string>
+    <string name="terms_and_conditions">Zasady użytkowania</string>
+
+    <string name="activity_main_no_category">Brak kategorii</string>
+
+    <string name="activity_add_edit_item_add_new_item">Dodaj nowy przedmiot</string>
+    <string name="activity_add_edit_item_edit_item">Edytuj przedmiot</string>
+    <string name="activity_add_edit_item_name_hint">Nazwa</string>
+    <string name="activity_add_edit_item_quantity_hint">Ilość</string>
+    <string name="activity_add_edit_item_note_hint">Notatka</string>
+    <string name="activity_add_edit_item_price_hint">Cena</string>
+    <string name="activity_add_edit_item_icon_description">Ikona</string>
+    <string name="activity_add_edit_item_fab_description">Zapisz</string>
+    <string name="activity_add_edit_item_no_category">Brak kategorii</string>
+    <string name="activity_add_edit_item_category_error">Brak nazwy kategorii</string>
+
+    <string name="activity_add_edit_list_add_new_list">Utwórz listę</string>
+    <string name="activity_add_edit_list_edit_list">Edytuj listę</string>
+    <string name="activity_add_edit_list_name_hint">Nazwa</string>
+    <string name="activity_add_edit_list_note_hint">Opis</string>
+    <string name="activity_add_edit_list_category_deleted">Kategoria usunięta</string>
+    <string name="activity_add_edit_list_undo">Cofnij</string>
+    <string name="activity_add_edit_list_add_category">Dodaj kategorię</string>
+
+    <string name="activity_list_users_title">Użytkownicy listy</string>
+    <string name="activity_list_users_header_owner">Właściciel</string>
+    <string name="activity_list_users_header_users">Użytkownicy</string>
+    <string name="activity_list_users_header_banned">Zablokowani</string>
+
+    <string name="activity_select_icon_header">Wybierz ikonę</string>
+
+    <string name="activity_settings_header">Ustawienia</string>
+    <string name="activity_settings_dark_theme">Ciemny motyw</string>
+    <string name="activity_settings_personalized_ads">Spersonalizowane reklamy</string>
+    <string name="activity_settings_lists_sort_type_text">Sortowanie list</string>
+    <string name="activity_settings_items_sort_type_text">Sortowanie przedmiotów</string>
+    <string name="activity_settings_auto_set_icons_text">Automatyczny wybór ikon</string>
+    <string name="activity_settings_show_timestamp_text">Pokazuj datę edycji</string>
+
+    <string name="sort_type_newest_first">Od najnowszych</string>
+    <string name="sort_type_alphabetically">Alfabetycznie</string>
+
+    <string name="auto_set_icons_always">Zawsze</string>
+    <string name="auto_set_icons_never">Nigdy</string>
+    <string name="auto_set_icons_when_new">Podczas tworzenia nowych</string>
+
+    <string name="show_timestamp_always">Zawsze</string>
+    <string name="show_timestamp_never">Nigdy</string>
+    <string name="show_timestamp_when_synced">Na synchronizowanych listach</string>
+
+    <string name="message_list_is_empty">Lista jest pusta</string>
+    <string name="message_there_are_no_lists">Nie masz żadnych list</string>
+    <string name="message_list_edit_no_ownership">Możesz edytować tylko listy, którch jesteś właścicielem</string>
+    <string name="message_need_internet_to_modify_list">Musisz być online żeby edytować synchronizowane listy</string>
+    <string name="message_no_internet_connection">Nie masz połączenia z internetem</string>
+    <string name="message_no_list_id_in_clipboard">Nie masz skopiowanego żadnego id listy</string>
+    <string name="message_list_does_not_exist">Ta lista nie istnieje, upewnij się że skopiowane id jest poprawne</string>
+    <string name="message_list_copied_to_clipboard">Skopiowano id listy do schowka</string>
+    <string name="message_not_logged_in">Najpierw musisz się zalogować</string>
+    <string name="message_error">Wystąpił niespodziewany błąd</string>
+    <string name="message_username_too_short">Nazwa użytkownika musi mieć przynajmniej trzy znaki</string>
+    <string name="message_item_must_have_name">Musisz podać nazwę przedmiotu</string>
+    <string name="message_list_must_have_name">Musisz podać nazwę listy</string>
+    <string name="message_category_name_too_short">Nazwa kategorii musi mieć przynajmniej trzy znaki</string>
+
+    <string name="dialog_item_options_delete">Usuń</string>
+    <string name="dialog_shopping_list_options_delete">Usuń</string>
+    <string name="dialog_shopping_list_options_upload">Zapisz w chmurze</string>
+    <string name="dialog_shopping_list_options_create_copy">Utwórz kopię</string>
+    <string name="dialog_shopping_list_options_create_local_copy">Utwórz lokalną kopię</string>
+    <string name="dialog_user_options_give_ownership">Przekaż posiadanie</string>
+    <string name="dialog_user_options_ban">Zablokuj</string>
+    <string name="dialog_user_options_unban">Odblokuj</string>
+    <string name="dialog_options_default_header">Opcje</string>
+    <string name="dialog_profile_settings_header">Ustawienia konta</string>
+    <string name="dialog_profile_settings_save">Zapisz</string>
+    <string name="dialog_profile_settings_username">Nazwa użytkownika</string>
+    <string name="dialog_add_category_header">Dodaj kategorię</string>
+    <string name="dialog_add_category_header_edit">Edytuj kategorię</string>
+    <string name="dialog_add_category_name_hint">Kategoria</string>
+    <string name="dialog_add_category_save">Zapisz</string>
+
+    <string name="dialog_ask_consent_header">Czy możemy zbierać dane w celu lepszego dobierania reklam?</string>
+    <string name="dialog_ask_consent_info">Możesz zmienić swój wybór w ustawieniach. Nasi partnerzy będą zbierać dane i używać unikalnego identyfikatora na tym urządzeniu aby pokazywać reklamy. Kliknij aby dowiedzieć się więcej o tym jak nasi partnerzy zbierają i wykorzystują dane.</string>
+    <string name="dialog_ask_consent_yes">Tak, pokazuj spersonalizowane</string>
+    <string name="dialog_ask_consent_no">NNie, pokazuj mniej trafne reklamy</string>
+
+    <plurals name="unit_no_unit" tools:ignore="MissingQuantity">
+        <item quantity="other">Ilość: %1$d</item>
+    </plurals>
+
+    <plurals name="unit_piece">
+        <item quantity="one">%1$d sztuka</item>
+        <item quantity="few">%1$d sztuki</item>
+        <item quantity="many">%1$d sztuk</item>
+    </plurals>
+
+    <plurals name="unit_box">
+        <item quantity="one">%1$d opakowanie</item>
+        <item quantity="few">%1$d opakowania</item>
+        <item quantity="many">%1$d opakowań</item>
+    </plurals>
+
+    <plurals name="unit_bottle">
+        <item quantity="one">%1$d butelka</item>
+        <item quantity="few">%1$d butelki</item>
+        <item quantity="many">%1$d butelek</item>
+    </plurals>
+
+    <plurals name="unit_jar">
+        <item quantity="one">%1$d słoik</item>
+        <item quantity="few">%1$d słoiki</item>
+        <item quantity="many">%1$d słoików</item>
+    </plurals>
+
+    <plurals name="unit_can">
+        <item quantity="one">%1$d puszka</item>
+        <item quantity="few">%1$d puszki</item>
+        <item quantity="many">%1$d puszek</item>
+    </plurals>
+
+    <plurals name="unit_pack">
+        <item quantity="one">%1$d paczka</item>
+        <item quantity="few">%1$d paczki</item>
+        <item quantity="many">%1$d paczek</item>
+    </plurals>
+
+    <plurals name="unit_kilogram">
+        <item quantity="one">%1$d kilogram</item>
+        <item quantity="few">%1$d kilogramy</item>
+        <item quantity="many">%1$d kilogramów</item>
+    </plurals>
+
+    <plurals name="unit_decagram">
+        <item quantity="one">%1$d dekagram</item>
+        <item quantity="few">%1$d dekagramy</item>
+        <item quantity="many">%1$d dekagramów</item>
+    </plurals>
+
+    <plurals name="unit_gram">
+        <item quantity="one">%1$d gram</item>
+        <item quantity="few">%1$d gramy</item>
+        <item quantity="many">%1$d gramów</item>
+    </plurals>
+
+    <plurals name="unit_liter">
+        <item quantity="one">%1$d litr</item>
+        <item quantity="few">%1$d litry</item>
+        <item quantity="many">%1$d litrów</item>
+    </plurals>
+
+    <plurals name="unit_milliliter">
+        <item quantity="one">%1$d mililitr</item>
+        <item quantity="few">%1$d mililitry</item>
+        <item quantity="many">%1$d mililitrów</item>
+    </plurals>
+
+    <string-array name="apple_keywords">
+        <item>jabl</item>
+    </string-array>
+
+    <string-array name="banana_keywords">
+        <item>banan</item>
+    </string-array>
+
+    <string-array name="cherry_keywords">
+        <item>wisni</item>
+        <item>czeresni</item>
+    </string-array>
+
+    <string-array name="lemon_keywords">
+        <item>cytryn</item>
+    </string-array>
+
+    <string-array name="orange_keywords">
+        <item>pomarancz</item>
+    </string-array>
+
+    <string-array name="pear_keywords">
+        <item>brzoskwin</item>
+    </string-array>
+
+    <string-array name="pineapple_keywords">
+        <item>ananas</item>
+    </string-array>
+
+    <string-array name="plum_keywords">
+        <item>sliw</item>
+    </string-array>
+
+    <string-array name="strawberry_keywords">
+        <item>truskaw</item>
+    </string-array>
+
+    <string-array name="grapes_keywords">
+        <item>winogron</item>
+    </string-array>
+
+    <string-array name="watermelon_keywords">
+        <item>arbuz</item>
+    </string-array>
+
+    <string-array name="raspberry_keywords">
+        <item>malin</item>
+    </string-array>
+
+    <string-array name="peach_keywords">
+        <item>grusz</item>
+    </string-array>
+
+    <string-array name="walnut_keywords">
+        <item>orzech</item>
+    </string-array>
+
+    <string-array name="blackberry_keywords">
+        <item>jezyn</item>
+        <item>ozyn</item>
+    </string-array>
+
+    <string-array name="asparagus_keywords">
+        <item>szparag</item>
+    </string-array>
+
+    <string-array name="aubergine_keywords">
+        <item>baklazan</item>
+        <item>oberzyn</item>
+    </string-array>
+
+    <string-array name="avocado_keywords">
+        <item>avocado</item>
+    </string-array>
+
+    <string-array name="beans_keywords">
+        <item>groch</item>
+    </string-array>
+
+    <string-array name="beetroot_keywords">
+        <item>burak</item>
+        <item>buracz</item>
+        <item>cwikl</item>
+    </string-array>
+
+    <string-array name="broccoli_keywords">
+        <item>brokul</item>
+    </string-array>
+
+    <string-array name="cabbage_keywords">
+        <item>kapust</item>
+    </string-array>
+
+    <string-array name="carrot_keywords">
+        <item>marchew</item>
+    </string-array>
+
+    <string-array name="cauliflower_keywords">
+        <item>kalafior</item>
+    </string-array>
+
+    <string-array name="chili_pepper_keywords">
+        <item>chili</item>
+        <item>papry</item>
+    </string-array>
+
+    <string-array name="corn_keywords">
+        <item>kukurydz</item>
+    </string-array>
+
+    <string-array name="garlic_keywords">
+        <item>czosn</item>
+    </string-array>
+
+    <string-array name="green_beans_keywords">
+        <item>zielon</item>
+        <item>grosz</item>
+    </string-array>
+
+    <string-array name="green_pepper_keywords">
+        <item>zielon</item>
+        <item>papry</item>
+    </string-array>
+
+    <string-array name="lettuce_keywords">
+        <item>salat</item>
+    </string-array>
+
+    <string-array name="olives_keywords">
+        <item>oliw</item>
+    </string-array>
+
+    <string-array name="onion_keywords">
+        <item>cebul</item>
+    </string-array>
+
+    <string-array name="potato_keywords">
+        <item>ziemniak</item>
+        <item>kartof</item>
+        <item>pyr</item>
+    </string-array>
+
+    <string-array name="pumpkin_keywords">
+        <item>dyni</item>
+    </string-array>
+
+    <string-array name="radish_keywords">
+        <item>rzodkiew</item>
+    </string-array>
+
+    <string-array name="red_pepper_keywords">
+        <item>czerwon</item>
+        <item>papry</item>
+    </string-array>
+
+    <string-array name="tomato_keywords">
+        <item>pomidor</item>
+    </string-array>
+
+    <string-array name="yellow_pepper_keywords">
+        <item>zolt</item>
+        <item>papry</item>
+    </string-array>
+
+    <string-array name="zucchini_keywords">
+        <item>cukin</item>
+    </string-array>
+
+    <string-array name="eggs_keywords">
+        <item>jaja</item>
+        <item>jajka</item>
+    </string-array>
+
+    <string-array name="juice_keywords">
+        <item>sok</item>
+    </string-array>
+
+    <string-array name="milk_keywords">
+        <item>mleko</item>
+    </string-array>
+
+    <string-array name="water_keywords">
+        <item>woda</item>
+    </string-array>
+
+    <string-array name="cucumber_keywords">
+        <item>ogor</item>
+    </string-array>
+
+    <string-array name="kiwi_keywords">
+        <item>kiwi</item>
+    </string-array>
+
+    <string-array name="mango_keywords">
+        <item>mango</item>
+    </string-array>
+
+    <string-array name="melon_keywords">
+        <item>melon</item>
+    </string-array>
+
+    <string-array name="bread_keywords">
+        <item>chleb</item>
+    </string-array>
+
+    <string-array name="bread_roll_keywords">
+        <item>bulk</item>
+        <item>bulecz</item>
+    </string-array>
+
+    <string-array name="cheese_keywords">
+        <item>ser</item>
+    </string-array>
+
+    <string-array name="cookie_keywords">
+        <item>ciastk</item>
+        <item>ciastek</item>
+    </string-array>
+
+    <string-array name="meat_keywords">
+        <item>mies</item>
+    </string-array>
+
+    <string-array name="pasta_keywords">
+        <item>makaron</item>
+    </string-array>
+
+    <string-array name="mushroom_keywords">
+        <item>grzyb</item>
+        <item>pieczar</item>
+    </string-array>
+
+    <string-array name="almond_keywords">
+        <item>migdal</item>
+    </string-array>
+
+    <string-array name="bacon_keywords">
+        <item>bekon</item>
+        <item>boczek</item>
+    </string-array>
+
+    <string-array name="baguette_keywords">
+        <item>bagiet</item>
+    </string-array>
+
+    <string-array name="beef_keywords">
+        <item>wolowin</item>
+        <item>wolow</item>
+    </string-array>
+
+    <string-array name="butter_keywords">
+        <item>masl</item>
+        <item>margaryn</item>
+    </string-array>
+
+    <string-array name="chicken_breasts_keywords">
+        <item>piers</item>
+        <item>kurczak</item>
+    </string-array>
+
+    <string-array name="fish_keywords">
+        <item>ryb</item>
+    </string-array>
+
+    <string-array name="honey_keywords">
+        <item>miod</item>
+    </string-array>
+
+    <string-array name="lentils_keywords">
+        <item>gorczyc</item>
+    </string-array>
+
+    <string-array name="mayonnaise_keywords">
+        <item>majonez</item>
+    </string-array>
+
+    <string-array name="sauce_keywords">
+        <item>sos</item>
+    </string-array>
+
+    <string-array name="sausage_keywords">
+        <item>kielbas</item>
+        <item>parowk</item>
+    </string-array>
+
+    <string-array name="sugar_keywords">
+        <item>cukier</item>
+        <item>cukr</item>
+    </string-array>
+
+    <string-array name="toilet_paper_keywords">
+        <item>papier</item>
+        <item>toalet</item>
+    </string-array>
+
+    <string-array name="yogurt_keywords">
+        <item>jogurt</item>
+        <item>smietan</item>
+    </string-array>
+</resources>

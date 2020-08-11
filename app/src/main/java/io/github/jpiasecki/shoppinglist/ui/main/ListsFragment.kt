@@ -26,6 +26,7 @@ import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.other.changeFragment
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
+import java.util.*
 
 @AndroidEntryPoint
 class ListsFragment : Fragment() {
@@ -36,6 +37,8 @@ class ListsFragment : Fragment() {
     private val viewModel: MainViewModel by viewModels()
 
     private var refreshLiveData: LiveData<Boolean?>? = null
+
+    private var lastClickTime = 0L
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -122,13 +125,17 @@ class ListsFragment : Fragment() {
     private fun createAdapter() =
         ShoppingListsAdapter().also {
             it.clickCallback = { id ->
-                parentFragmentManager.changeFragment(
-                    MainActivity.FragmentType.ShoppingList,
-                    Bundle().apply {
-                        putString(Values.SHOPPING_LIST_ID, id)
-                    }).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .addToBackStack(null)
-                    .commit()
+                if (Calendar.getInstance().timeInMillis - lastClickTime > 400) {
+                    parentFragmentManager.changeFragment(
+                        MainActivity.FragmentType.ShoppingList,
+                        Bundle().apply {
+                            putString(Values.SHOPPING_LIST_ID, id)
+                        }).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .addToBackStack(null)
+                        .commit()
+
+                    lastClickTime = Calendar.getInstance().timeInMillis
+                }
             }
 
             it.longClickCallback = { id ->

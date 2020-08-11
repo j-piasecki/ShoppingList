@@ -180,8 +180,11 @@ class AddEditListActivity : AppCompatActivity() {
                     viewModel.createList(currentList)
                     finish()
                 } else if (!listSynced || Config.isNetworkConnected(this)) {
-                    viewModel.updateList(currentList)
-                    finish()
+                    GlobalScope.launch(Dispatchers.Main) {
+                        viewModel.updateList(currentList)
+                        delay(50)
+                        finish()
+                    }
                 } else {
                     showToast(getString(R.string.message_need_internet_to_modify_list))
                 }

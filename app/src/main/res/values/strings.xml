@@ -32,7 +32,7 @@
     <string name="activity_add_edit_list_undo">Undo</string>
     <string name="activity_add_edit_list_add_category">Add category</string>
 
-    <string name="activity_list_users_title">List users</string>
+    <string name="activity_list_users_title">List\'s users</string>
     <string name="activity_list_users_header_owner">Owner</string>
     <string name="activity_list_users_header_users">Users</string>
     <string name="activity_list_users_header_banned">Banned</string>
@@ -91,7 +91,7 @@
     <string name="dialog_add_category_save">Save</string>
 
     <string name="dialog_ask_consent_header">Can we continue to use your data to tailor ads for you?</string>
-    <string name="dialog_ask_consent_info">You can change your choice anytime in the settings. Our partners will collect data and use a unique identifier on your device to show you ads. Learn more how we and our partners collect and user data.</string>
+    <string name="dialog_ask_consent_info">You can change your choice anytime in the settings. Our partners will collect data and use a unique identifier on your device to show you ads. Learn more how we and our partners collect and use data.</string>
     <string name="dialog_ask_consent_yes">Yes, continue to see relevant ads</string>
     <string name="dialog_ask_consent_no">No, see ads that are less relevant</string>
 

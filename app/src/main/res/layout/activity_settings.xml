@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="192dp" />
+                app:layout_constraintGuide_begin="226dp" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/activity_settings_dark_theme_toggle"
@@ -65,13 +65,15 @@
 
             <TextView
                 android:id="@+id/activity_settings_lists_sort_type_text"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/activity_settings_lists_sort_type_text"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="16sp"
+                app:layout_constraintEnd_toStartOf="@+id/activity_settings_spinners_width_guideline"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/activity_settings_personalized_ads_toggle" />
 
@@ -87,13 +89,15 @@
 
             <TextView
                 android:id="@+id/activity_settings_items_sort_type_text"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/activity_settings_items_sort_type_text"
-                android:textSize="16sp"
                 android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toStartOf="@+id/activity_settings_spinners_width_guideline"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/activity_settings_lists_sort_type_spinner" />
 
@@ -109,13 +113,15 @@
 
             <TextView
                 android:id="@+id/activity_settings_auto_set_icons_text"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/activity_settings_auto_set_icons_text"
-                android:textSize="16sp"
                 android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toStartOf="@+id/activity_settings_spinners_width_guideline"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/activity_settings_items_sort_type_spinner" />
 
@@ -131,13 +137,15 @@
 
             <TextView
                 android:id="@+id/activity_settings_show_timestamp_text"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/activity_settings_show_timestamp_text"
-                android:textSize="16sp"
                 android:textColor="?android:attr/textColorPrimary"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toStartOf="@+id/activity_settings_spinners_width_guideline"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/activity_settings_auto_set_icons_spinner" />
 

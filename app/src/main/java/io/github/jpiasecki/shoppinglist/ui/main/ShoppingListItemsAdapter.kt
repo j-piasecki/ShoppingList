@@ -273,10 +273,10 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
         }
 
         private fun showOrHideViews(item: Item) {
-            if (!item.completed && (item.note == null || item.note.isEmpty())) {
-                view.findViewById<TextView>(R.id.row_shopping_list_item_note).visibility = View.GONE
-            } else {
+            if ((item.note != null && item.note.isNotEmpty()) || (shoppingList.keepInSync && item.completed)) {
                 view.findViewById<TextView>(R.id.row_shopping_list_item_note).visibility = View.VISIBLE
+            } else {
+                view.findViewById<TextView>(R.id.row_shopping_list_item_note).visibility = View.GONE
             }
 
             when (timestampSetting) {
@@ -367,7 +367,7 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
 
             val completedBy = usersList.find { it.id == item.completedBy }
 
-            if (completedBy == null) {
+            if (completedBy == null || !shoppingList.keepInSync) {
                 view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon).visibility = View.GONE
             } else {
                 view.findViewById<ImageView>(R.id.row_shopping_list_item_completed_by_icon).visibility = View.VISIBLE

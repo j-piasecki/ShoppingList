@@ -208,7 +208,7 @@ class AddEditItemActivity : AppCompatActivity() {
                 if (!listSynced || Config.isNetworkConnected(this)) {
                     GlobalScope.launch(Dispatchers.Main) {
                         viewModel.addItemToList(listId, item)
-                        delay(30)
+                        delay(50)
                         finish()
                     }
                 } else {
