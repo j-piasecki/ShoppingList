@@ -106,11 +106,11 @@ class ShoppingListsAdapter() : ListAdapter<ShoppingList, ShoppingListsAdapter.Vi
             }
 
             view.setOnClickListener {
-                clickCallback(list.id)
+                clickCallback(getItem(adapterPosition).id)
             }
 
             view.setOnLongClickListener {
-                longClickCallback(list.id)
+                longClickCallback(getItem(adapterPosition).id)
 
                 true
             }

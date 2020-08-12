@@ -109,6 +109,7 @@ class ShoppingListFragment : Fragment() {
         viewModel.startListeningForItemsChanges(listId)
         viewModel.startListeningForMetadataChanges(listId)
 
+        listLiveData?.removeObservers(viewLifecycleOwner)
         listLiveData = viewModel.getShoppingList(listId)
         listLiveData?.observe(viewLifecycleOwner, Observer {
             if (it != null) {
@@ -248,16 +249,18 @@ class ShoppingListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        if (currentList == null) {
-            val argumentListId = arguments?.getString(Values.SHOPPING_LIST_ID)
+        if (!isHidden) {
+            if (currentList == null) {
+                val argumentListId = arguments?.getString(Values.SHOPPING_LIST_ID)
 
-            if (argumentListId != null)
-                openList(argumentListId)
-        } else {
-            currentList?.let {
-                viewModel.updateItems(it.id)
-                viewModel.startListeningForItemsChanges(it.id)
-                viewModel.startListeningForMetadataChanges(it.id)
+                if (argumentListId != null)
+                    openList(argumentListId)
+            } else {
+                currentList?.let {
+                    viewModel.updateItems(it.id)
+                    viewModel.startListeningForItemsChanges(it.id)
+                    viewModel.startListeningForMetadataChanges(it.id)
+                }
             }
         }
     }
