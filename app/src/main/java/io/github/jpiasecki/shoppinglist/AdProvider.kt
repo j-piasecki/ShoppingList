@@ -31,12 +31,14 @@ class AdProvider {
         private var nextAdIndex = 0
 
         fun loadAds(context: Context) {
-            val adsType = config.getAdsType()
+            if (this::config.isInitialized) {
+                val adsType = config.getAdsType()
 
-            if (adsType == Config.ADS_PERSONALIZED)
-                loadAds(context, true)
-            else if (adsType == Config.ADS_NOT_PERSONALIZED)
-                loadAds(context, false)
+                if (adsType == Config.ADS_PERSONALIZED)
+                    loadAds(context, true)
+                else if (adsType == Config.ADS_NOT_PERSONALIZED)
+                    loadAds(context, false)
+            }
         }
 
         private fun loadAds(context: Context, personalized: Boolean) {
@@ -85,7 +87,7 @@ class AdProvider {
         }
 
         fun getAd(id: Int, context: Context): UnifiedNativeAd? {
-            if (ads.isEmpty() && config.getAdsType() == Config.ADS_UNDEFINED)
+            if (this::config.isInitialized && ads.isEmpty() && config.getAdsType() == Config.ADS_UNDEFINED)
                 getConsent(context)
 
             if (ads.isEmpty() || id < 0)

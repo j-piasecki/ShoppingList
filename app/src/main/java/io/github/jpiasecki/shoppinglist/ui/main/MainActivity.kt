@@ -61,6 +61,8 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(activity_main_bottom_app_bar)
         loadUserProfilePicture()
 
+        AdProvider.config = viewModel.getConfig()
+
         initFragments()
 
         activity_main_fab.setOnClickListener {

@@ -215,4 +215,6 @@ class MainViewModel @ViewModelInject constructor(
     fun getTimestampDisplay() = config.getTimestampDisplay()
 
     fun areAdsEnabled() = config.areAdsEnabled()
+
+    fun getConfig() = config
 }
