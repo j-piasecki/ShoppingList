@@ -8,6 +8,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.bumptech.glide.signature.MediaStoreSignature
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -40,41 +41,40 @@ data class User(
         set(value) = UsersProfilePictures.setPicture(id, value)
 
     fun loadProfileImage(context: Context, callback: (() -> Unit)? = null) {
-        val ref = Firebase.storage.reference.child("profile_pics/${id}")
-
         if (profilePicture == null) {
-            // if profile picture file exists, load it
-            ref.metadata.addOnSuccessListener {
-                if (Config.isNetworkConnected(context)) {
-                    try {
-                        GlideApp.with(context).asBitmap().circleCrop().load(ref)
-                            .into(object : CustomTarget<Bitmap>() {
-                                override fun onLoadCleared(placeholder: Drawable?) {}
+            try {
+                profilePicture = BitmapFactory.decodeStream(
+                    FileInputStream(File(context.cacheDir, "$id.png"))
+                )
 
-                                override fun onResourceReady(
-                                    resource: Bitmap,
-                                    transition: Transition<in Bitmap>?
-                                ) {
-                                    profilePicture = resource
+                if (!Config.isNetworkConnected(context))
+                    callback?.invoke()
+            } catch (e: FileNotFoundException) {}
 
-                                    val file = File(context.cacheDir, "$id.png")
-                                    val stream = ByteArrayOutputStream()
-                                    resource.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                                    file.writeBytes(stream.toByteArray())
+            if (Config.isNetworkConnected(context) && (profilePicture == null || Calendar.getInstance().timeInMillis - timestamp < 10 * 1000)) {
+                try {
+                    val ref = Firebase.storage.reference.child("profile_pics/${id}")
 
-                                    callback?.invoke()
-                                }
-                            })
-                    } catch (e: IllegalArgumentException) {}
-                } else {
-                    try {
-                        val stream = FileInputStream(File(context.cacheDir, "$id.png"))
+                    GlideApp.with(context).asBitmap().circleCrop().load(ref)
+                        .signature(MediaStoreSignature("", timestamp, 0))
+                        .into(object : CustomTarget<Bitmap>() {
+                            override fun onLoadCleared(placeholder: Drawable?) {}
 
-                        profilePicture = BitmapFactory.decodeStream(stream)
+                            override fun onResourceReady(
+                                resource: Bitmap,
+                                transition: Transition<in Bitmap>?
+                            ) {
+                                profilePicture = resource
 
-                        callback?.invoke()
-                    } catch (e: FileNotFoundException) {}
-                }
+                                val file = File(context.cacheDir, "$id.png")
+                                val stream = ByteArrayOutputStream()
+                                resource.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                                file.writeBytes(stream.toByteArray())
+
+                                callback?.invoke()
+                            }
+                        })
+                } catch (e: IllegalArgumentException) {}
             }
         } else {
             callback?.invoke()

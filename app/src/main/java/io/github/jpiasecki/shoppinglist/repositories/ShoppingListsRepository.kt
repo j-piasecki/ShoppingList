@@ -29,6 +29,8 @@ class ShoppingListsRepository @Inject constructor(
 
     fun getList(listId: String) = shoppingListsDao.getById(listId)
 
+    fun getAllIds() = shoppingListsDao.getAllIds()
+
     fun createList(list: ShoppingList): LiveData<String?> {
         val result = MutableLiveData<String?>(null)
 

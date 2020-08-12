@@ -37,7 +37,9 @@ class SplashViewModel @ViewModelInject constructor(
         GlobalScope.launch(Dispatchers.IO) {
             val updated = ArrayList<String>()
 
-            for (list in shoppingListsRepository.getAllListsPlain()) {
+            for (listId in shoppingListsRepository.getAllIds()) {
+                val list = shoppingListsRepository.getListPlain(listId) ?: continue
+
                 list.owner?.let {
                     if (it !in updated) {
                         usersRepository.updateUser(it)
