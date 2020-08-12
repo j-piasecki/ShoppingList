@@ -56,11 +56,16 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
     }
 }) {
 
+    data class CategoryItem(
+        val id: String?,
+        val completed: Boolean
+    )
+
     data class AdapterItem(
         val type: Int,
         val item: Item? = null,
         val header: Long? = null,
-        val category: String? = null,
+        val category: CategoryItem? = null,
         var addId: Int = -1
     )
 
@@ -130,7 +135,7 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
             if (previousItem == null ||
                 previousItem.completed != item.completed ||
                 (previousItem.category != item.category && shoppingList.hasCategory(previousItem.category))) {
-                content.add(AdapterItem(VIEW_TYPE_CATEGORY, category = item.category))
+                content.add(AdapterItem(VIEW_TYPE_CATEGORY, category = CategoryItem(item.category, item.completed)))
             }
 
             content.add(AdapterItem(VIEW_TYPE_ITEM, item = item))
@@ -165,7 +170,7 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
 
         fun bind(position: Int) {
             val category = getItem(position).category
-            val name = shoppingList.getCategoryName(category) ?: view.context.getString(R.string.activity_main_no_category)
+            val name = shoppingList.getCategoryName(category?.id) ?: view.context.getString(R.string.activity_main_no_category)
 
             view.findViewById<TextView>(R.id.row_shopping_list_category_text).text = name
         }
