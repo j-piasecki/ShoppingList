@@ -29,6 +29,7 @@ class AdProvider {
         private val ads = ArrayList<UnifiedNativeAd>()
         private var destroyed = false
         private var nextAdIndex = 0
+        private var dialogVisible = false
 
         fun loadAds(context: Context) {
             if (this::config.isInitialized) {
@@ -97,32 +98,42 @@ class AdProvider {
         }
 
         private fun getConsent(context: Context) {
-            val dialog = BottomSheetDialog(context)
-            val view = LayoutInflater.from(context).inflate(R.layout.dialog_ask_consent, null)
+            if (!dialogVisible) {
+                dialogVisible = true
 
-            dialog.setContentView(view)
-            dialog.setCancelable(false)
+                val dialog = BottomSheetDialog(context)
+                val view = LayoutInflater.from(context).inflate(R.layout.dialog_ask_consent, null)
 
-            dialog.findViewById<TextView>(R.id.dialog_ask_consent_info)?.setOnClickListener {
-                 context.startActivity(
-                     Intent(context, WebViewActivity::class.java)
-                         .putExtra(Values.WEB_VIEW_TYPE, Values.WEB_VIEW_PRIVACY_POLICY)
-                 )
+                dialog.setContentView(view)
+                dialog.setCancelable(false)
+
+                dialog.findViewById<TextView>(R.id.dialog_ask_consent_info)?.setOnClickListener {
+                    context.startActivity(
+                        Intent(context, WebViewActivity::class.java)
+                            .putExtra(Values.WEB_VIEW_TYPE, Values.WEB_VIEW_PRIVACY_POLICY)
+                    )
+                }
+
+                dialog.findViewById<MaterialButton>(R.id.dialog_ask_consent_button_personalized)
+                    ?.setOnClickListener {
+                        config.setAdsType(Config.ADS_PERSONALIZED)
+                        loadAds(context, true)
+                        dialog.dismiss()
+
+                        dialogVisible = false
+                    }
+
+                dialog.findViewById<MaterialButton>(R.id.dialog_ask_consent_button_non_personalized)
+                    ?.setOnClickListener {
+                        config.setAdsType(Config.ADS_NOT_PERSONALIZED)
+                        loadAds(context, false)
+                        dialog.dismiss()
+
+                        dialogVisible = false
+                    }
+
+                dialog.show()
             }
-
-            dialog.findViewById<MaterialButton>(R.id.dialog_ask_consent_button_personalized)?.setOnClickListener {
-                config.setAdsType(Config.ADS_PERSONALIZED)
-                loadAds(context, true)
-                dialog.dismiss()
-            }
-
-            dialog.findViewById<MaterialButton>(R.id.dialog_ask_consent_button_non_personalized)?.setOnClickListener {
-                config.setAdsType(Config.ADS_NOT_PERSONALIZED)
-                loadAds(context, false)
-                dialog.dismiss()
-            }
-
-            dialog.show()
         }
     }
 }

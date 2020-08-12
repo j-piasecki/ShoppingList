@@ -1,11 +1,13 @@
 package io.github.jpiasecki.shoppinglist.database
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.firebase.firestore.Exclude
 import io.github.jpiasecki.shoppinglist.consts.Icons
 import io.github.jpiasecki.shoppinglist.consts.Units
 import java.util.*
+import kotlin.collections.ArrayList
 
 @Entity(tableName = "items")
 data class Item(
@@ -25,4 +27,7 @@ data class Item(
     @get:Exclude
     @PrimaryKey(autoGenerate = false)
     val id: String = UUID.randomUUID().toString()
-)
+) {
+    @Ignore
+    var seenBy: ArrayList<String> = ArrayList()
+}
