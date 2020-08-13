@@ -9,13 +9,12 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AccelerateInterpolator
-import android.view.animation.DecelerateInterpolator
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -34,15 +33,21 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.AdProvider
 import io.github.jpiasecki.shoppinglist.R
+import io.github.jpiasecki.shoppinglist.consts.Icons
 import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.consts.Values.RC_SIGN_IN
 import io.github.jpiasecki.shoppinglist.database.Config
+import io.github.jpiasecki.shoppinglist.database.User
 import io.github.jpiasecki.shoppinglist.other.changeFragment
 import io.github.jpiasecki.shoppinglist.ui.editors.AddEditItemActivity
 import io.github.jpiasecki.shoppinglist.ui.editors.AddEditListActivity
 import io.github.jpiasecki.shoppinglist.ui.SettingsActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.lang.IllegalArgumentException
 import java.util.*
 
@@ -121,17 +126,70 @@ class MainActivity : AppCompatActivity() {
 
         val listId = intent.getStringExtra(Values.SHOPPING_LIST_ID)
         if (listId != null) {
-            downloadListAction(listId)
+            showImportListDialog(listId)
         }
     }
 
-    private fun downloadListAction(listId: String) {
-        viewModel.downloadList(listId)
-            .observe(this, Observer {
-                if (it == false) {
-                    showToast(getString(R.string.message_list_url_error))
+    private fun showImportListDialog(listId: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            if (viewModel.isListDownloaded(listId)) {
+                withContext(Dispatchers.Main) {
+                    showToast(getString(R.string.message_list_already_downloaded))
                 }
-            })
+
+                return@launch
+            }
+
+            withContext(Dispatchers.Main) {
+                val dialog = BottomSheetDialog(this@MainActivity)
+                val view = layoutInflater.inflate(R.layout.dialog_import_list, null)
+
+                val metadataLiveData = viewModel.getListMetadata(listId)
+                metadataLiveData.observe(this@MainActivity, Observer {
+                    if (it != null) {
+                        view.findViewById<View>(R.id.dialog_import_list_progress_bar).visibility = View.GONE
+                        view.findViewById<View>(R.id.dialog_import_list_layout).visibility = View.VISIBLE
+
+                        view.findViewById<TextView>(R.id.dialog_import_list_name).text = it.name
+                        view.findViewById<TextView>(R.id.dialog_import_list_note).text = it.note
+                        view.findViewById<ImageView>(R.id.dialog_import_list_icon).setImageResource(Icons.getListIconId(it.icon))
+
+                        it.owner?.let { owner ->
+                            val user = User(id = owner)
+
+                            user.loadProfileImage(this@MainActivity) {
+                                view.findViewById<ImageView>(R.id.dialog_import_list_owner_icon).setImageBitmap(user.profilePicture)
+                            }
+                        }
+
+                        metadataLiveData.removeObservers(this@MainActivity)
+
+                        view.findViewById<MaterialButton>(R.id.dialog_import_list_cancel).setOnClickListener {
+                            dialog.dismiss()
+                        }
+
+                        view.findViewById<MaterialButton>(R.id.dialog_import_list_save).setOnClickListener {
+                            viewModel.downloadList(listId)
+                                .observe(this@MainActivity, Observer {
+                                    if (it == false) {
+                                        showToast(getString(R.string.message_list_url_error))
+                                    }
+                                })
+
+                            dialog.dismiss()
+                        }
+                    }
+                })
+
+                dialog.setOnCancelListener {
+                    metadataLiveData.removeObservers(this@MainActivity)
+                }
+
+                dialog.setCancelable(true)
+                dialog.setContentView(view)
+                dialog.show()
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -187,12 +245,7 @@ class MainActivity : AppCompatActivity() {
                         try {
                             UUID.fromString(listId)
 
-                            viewModel.downloadList(listId)
-                                .observe(this, Observer {
-                                    if (it == false) {
-                                        showToast(getString(R.string.message_list_does_not_exist))
-                                    }
-                                })
+                            showImportListDialog(listId)
                         } catch (e: IllegalArgumentException) {
                             showToast(getString(R.string.message_no_list_id_in_clipboard))
                         }

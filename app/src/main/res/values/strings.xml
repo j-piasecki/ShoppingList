@@ -75,6 +75,7 @@
     <string name="message_item_must_have_name">You must enter the name of the item</string>
     <string name="message_list_must_have_name">You must enter the name of the list</string>
     <string name="message_category_name_too_short">Category name must be al least three characters long</string>
+    <string name="message_list_already_downloaded">That list is already downloaded</string>
 
     <string name="dialog_item_options_delete">Delete</string>
     <string name="dialog_shopping_list_options_delete">Delete</string>
@@ -97,6 +98,10 @@
     <string name="dialog_ask_consent_info">You can change your choice anytime in the settings. Our partners will collect data and use a unique identifier on your device to show you ads. Learn more how we and our partners collect and use data.</string>
     <string name="dialog_ask_consent_yes">Yes, continue to see relevant ads</string>
     <string name="dialog_ask_consent_no">No, see ads that are less relevant</string>
+
+    <string name="dialog_import_list_header">Add list</string>
+    <string name="dialog_import_list_cancel">Cancel</string>
+    <string name="dialog_import_list_save">Add</string>
 
     <plurals name="unit_no_unit">
         <item quantity="other">Quantity: %1$d</item>

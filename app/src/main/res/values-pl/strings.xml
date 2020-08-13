@@ -75,6 +75,7 @@
     <string name="message_item_must_have_name">Musisz podać nazwę przedmiotu</string>
     <string name="message_list_must_have_name">Musisz podać nazwę listy</string>
     <string name="message_category_name_too_short">Nazwa kategorii musi mieć przynajmniej trzy znaki</string>
+    <string name="message_list_already_downloaded">Ta lista jest już pobrana</string>
 
     <string name="dialog_item_options_delete">Usuń</string>
     <string name="dialog_shopping_list_options_delete">Usuń</string>
@@ -97,6 +98,10 @@
     <string name="dialog_ask_consent_info">Możesz zmienić swój wybór w ustawieniach. Nasi partnerzy będą zbierać dane i używać unikalnego identyfikatora na tym urządzeniu aby pokazywać reklamy. Kliknij aby dowiedzieć się więcej o tym jak nasi partnerzy zbierają i wykorzystują dane.</string>
     <string name="dialog_ask_consent_yes">Tak, pokazuj spersonalizowane</string>
     <string name="dialog_ask_consent_no">NNie, pokazuj mniej trafne reklamy</string>
+
+    <string name="dialog_import_list_header">Dodaj listę</string>
+    <string name="dialog_import_list_cancel">Anuluj</string>
+    <string name="dialog_import_list_save">Dodaj</string>
 
     <plurals name="unit_no_unit" tools:ignore="MissingQuantity">
         <item quantity="other">Ilość: %1$d</item>

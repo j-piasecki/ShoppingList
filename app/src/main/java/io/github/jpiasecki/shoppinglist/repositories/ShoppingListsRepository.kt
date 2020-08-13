@@ -698,6 +698,8 @@ class ShoppingListsRepository @Inject constructor(
 
     suspend fun getRemoteUsersBlocking(listId: String) = shoppingListsRemoteSource.getUsers(listId)
 
+    suspend fun getListMetadataBlocking(listId: String) = shoppingListsRemoteSource.getListMetadata(listId)
+
     suspend fun downloadListBlocking(listId: String): ShoppingList? {
         try {
             UUID.fromString(listId)

@@ -211,6 +211,16 @@ class MainViewModel @ViewModelInject constructor(
         }
     }
 
+    fun getListMetadata(listId: String): MutableLiveData<ShoppingList?> {
+        val result = MutableLiveData<ShoppingList?>(null)
+
+        GlobalScope.launch(Dispatchers.IO) {
+            result.postValue(shoppingListsRepository.getListMetadataBlocking(listId))
+        }
+
+        return result
+    }
+
     fun tryUpdatingUsers(listId: String) {
         if (Calendar.getInstance().timeInMillis - listUsersTimers.getListUpdate(listId) > Values.LIST_USERS_UPDATE_PERIOD) {
             shoppingListsRepository.updateListUsers(listId)
@@ -234,4 +244,8 @@ class MainViewModel @ViewModelInject constructor(
     fun areAdsEnabled() = config.areAdsEnabled()
 
     fun getConfig() = config
+
+    suspend fun isListDownloaded(listId: String): Boolean {
+        return listId in shoppingListsRepository.getAllIds()
+    }
 }
