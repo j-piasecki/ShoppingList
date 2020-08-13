@@ -105,9 +105,10 @@ class ShoppingListFragment : Fragment() {
     }
 
     private fun openList(listId: String) {
-        viewModel.updateItems(listId)
-        viewModel.startListeningForItemsChanges(listId)
-        viewModel.startListeningForMetadataChanges(listId)
+        viewModel.updateItems(listId) {
+            viewModel.startListeningForItemsChanges(listId)
+            viewModel.startListeningForMetadataChanges(listId)
+        }
 
         listLiveData?.removeObservers(viewLifecycleOwner)
         listLiveData = viewModel.getShoppingList(listId)
@@ -257,9 +258,10 @@ class ShoppingListFragment : Fragment() {
                     openList(argumentListId)
             } else {
                 currentList?.let {
-                    viewModel.updateItems(it.id)
-                    viewModel.startListeningForItemsChanges(it.id)
-                    viewModel.startListeningForMetadataChanges(it.id)
+                    viewModel.updateItems(it.id) {
+                        viewModel.startListeningForItemsChanges(it.id)
+                        viewModel.startListeningForMetadataChanges(it.id)
+                    }
                 }
             }
         }

@@ -77,7 +77,7 @@ class MainViewModel @ViewModelInject constructor(
         }
     }
 
-    fun updateItems(listId: String): LiveData<Boolean?> {
+    fun updateItems(listId: String, onFinish: (() -> Unit)? = null): LiveData<Boolean?> {
         val result = MutableLiveData<Boolean?>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
@@ -98,6 +98,8 @@ class MainViewModel @ViewModelInject constructor(
             }
 
             shoppingListsRepository.deleteUnusedItemsBlocking(listId)
+
+            onFinish?.invoke()
         }
 
         return result
