@@ -106,6 +106,7 @@ class ShoppingListFragment : Fragment() {
 
     private fun openList(listId: String) {
         viewModel.updateItems(listId) {
+            viewModel.tryUpdatingUsers(listId)
             viewModel.startListeningForItemsChanges(listId)
             viewModel.startListeningForMetadataChanges(listId)
         }

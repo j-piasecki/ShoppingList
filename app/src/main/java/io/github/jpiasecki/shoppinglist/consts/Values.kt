@@ -17,6 +17,7 @@ object Values {
     const val LISTS_MANUAL_UPDATE_PERIOD = 30 * 1000
     const val ITEM_COMPLETION_CHANGE_TIMER = 400
     const val STALE_ITEM_DELETION_DELAY = 5 * 24 * 60 * 60 * 1000
+    const val LIST_USERS_UPDATE_PERIOD = 24 * 60 * 60 * 1000
 
     const val ITEMS_PER_AD = 10
 

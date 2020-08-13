@@ -303,6 +303,18 @@ class ShoppingListsRepository @Inject constructor(
         return result
     }
 
+    fun updateListUsers(listId: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val list = shoppingListsDao.getByIdPlain(listId)
+
+            if (list != null) {
+                list.users = ArrayList(shoppingListsRemoteSource.getUsers(listId))
+
+                shoppingListsDao.insert(list)
+            }
+        }
+    }
+
     fun addItemToList(listId: String, item: Item): LiveData<Boolean?> {
         val result = MutableLiveData<Boolean?>(null)
 

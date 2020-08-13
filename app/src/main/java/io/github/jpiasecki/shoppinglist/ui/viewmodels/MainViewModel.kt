@@ -1,5 +1,6 @@
 package io.github.jpiasecki.shoppinglist.ui.viewmodels
 
+import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import io.github.jpiasecki.shoppinglist.consts.Values
 import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.database.Item
+import io.github.jpiasecki.shoppinglist.database.ListUsersTimers
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.repositories.ShoppingListsRepository
 import io.github.jpiasecki.shoppinglist.repositories.UsersRepository
@@ -19,7 +21,8 @@ import java.util.*
 class MainViewModel @ViewModelInject constructor(
     private val usersRepository: UsersRepository,
     private val shoppingListsRepository: ShoppingListsRepository,
-    private val config: Config
+    private val config: Config,
+    private val listUsersTimers: ListUsersTimers
 ) : ViewModel() {
 
     fun getShoppingList(id: String) = shoppingListsRepository.getList(id)
@@ -205,6 +208,14 @@ class MainViewModel @ViewModelInject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun tryUpdatingUsers(listId: String) {
+        if (Calendar.getInstance().timeInMillis - listUsersTimers.getListUpdate(listId) > Values.LIST_USERS_UPDATE_PERIOD) {
+            shoppingListsRepository.updateListUsers(listId)
+
+            listUsersTimers.updateList(listId)
         }
     }
 
