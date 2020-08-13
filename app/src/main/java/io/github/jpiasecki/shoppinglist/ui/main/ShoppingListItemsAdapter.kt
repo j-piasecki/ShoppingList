@@ -82,6 +82,7 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
     private var usersList: List<User> = emptyList()
     private var shoppingList: ShoppingList = ShoppingList()
     private var priceFormat = NumberFormat.getCurrencyInstance()
+    private var collapsedCategories = mutableSetOf<CategoryItem>()
 
     private var lastCheckTimeStamp = 0L
 
@@ -123,11 +124,16 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
 
         if (list.id == shoppingList.id && list.currency != shoppingList.currency)
             notifyDataSetChanged()
+        else if (list.id != shoppingList.id)
+            collapsedCategories.clear()
 
         shoppingList = list
 
         val content = ArrayList<AdapterItem>()
-        content.add(AdapterItem(VIEW_TYPE_HEADER, header = 0L + (list.owner?.sumBy { it.toInt() } ?: 0) + (list.name?.sumBy { it.toInt() } ?: 0) + (if (list.keepInSync) 1 else 2) + list.icon + list.getAllUsersNoOwner().size))
+        content.add(AdapterItem(
+            VIEW_TYPE_HEADER,
+            header = 0L + (list.owner?.sumBy { it.toInt() } ?: 0) + (list.name?.sumBy { it.toInt() } ?: 0) + (if (list.keepInSync) 1 else 2) + list.icon + list.getAllUsersNoOwner().size
+        ))
 
         var previousItem: Item? = null
 
@@ -135,13 +141,19 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
             if (previousItem == null ||
                 previousItem.completed != item.completed ||
                 (previousItem.category != item.category && shoppingList.hasCategory(previousItem.category))) {
-                content.add(AdapterItem(VIEW_TYPE_CATEGORY, category = CategoryItem(item.category, item.completed)))
+
+                val categoryId = if (shoppingList.hasCategory(item.category)) item.category else null
+
+                content.add(AdapterItem(VIEW_TYPE_CATEGORY, category = CategoryItem(categoryId, item.completed)))
             }
 
-            content.add(AdapterItem(VIEW_TYPE_ITEM, item = item))
+            //don't show items in collapsed categories i.e. when item has category that is collapsed or the "no category" (null id) is collapsed and item has category id that doesn't exist in the list
+            if (collapsedCategories.firstOrNull { (it.id == item.category || (it.id == null && !shoppingList.hasCategory(item.category))) && it.completed == item.completed } == null) {
+                content.add(AdapterItem(VIEW_TYPE_ITEM, item = item))
 
-            if (displayAds && (index + 1) % Values.ITEMS_PER_AD == 0)
-                content.add(AdapterItem(VIEW_TYPE_AD))
+                if (displayAds && (index + 1) % Values.ITEMS_PER_AD == 0)
+                    content.add(AdapterItem(VIEW_TYPE_AD))
+            }
 
             previousItem = item
         }
@@ -166,13 +178,79 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
         }
     }
 
+    private fun expandCategory(category: CategoryItem) {
+        val list = currentList.toMutableList()
+        val index = list.indexOfFirst { it.type == VIEW_TYPE_CATEGORY && it.category == category } + 1
+
+        if (index > 0) {
+            //find bounds of this category; items that have that category id, or ids that don't exist in the list and the category is "no category" (null id)
+            val startIndex =
+                shoppingList.items.indexOfFirst { (it.category == category.id || (category.id == null && !shoppingList.hasCategory(it.category))) && it.completed == category.completed }
+            val endIndex =
+                shoppingList.items.indexOfLast { (it.category == category.id || (category.id == null && !shoppingList.hasCategory(it.category))) && it.completed == category.completed }
+
+            if (startIndex in 0..endIndex) {
+                val newItems = ArrayList<AdapterItem>()
+                for (i in startIndex..endIndex) {
+                    newItems.add(
+                        AdapterItem(
+                            VIEW_TYPE_ITEM,
+                            item = shoppingList.items[i]
+                        )
+                    )
+
+                    if (displayAds && (i + 1) % Values.ITEMS_PER_AD == 0)
+                        newItems.add(AdapterItem(VIEW_TYPE_AD))
+                }
+
+                list.addAll(index, newItems)
+            }
+
+            collapsedCategories.remove(category)
+            submitList(list)
+        }
+    }
+
+    private fun collapseCategory(category: CategoryItem) {
+        val list = currentList.toMutableList()
+
+        //find bounds of this category; items that have that category id, or ids that don't exist in the list and the category is "no category" (null id)
+        val startIndex = list.indexOfFirst { it.type == VIEW_TYPE_ITEM && (it.item?.category == category.id || (category.id == null && !shoppingList.hasCategory(it.item?.category))) && it.item?.completed == category.completed }
+        val endIndex = list.indexOfLast { it.type == VIEW_TYPE_ITEM && (it.item?.category == category.id || (category.id == null && !shoppingList.hasCategory(it.item?.category))) && it.item?.completed == category.completed } + 1
+
+        if (startIndex in 1..endIndex)
+            list.subList(startIndex, endIndex).clear()
+
+        if (startIndex < list.size && list[startIndex].type == VIEW_TYPE_AD)
+            list.removeAt(startIndex)
+
+        collapsedCategories.add(category)
+        submitList(list)
+    }
+
     inner class CategoryViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(position: Int) {
             val category = getItem(position).category
             val name = shoppingList.getCategoryName(category?.id) ?: view.context.getString(R.string.activity_main_no_category)
 
+            view.findViewById<TextView>(R.id.row_shopping_list_category_text).alpha = if (category?.completed == true) 0.65f else 1f
+            view.findViewById<ImageView>(R.id.row_shopping_list_category_icon).alpha = if (category?.completed == true) 0.65f else 1f
+
             view.findViewById<TextView>(R.id.row_shopping_list_category_text).text = name
+
+            view.findViewById<ImageView>(R.id.row_shopping_list_category_collapse).rotation = if (category in collapsedCategories) 180f else 0f
+            view.findViewById<ImageView>(R.id.row_shopping_list_category_collapse).setOnClickListener {
+                if (category != null && category !in collapsedCategories) {
+                    collapseCategory(category)
+
+                    view.findViewById<ImageView>(R.id.row_shopping_list_category_collapse).animate().rotation(180f)
+                } else if (category != null) {
+                    expandCategory(category)
+
+                    view.findViewById<ImageView>(R.id.row_shopping_list_category_collapse).animate().rotation(0f)
+                }
+            }
         }
     }
 
