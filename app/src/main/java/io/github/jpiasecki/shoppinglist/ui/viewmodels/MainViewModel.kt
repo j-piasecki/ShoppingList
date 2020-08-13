@@ -212,7 +212,7 @@ class MainViewModel @ViewModelInject constructor(
     }
 
     fun getListMetadata(listId: String): MutableLiveData<ShoppingList?> {
-        val result = MutableLiveData<ShoppingList?>(null)
+        val result = MutableLiveData<ShoppingList?>(ShoppingList(id = Values.SHOPPING_LIST_ID_NOT_FOUND))
 
         GlobalScope.launch(Dispatchers.IO) {
             result.postValue(shoppingListsRepository.getListMetadataBlocking(listId))

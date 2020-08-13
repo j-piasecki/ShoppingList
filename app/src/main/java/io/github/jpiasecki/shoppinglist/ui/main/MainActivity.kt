@@ -146,7 +146,7 @@ class MainActivity : AppCompatActivity() {
 
                 val metadataLiveData = viewModel.getListMetadata(listId)
                 metadataLiveData.observe(this@MainActivity, Observer {
-                    if (it != null) {
+                    if (it != null && it.id != Values.SHOPPING_LIST_ID_NOT_FOUND) {
                         view.findViewById<View>(R.id.dialog_import_list_progress_bar).visibility = View.GONE
                         view.findViewById<View>(R.id.dialog_import_list_layout).visibility = View.VISIBLE
 
@@ -178,6 +178,10 @@ class MainActivity : AppCompatActivity() {
 
                             dialog.dismiss()
                         }
+                    } else if (it == null) {
+                        showToast(getString(R.string.message_list_url_error))
+
+                        dialog.dismiss()
                     }
                 })
 
