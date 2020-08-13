@@ -11,6 +11,8 @@
     <string name="privacy_policy">Privacy policy</string>
     <string name="terms_and_conditions">Terms and conditions</string>
 
+    <string name="action_import_list">Import list</string>
+
     <string name="activity_main_no_category">No category</string>
 
     <string name="activity_add_edit_item_add_new_item">Add new item</string>
@@ -65,7 +67,8 @@
     <string name="message_no_internet_connection">You don\'t have an Internet connection</string>
     <string name="message_no_list_id_in_clipboard">You don\'t have any list id in the clipboard</string>
     <string name="message_list_does_not_exist">That list does not exist, make sure you copied the right id</string>
-    <string name="message_list_copied_to_clipboard">Copied to the clipboard</string>
+    <string name="message_list_copied_to_clipboard">Copied list link to the clipboard</string>
+    <string name="message_list_url_error">That list does not exist, make sure the link is correct</string>
     <string name="message_not_logged_in">You have to log in first</string>
     <string name="message_error">Unexpected error occurred</string>
     <string name="message_username_too_short">Username must be al least three characters long</string>

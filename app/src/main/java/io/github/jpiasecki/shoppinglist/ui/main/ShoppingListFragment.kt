@@ -291,8 +291,8 @@ class ShoppingListFragment : Fragment() {
                         activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(
                         ClipData.newPlainText(
-                            "listId",
-                            it.id
+                            "shopping_list",
+                            "https://j-piasecki.github.io/shoppinglist/?id=${it.id}"
                         )
                     )
 

@@ -118,6 +118,20 @@ class MainActivity : AppCompatActivity() {
                     .setInterpolator(AccelerateInterpolator())
             }
         }
+
+        val listId = intent.getStringExtra(Values.SHOPPING_LIST_ID)
+        if (listId != null) {
+            downloadListAction(listId)
+        }
+    }
+
+    private fun downloadListAction(listId: String) {
+        viewModel.downloadList(listId)
+            .observe(this, Observer {
+                if (it == false) {
+                    showToast(getString(R.string.message_list_url_error))
+                }
+            })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

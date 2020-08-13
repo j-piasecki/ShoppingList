@@ -13,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.WebViewActivity"></activity>
+        <activity android:name=".ui.WebViewActivity" />
         <activity android:name=".ui.editors.SelectIconActivity" />
         <activity android:name=".ui.editors.ListUsersActivity" />
         <activity android:name=".ui.SettingsActivity" />
@@ -27,6 +27,20 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter android:label="@string/action_import_list">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="https"
+                    android:host="www.j-piasecki.github.io"
+                    android:pathPrefix="/shoppinglist" />
+
+                <data android:scheme="https"
+                    android:host="j-piasecki.github.io"
+                    android:pathPrefix="/shoppinglist" />
             </intent-filter>
         </activity>
 
