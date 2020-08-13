@@ -197,7 +197,7 @@ class AddEditListActivity : AppCompatActivity() {
     private fun initCategoriesRecyclerView() {
         adapter = ListCategoriesAdapter().also {
             it.itemRemovedCallback = { position, data ->
-                Snackbar.make(findViewById(android.R.id.content), R.string.activity_add_edit_list_category_deleted, Snackbar.LENGTH_LONG)
+                Snackbar.make(activity_add_edit_list_layout, R.string.activity_add_edit_list_category_deleted, Snackbar.LENGTH_LONG)
                     .setAction(R.string.activity_add_edit_list_undo) {
                         adapter.insertItem(position, data)
                     }.show()
