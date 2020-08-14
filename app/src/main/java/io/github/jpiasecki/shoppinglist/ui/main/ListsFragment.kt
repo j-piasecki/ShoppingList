@@ -62,21 +62,17 @@ class ListsFragment : Fragment() {
 
         refreshLayout.setOnRefreshListener {
             if (refreshLiveData == null) {
-                if (viewModel.canSyncListsManually()) {
-                    if (Config.isNetworkConnected(context)) {
-                        refreshLiveData = viewModel.syncAllLists()
+                if (viewModel.canSyncListsManually() && Config.isNetworkConnected(context)) {
+                    refreshLiveData = viewModel.syncAllLists()
 
-                        refreshLiveData?.observe(viewLifecycleOwner, Observer {
-                            if (it != null) {
-                                refreshLayout.isRefreshing = false
+                    refreshLiveData?.observe(viewLifecycleOwner, Observer {
+                        if (it != null) {
+                            refreshLayout.isRefreshing = false
 
-                                refreshLiveData?.removeObservers(viewLifecycleOwner)
-                                refreshLiveData = null
-                            }
-                        })
-                    } else {
-                        refreshLayout.isRefreshing = false
-                    }
+                            refreshLiveData?.removeObservers(viewLifecycleOwner)
+                            refreshLiveData = null
+                        }
+                    })
                 } else {
                     refreshLayout.isRefreshing = false
                 }

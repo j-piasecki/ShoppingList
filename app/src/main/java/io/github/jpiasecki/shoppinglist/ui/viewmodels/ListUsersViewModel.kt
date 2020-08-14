@@ -42,4 +42,6 @@ class ListUsersViewModel @ViewModelInject constructor(
         shoppingListsRepository.unBanUserFromList(listId, userId)
         shoppingListsRepository.addUserToList(listId, userId)
     }
+
+    fun updateUsers(listId: String) = shoppingListsRepository.updateListUsers(listId)
 }

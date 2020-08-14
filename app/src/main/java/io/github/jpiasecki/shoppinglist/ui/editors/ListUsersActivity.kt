@@ -8,6 +8,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
+import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.ListUsersViewModel
 import kotlinx.android.synthetic.main.activity_list_users.*
@@ -24,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.*
 
 @AndroidEntryPoint
 class ListUsersActivity : AppCompatActivity() {
@@ -32,6 +35,8 @@ class ListUsersActivity : AppCompatActivity() {
 
     private lateinit var adapter: ListUsersAdapter
     private var shoppingList: ShoppingList? = null
+    private var updateLiveData: LiveData<Boolean?>? = null
+    private var updateTime = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +65,26 @@ class ListUsersActivity : AppCompatActivity() {
         viewModel.getAllUsers().observe(this, Observer {
             adapter.setUsers(it)
         })
+
+        activity_list_users_refresh_layout.setOnRefreshListener {
+            if (updateLiveData == null) {
+                if (Config.isNetworkConnected(this) && Calendar.getInstance().timeInMillis - updateTime > 20 * 1000) {
+                    updateLiveData = viewModel.updateUsers(listId)
+                    updateTime = Calendar.getInstance().timeInMillis
+
+                    updateLiveData?.observe(this, Observer {
+                        if (it != null) {
+                            activity_list_users_refresh_layout.isRefreshing = false
+
+                            updateLiveData?.removeObservers(this)
+                            updateLiveData = null
+                        }
+                    })
+                } else {
+                    activity_list_users_refresh_layout.isRefreshing = false
+                }
+            }
+        }
     }
 
     private fun createAdapter() {
