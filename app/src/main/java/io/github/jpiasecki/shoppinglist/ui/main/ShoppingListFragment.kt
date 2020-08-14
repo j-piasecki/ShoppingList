@@ -288,16 +288,14 @@ class ShoppingListFragment : Fragment() {
                         viewModel.uploadList(it)
                     }
 
-                    val clipboard =
-                        activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    clipboard.setPrimaryClip(
-                        ClipData.newPlainText(
-                            "shopping_list",
-                            "https://j-piasecki.github.io/shoppinglist/?id=${it.id}"
-                        )
-                    )
+                    val sendIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, "https://j-piasecki.github.io/shoppinglist/?id=${it.id}")
+                        type = "text/plain"
+                    }
 
-                    showToast(getString(R.string.message_list_copied_to_clipboard))
+                    val shareIntent = Intent.createChooser(sendIntent, getString(R.string.message_share_list))
+                    startActivity(shareIntent)
                 } else {
                     showToast(getString(R.string.message_not_logged_in))
                 }

@@ -67,7 +67,6 @@
     <string name="message_no_internet_connection">You don\'t have an Internet connection</string>
     <string name="message_no_list_id_in_clipboard">You don\'t have any list id in the clipboard</string>
     <string name="message_list_does_not_exist">That list does not exist, make sure you copied the right id</string>
-    <string name="message_list_copied_to_clipboard">Copied list link to the clipboard</string>
     <string name="message_list_url_error">That list does not exist, make sure the link is correct</string>
     <string name="message_not_logged_in">You have to log in first</string>
     <string name="message_error">Unexpected error occurred</string>
@@ -76,6 +75,7 @@
     <string name="message_list_must_have_name">You must enter the name of the list</string>
     <string name="message_category_name_too_short">Category name must be al least three characters long</string>
     <string name="message_list_already_downloaded">That list is already downloaded</string>
+    <string name="message_share_list">Share list</string>
 
     <string name="dialog_item_options_delete">Delete</string>
     <string name="dialog_shopping_list_options_delete">Delete</string>

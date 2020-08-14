@@ -67,7 +67,6 @@
     <string name="message_no_internet_connection">Nie masz połączenia z internetem</string>
     <string name="message_no_list_id_in_clipboard">Nie masz skopiowanego żadnego id listy</string>
     <string name="message_list_does_not_exist">Ta lista nie istnieje, upewnij się że skopiowane id jest poprawne</string>
-    <string name="message_list_copied_to_clipboard">Skopiowano link do listy do schowka</string>
     <string name="message_list_url_error">Ta lista nie istnieje, upewnij się że link jest poprawny</string>
     <string name="message_not_logged_in">Najpierw musisz się zalogować</string>
     <string name="message_error">Wystąpił niespodziewany błąd</string>
@@ -76,6 +75,7 @@
     <string name="message_list_must_have_name">Musisz podać nazwę listy</string>
     <string name="message_category_name_too_short">Nazwa kategorii musi mieć przynajmniej trzy znaki</string>
     <string name="message_list_already_downloaded">Ta lista jest już pobrana</string>
+    <string name="message_share_list">Udostępnij listę</string>
 
     <string name="dialog_item_options_delete">Usuń</string>
     <string name="dialog_shopping_list_options_delete">Usuń</string>
