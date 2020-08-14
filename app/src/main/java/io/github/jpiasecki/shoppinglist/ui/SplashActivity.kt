@@ -9,10 +9,12 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.gms.ads.MobileAds
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jpiasecki.shoppinglist.AdProvider
 import io.github.jpiasecki.shoppinglist.R
 import io.github.jpiasecki.shoppinglist.consts.Values
+import io.github.jpiasecki.shoppinglist.database.Config
 import io.github.jpiasecki.shoppinglist.ui.main.MainActivity
 import io.github.jpiasecki.shoppinglist.ui.viewmodels.SplashViewModel
 import java.lang.IllegalArgumentException
@@ -52,25 +54,34 @@ class SplashActivity : AppCompatActivity() {
 
     private fun checkIntentAction(): Boolean {
         if (intent.action == Intent.ACTION_VIEW) {
-            val query = intent.data?.query ?: return false.also { showToast(getString(R.string.message_list_url_error)) }
-            val index = query.indexOf("id=")
+            if (Config.isNetworkConnected(this)) {
+                if (FirebaseAuth.getInstance().currentUser != null) {
+                    val query = intent.data?.query
+                        ?: return false.also { showToast(getString(R.string.message_list_url_error)) }
+                    val index = query.indexOf("id=")
 
-            if (index != -1) {
-                try {
-                    val listId = query.substring(index + 3)
-                    UUID.fromString(listId)
+                    if (index != -1) {
+                        try {
+                            val listId = query.substring(index + 3)
+                            UUID.fromString(listId)
 
-                    startActivity(
-                        Intent(this, MainActivity::class.java)
-                            .putExtra(Values.SHOPPING_LIST_ID, listId)
-                    )
+                            startActivity(
+                                Intent(this, MainActivity::class.java)
+                                    .putExtra(Values.SHOPPING_LIST_ID, listId)
+                            )
 
-                    return true
-                } catch (e: IllegalArgumentException) {
-                    showToast(getString(R.string.message_list_url_error))
+                            return true
+                        } catch (e: IllegalArgumentException) {
+                            showToast(getString(R.string.message_list_url_error))
+                        }
+                    } else {
+                        showToast(getString(R.string.message_list_url_error))
+                    }
+                } else {
+                    showToast(getString(R.string.message_not_logged_in))
                 }
             } else {
-                showToast(getString(R.string.message_list_url_error))
+                showToast(getString(R.string.message_no_internet_connection))
             }
         }
 

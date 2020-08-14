@@ -124,7 +124,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val listId = intent.getStringExtra(Values.SHOPPING_LIST_ID)
+        checkActionIntent(intent)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+
+        checkActionIntent(intent)
+    }
+
+    private fun checkActionIntent(intent: Intent?) {
+        val listId = intent?.getStringExtra(Values.SHOPPING_LIST_ID)
         if (listId != null) {
             showImportListDialog(listId)
         }

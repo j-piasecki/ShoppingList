@@ -19,7 +19,8 @@
         <activity android:name=".ui.SettingsActivity" />
         <activity android:name=".ui.editors.AddEditListActivity" />
         <activity android:name=".ui.editors.AddEditItemActivity" />
-        <activity android:name=".ui.main.MainActivity" />
+        <activity android:name=".ui.main.MainActivity"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".ui.SplashActivity"
             android:theme="@style/AppTheme.Splash">
