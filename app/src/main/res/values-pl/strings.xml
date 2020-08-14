@@ -97,7 +97,7 @@
     <string name="dialog_ask_consent_header">Czy możemy zbierać dane w celu lepszego dobierania reklam?</string>
     <string name="dialog_ask_consent_info">Możesz zmienić swój wybór w ustawieniach. Nasi partnerzy będą zbierać dane i używać unikalnego identyfikatora na tym urządzeniu aby pokazywać reklamy. Kliknij aby dowiedzieć się więcej o tym jak nasi partnerzy zbierają i wykorzystują dane.</string>
     <string name="dialog_ask_consent_yes">Tak, pokazuj spersonalizowane</string>
-    <string name="dialog_ask_consent_no">NNie, pokazuj mniej trafne reklamy</string>
+    <string name="dialog_ask_consent_no">Nie, pokazuj mniej trafne reklamy</string>
 
     <string name="dialog_import_list_header">Dodaj listę</string>
     <string name="dialog_import_list_cancel">Anuluj</string>
