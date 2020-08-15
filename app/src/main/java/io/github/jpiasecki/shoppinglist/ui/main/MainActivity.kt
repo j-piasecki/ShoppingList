@@ -428,6 +428,12 @@ class MainActivity : AppCompatActivity() {
         AdProvider.destroyAds()
     }
 
+    override fun onRestart() {
+        super.onRestart()
+
+        AdProvider.loadAds(applicationContext)
+    }
+
     private fun loadUserProfilePicture() {
         if (FirebaseAuth.getInstance().currentUser != null) {
             Glide.with(this).asBitmap().load(FirebaseAuth.getInstance().currentUser?.photoUrl)

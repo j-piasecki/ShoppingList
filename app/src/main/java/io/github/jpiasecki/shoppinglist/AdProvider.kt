@@ -3,7 +3,6 @@ package io.github.jpiasecki.shoppinglist
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.TextView
 import com.google.ads.mediation.admob.AdMobAdapter
@@ -45,7 +44,7 @@ class AdProvider {
         private fun loadAds(context: Context, personalized: Boolean) {
             destroyed = false
 
-            for (i in 0 until PRELOADED_ADS_COUNT) {
+            for (i in ads.size until PRELOADED_ADS_COUNT) {
                 GlobalScope.launch(Dispatchers.IO) {
                     val adLoader =
                         AdLoader.Builder(context, context.getString(R.string.admob_ads_id))

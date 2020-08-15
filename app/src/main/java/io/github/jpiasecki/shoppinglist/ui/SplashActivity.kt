@@ -38,8 +38,10 @@ class SplashActivity : AppCompatActivity() {
 
         AdProvider.config = viewModel.getConfig()
         MobileAds.initialize(applicationContext)
-        if (viewModel.areAdsEnabled())
+        if (viewModel.areAdsEnabled()) {
+            AdProvider.destroyAds()
             AdProvider.loadAds(applicationContext)
+        }
 
         viewModel.onSplashLaunch()
 
