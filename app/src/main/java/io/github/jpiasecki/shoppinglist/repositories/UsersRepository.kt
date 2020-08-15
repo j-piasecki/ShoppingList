@@ -140,7 +140,18 @@ class UsersRepository @Inject constructor(
         usersDao.getById(id)?.loadProfileImage(context)
     }
 
-    suspend fun setUserNameIfNotSet() = usersRemoteSource.setUserNameIfNotSet()
+    suspend fun setUserNameIfNotSet() {
+        usersRemoteSource.setUserNameIfNotSet()
+
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val localUser = usersDao.getById(uid)
+
+        if (localUser == null) {
+            val user = User(id = uid, name = usersRemoteSource.getUserName(uid))
+
+            usersDao.insert(user)
+        }
+    }
 
     suspend fun addListToUser(id: String) = usersRemoteSource.addListToUser(id)
 
