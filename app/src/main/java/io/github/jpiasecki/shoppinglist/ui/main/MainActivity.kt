@@ -21,6 +21,7 @@ import androidx.activity.viewModels
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.children
 import androidx.core.view.size
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
@@ -70,6 +71,39 @@ class MainActivity : AppCompatActivity() {
 
         initFragments()
 
+        setupFab()
+
+        setupUiChangeListeners()
+
+        checkActionIntent(intent)
+    }
+
+    private fun setupUiChangeListeners() {
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (supportFragmentManager.primaryNavigationFragment is ListsFragment)
+                onFragmentChange(FragmentType.Lists)
+            else
+                onFragmentChange(FragmentType.ShoppingList)
+        }
+
+        activity_main_bottom_app_bar.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            for ((index, item) in activity_main_bottom_app_bar.menu.children.iterator()
+                .withIndex()) {
+                val view = activity_main_bottom_app_bar.findViewById<View>(item.itemId)
+                view.scaleX = 0f
+                view.scaleY = 0f
+
+                val animator = view.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setStartDelay(index * Values.BOTTOM_APP_BAR_MENU_ANIMATION_DELAY)
+                    .setDuration(Values.BOTTOM_APP_BAR_MENU_ANIMATION_DURATION)
+                    .setInterpolator(AccelerateInterpolator())
+            }
+        }
+    }
+
+    private fun setupFab() {
         activity_main_fab.setOnClickListener {
             when (currentFragment) {
                 FragmentType.Lists -> {
@@ -83,7 +117,8 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 FragmentType.ShoppingList -> {
-                    val fragment = supportFragmentManager.primaryNavigationFragment as ShoppingListFragment
+                    val fragment =
+                        supportFragmentManager.primaryNavigationFragment as ShoppingListFragment
 
                     fragment.currentList?.let {
                         if (!it.keepInSync || Config.isNetworkConnected(this)) {
@@ -101,30 +136,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-        supportFragmentManager.addOnBackStackChangedListener {
-            if (supportFragmentManager.primaryNavigationFragment is ListsFragment)
-                onFragmentChange(FragmentType.Lists)
-            else
-                onFragmentChange(FragmentType.ShoppingList)
-        }
-
-        activity_main_bottom_app_bar.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            for ((index, item) in activity_main_bottom_app_bar.menu.children.iterator().withIndex()) {
-                val view = activity_main_bottom_app_bar.findViewById<View>(item.itemId)
-                view.scaleX = 0f
-                view.scaleY = 0f
-
-                val animator = view.animate()
-                    .scaleX(1f)
-                    .scaleY(1f)
-                    .setStartDelay(index * Values.BOTTOM_APP_BAR_MENU_ANIMATION_DELAY)
-                    .setDuration(Values.BOTTOM_APP_BAR_MENU_ANIMATION_DURATION)
-                    .setInterpolator(AccelerateInterpolator())
-            }
-        }
-
-        checkActionIntent(intent)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -212,63 +223,14 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             android.R.id.home -> {
                 if (FirebaseAuth.getInstance().currentUser == null) {
-                    startActivityForResult(
-                        AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setAvailableProviders(listOf(AuthUI.IdpConfig.GoogleBuilder().build()))
-                            .build(),
-                        RC_SIGN_IN
-                    )
+                    showLoginUi()
                 } else {
-                    val dialog = BottomSheetDialog(this)
-                    val view = layoutInflater.inflate(R.layout.dialog_profile_settings, null)
-                    dialog.setContentView(view)
-
-                    viewModel.getLocalUser(FirebaseAuth.getInstance().currentUser!!.uid).also {
-                        it.observe(this, Observer { user ->
-                            if (user != null) {
-                                view.findViewById<TextView>(R.id.dialog_profile_settings_username).text = user.name
-
-                                it.removeObservers(this)
-                            }
-                        })
-                    }
-
-                    view.findViewById<MaterialButton>(R.id.dialog_profile_settings_save_button).setOnClickListener {
-                        val name = view.findViewById<TextView>(R.id.dialog_profile_settings_username).text.toString().trim()
-
-                        if (name.length >= 3) {
-                            viewModel.changeUserName(name)
-                            dialog.dismiss()
-                        } else {
-                            showToast(getString(R.string.message_username_too_short))
-                        }
-                    }
-
-                    dialog.show()
+                    showUserNameChangeDialog()
                 }
             }
 
             R.id.menu_import_list -> {
-                if (Config.isNetworkConnected(this)) {
-                    if (FirebaseAuth.getInstance().currentUser != null) {
-                        val clipboard =
-                            getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val listId = clipboard.primaryClip?.getItemAt(0)?.text.toString()
-
-                        try {
-                            UUID.fromString(listId)
-
-                            showImportListDialog(listId)
-                        } catch (e: IllegalArgumentException) {
-                            showToast(getString(R.string.message_no_list_id_in_clipboard))
-                        }
-                    } else {
-                        showToast(getString(R.string.message_not_logged_in))
-                    }
-                } else {
-                    showToast(getString(R.string.message_no_internet_connection))
-                }
+                tryImportingList()
             }
 
             R.id.menu_share -> {
@@ -278,29 +240,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.menu_edit_list -> {
-                if (currentFragment is ShoppingListFragment) {
-                    currentFragment.currentList?.let {
-                        if (it.owner == FirebaseAuth.getInstance().currentUser?.uid || it.owner == null) {
-                            if (!it.keepInSync || Config.isNetworkConnected(this)) {
-                                startActivity(
-                                    Intent(
-                                        this,
-                                        AddEditListActivity::class.java
-                                    ).putExtra(Values.SHOPPING_LIST_ID, it.id),
-                                    getAnimationBundle(
-                                        activity_main_bottom_app_bar.findViewById(
-                                            item.itemId
-                                        )
-                                    )
-                                )
-                            } else {
-                                showToast(getString(R.string.message_need_internet_to_modify_list))
-                            }
-                        } else {
-                            showToast(getString(R.string.message_list_edit_no_ownership))
-                        }
-                    }
-                }
+                tryEditingList(currentFragment, item)
             }
 
             R.id.menu_settings -> {
@@ -315,6 +255,100 @@ class MainActivity : AppCompatActivity() {
         }
 
         return true
+    }
+
+    private fun tryEditingList(
+        currentFragment: Fragment?,
+        item: MenuItem
+    ) {
+        if (currentFragment is ShoppingListFragment) {
+            currentFragment.currentList?.let {
+                if (it.owner == FirebaseAuth.getInstance().currentUser?.uid || it.owner == null) {
+                    if (!it.keepInSync || Config.isNetworkConnected(this)) {
+                        startActivity(
+                            Intent(
+                                this,
+                                AddEditListActivity::class.java
+                            ).putExtra(Values.SHOPPING_LIST_ID, it.id),
+                            getAnimationBundle(
+                                activity_main_bottom_app_bar.findViewById(
+                                    item.itemId
+                                )
+                            )
+                        )
+                    } else {
+                        showToast(getString(R.string.message_need_internet_to_modify_list))
+                    }
+                } else {
+                    showToast(getString(R.string.message_list_edit_no_ownership))
+                }
+            }
+        }
+    }
+
+    private fun tryImportingList() {
+        if (Config.isNetworkConnected(this)) {
+            if (FirebaseAuth.getInstance().currentUser != null) {
+                val clipboard =
+                    getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                val listId = clipboard.primaryClip?.getItemAt(0)?.text.toString()
+
+                try {
+                    UUID.fromString(listId)
+
+                    showImportListDialog(listId)
+                } catch (e: IllegalArgumentException) {
+                    showToast(getString(R.string.message_no_list_id_in_clipboard))
+                }
+            } else {
+                showToast(getString(R.string.message_not_logged_in))
+            }
+        } else {
+            showToast(getString(R.string.message_no_internet_connection))
+        }
+    }
+
+    private fun showUserNameChangeDialog() {
+        val dialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.dialog_profile_settings, null)
+        dialog.setContentView(view)
+
+        viewModel.getLocalUser(FirebaseAuth.getInstance().currentUser!!.uid).also {
+            it.observe(this, Observer { user ->
+                if (user != null) {
+                    view.findViewById<TextView>(R.id.dialog_profile_settings_username).text =
+                        user.name
+
+                    it.removeObservers(this)
+                }
+            })
+        }
+
+        view.findViewById<MaterialButton>(R.id.dialog_profile_settings_save_button)
+            .setOnClickListener {
+                val name =
+                    view.findViewById<TextView>(R.id.dialog_profile_settings_username).text.toString()
+                        .trim()
+
+                if (name.length >= 3) {
+                    viewModel.changeUserName(name)
+                    dialog.dismiss()
+                } else {
+                    showToast(getString(R.string.message_username_too_short))
+                }
+            }
+
+        dialog.show()
+    }
+
+    private fun showLoginUi() {
+        startActivityForResult(
+            AuthUI.getInstance()
+                .createSignInIntentBuilder()
+                .setAvailableProviders(listOf(AuthUI.IdpConfig.GoogleBuilder().build()))
+                .build(),
+            RC_SIGN_IN
+        )
     }
 
     private fun onFragmentChange(type: FragmentType) {
