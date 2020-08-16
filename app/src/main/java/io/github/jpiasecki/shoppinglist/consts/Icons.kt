@@ -170,7 +170,8 @@ object Icons {
 
         var result = DEFAULT
         var match = 0
-        val words = name.normalize().split(" ")
+        val nameNormal = name.normalize()
+        val words = nameNormal.split(" ")
 
         for (entry in keywords) {
             var currentMatch = 0
@@ -178,7 +179,7 @@ object Icons {
             for (keyword in entry.value) {
                 for (word in words) {
                     if (word.contains(keyword, ignoreCase = true))
-                        currentMatch += keyword.length
+                        currentMatch += keyword.length * (nameNormal.length - nameNormal.indexOf(keyword, ignoreCase = true))
                 }
             }
 

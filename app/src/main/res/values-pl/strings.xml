@@ -195,7 +195,7 @@
     </string-array>
 
     <string-array name="pear_keywords">
-        <item>brzoskwin</item>
+        <item>grusz</item>
     </string-array>
 
     <string-array name="pineapple_keywords">
@@ -223,7 +223,7 @@
     </string-array>
 
     <string-array name="peach_keywords">
-        <item>grusz</item>
+        <item>brzoskwin</item>
     </string-array>
 
     <string-array name="walnut_keywords">
@@ -245,7 +245,8 @@
     </string-array>
 
     <string-array name="avocado_keywords">
-        <item>avocado</item>
+        <item>avokad</item>
+        <item>awokad</item>
     </string-array>
 
     <string-array name="beans_keywords">
