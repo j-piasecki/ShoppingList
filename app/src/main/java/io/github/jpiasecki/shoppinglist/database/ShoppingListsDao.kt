@@ -60,4 +60,8 @@ interface ShoppingListsDao {
 
     @Query("UPDATE shopping_lists SET timestamp = (:timestamp) WHERE id = (:id)")
     fun updateTimestamp(id: String, timestamp: Long = Calendar.getInstance().timeInMillis)
+
+    //For some weird reason room does not want to use type converter for List<String> -> json, so conversion has to be done beforehand
+    @Query("UPDATE shopping_lists SET users = (:users) WHERE id = (:id)")
+    fun updateUsers(id: String, users: String)
 }

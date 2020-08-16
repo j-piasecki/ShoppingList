@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import io.github.jpiasecki.shoppinglist.consts.Values
+import io.github.jpiasecki.shoppinglist.database.Converters
 import io.github.jpiasecki.shoppinglist.database.Item
 import io.github.jpiasecki.shoppinglist.database.ShoppingList
 import io.github.jpiasecki.shoppinglist.database.ShoppingListsDao
@@ -307,17 +308,10 @@ class ShoppingListsRepository @Inject constructor(
         val result = MutableLiveData<Boolean?>(null)
 
         GlobalScope.launch(Dispatchers.IO) {
-            val list = shoppingListsDao.getByIdPlain(listId)
+            val users = shoppingListsRemoteSource.getUsers(listId)
+            shoppingListsDao.updateUsers(listId, Converters().stringListToJson(users))
 
-            if (list != null) {
-                list.users = ArrayList(shoppingListsRemoteSource.getUsers(listId))
-
-                shoppingListsDao.insert(list)
-
-                result.postValue(true)
-            }
-
-            result.postValue(false)
+            result.postValue(true)
         }
 
         return result

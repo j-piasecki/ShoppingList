@@ -226,6 +226,16 @@ class MainViewModel @ViewModelInject constructor(
             shoppingListsRepository.updateListUsers(listId)
 
             listUsersTimers.updateList(listId)
+        } else {
+            GlobalScope.launch(Dispatchers.IO) {
+                shoppingListsRepository.getListPlain(listId)?.let {
+                    if (it.users.isEmpty()) {
+                        shoppingListsRepository.updateListUsers(listId)
+
+                        listUsersTimers.updateList(listId)
+                    }
+                }
+            }
         }
     }
 
