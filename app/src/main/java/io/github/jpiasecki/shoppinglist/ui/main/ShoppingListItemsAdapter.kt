@@ -240,16 +240,30 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
             view.findViewById<TextView>(R.id.row_shopping_list_category_text).text = name
 
             view.findViewById<ImageView>(R.id.row_shopping_list_category_collapse).rotation = if (category in collapsedCategories) 180f else 0f
+
+            if (category != null)
+                setupListeners(category)
+        }
+
+        private fun setupListeners(category: CategoryItem) {
             view.findViewById<ImageView>(R.id.row_shopping_list_category_collapse).setOnClickListener {
-                if (category != null && category !in collapsedCategories) {
-                    collapseCategory(category)
+                onClick(category)
+            }
 
-                    view.findViewById<ImageView>(R.id.row_shopping_list_category_collapse).animate().rotation(180f)
-                } else if (category != null) {
-                    expandCategory(category)
+            view.setOnClickListener {
+                onClick(category)
+            }
+        }
 
-                    view.findViewById<ImageView>(R.id.row_shopping_list_category_collapse).animate().rotation(0f)
-                }
+        private fun onClick(category: CategoryItem?) {
+            if (category != null && category !in collapsedCategories) {
+                collapseCategory(category)
+
+                view.findViewById<ImageView>(R.id.row_shopping_list_category_collapse).animate().rotation(180f)
+            } else if (category != null) {
+                expandCategory(category)
+
+                view.findViewById<ImageView>(R.id.row_shopping_list_category_collapse).animate().rotation(0f)
             }
         }
     }
