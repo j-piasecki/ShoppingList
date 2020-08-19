@@ -95,7 +95,7 @@ class ListUsersActivity : AppCompatActivity() {
                         val dialog = BottomSheetDialog(this)
                         val view = layoutInflater.inflate(R.layout.dialog_user_options, null)
 
-                        view.findViewById<TextView>(R.id.dialog_item_options_header_text).text = user.name
+                        view.findViewById<TextView>(R.id.dialog_user_options_header_text).text = user.name
 
                         if (user.id in list.banned) {
                             view.findViewById<View>(R.id.dialog_user_options_give_ownership).visibility = View.GONE

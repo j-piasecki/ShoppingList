@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/dialog_item_options_header_text"
+        android:id="@+id/dialog_shopping_list_options_header_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dialog_options_header_margin_start"

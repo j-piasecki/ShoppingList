@@ -145,7 +145,7 @@ class ListsFragment : Fragment() {
                         dialog.setContentView(view)
                         dialog.show()
 
-                        view.findViewById<TextView>(R.id.dialog_item_options_header_text).text = list.name
+                        view.findViewById<TextView>(R.id.dialog_shopping_list_options_header_text).text = list.name
 
                         if (list.keepInSync) {
                             view.findViewById<TextView>(R.id.dialog_shopping_list_create_copy_text).text = getString(R.string.dialog_shopping_list_options_create_local_copy)
