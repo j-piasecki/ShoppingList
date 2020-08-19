@@ -453,4 +453,8 @@
         <item>yogurt</item>
         <item>cream</item>
     </string-array>
+
+    <string-array name="ketchup_keywords">
+        <item>ketchup</item>
+    </string-array>
 </resources>

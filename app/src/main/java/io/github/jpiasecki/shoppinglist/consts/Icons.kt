@@ -6,7 +6,7 @@ import io.github.jpiasecki.shoppinglist.other.normalize
 import kotlin.collections.HashMap
 
 object Icons {
-    const val ICONS_COUNT = 70
+    const val ICONS_COUNT = 71
 
     const val DEFAULT = 0
     const val APPLE = 1
@@ -78,80 +78,82 @@ object Icons {
     const val SUGAR = 67
     const val TOILET_PAPER = 68
     const val YOGURT = 69
+    const val KETCHUP = 70
 
     private val keywords: HashMap<Int, Array<String>> = HashMap()
 
     fun getItemIconId(icon: Int): Int {
         return when (icon) {
-            APPLE -> R.drawable.ic_apple_24
-            BANANA -> R.drawable.ic_banana_24
-            CHERRY -> R.drawable.ic_cherry_24
-            LEMON -> R.drawable.ic_lemon_24
-            ORANGE -> R.drawable.ic_orange
-            PEAR -> R.drawable.ic_pear_24
-            PINEAPPLE -> R.drawable.ic_pineapple_24
-            PLUM -> R.drawable.ic_plum_24
-            STRAWBERRY -> R.drawable.ic_strawberry
-            GRAPES -> R.drawable.ic_grapes_24
-            WATERMELON -> R.drawable.ic_watermelon_24
-            RASPBERRY -> R.drawable.ic_raspberry_24
-            PEACH -> R.drawable.ic_peach_24
-            WALNUT -> R.drawable.ic_walnut_24
-            BLACKBERRY -> R.drawable.ic_blackberry_24
-            ASPARAGUS -> R.drawable.ic_asparagus_24
-            AUBERGINE -> R.drawable.ic_aubergine_24
-            AVOCADO -> R.drawable.ic_avocado_24
-            BEANS -> R.drawable.ic_beans_24
-            BEETROOT -> R.drawable.ic_beetroot_24
-            BROCCOLI -> R.drawable.ic_broccoli_24
-            CABBAGE -> R.drawable.ic_cabbage_24
-            CARROT -> R.drawable.ic_carrot_24
-            CAULIFLOWER -> R.drawable.ic_cauliflower_24
-            CHILI_PEPPER -> R.drawable.ic_chili_pepper_24
-            CORN -> R.drawable.ic_corn_24
-            GARLIC -> R.drawable.ic_garlic_24
-            GREEN_BEANS -> R.drawable.ic_green_beans_24
-            GREEN_PEPPER -> R.drawable.ic_green_pepper_24
-            LETTUCE -> R.drawable.ic_lettuce_24
-            OLIVES -> R.drawable.ic_olives_24
-            ONION -> R.drawable.ic_onion_24
-            POTATO -> R.drawable.ic_potato_24
-            PUMPKIN -> R.drawable.ic_pumpkin_24
-            RADISH -> R.drawable.ic_radish_24
-            RED_PEPPER -> R.drawable.ic_red_pepper_24
-            TOMATO -> R.drawable.ic_tomato_24
-            YELLOW_PEPPER -> R.drawable.ic_yellow_pepper_24
-            ZUCCHINI -> R.drawable.ic_zucchini_24
-            EGGS -> R.drawable.ic_eggs_24
-            JUICE -> R.drawable.ic_juice_24
-            MILK -> R.drawable.ic_milk_24
-            WATER -> R.drawable.ic_water_24
-            CUCUMBER -> R.drawable.ic_cucumber_24
-            KIWI -> R.drawable.ic_kiwi_24
-            MANGO -> R.drawable.ic_mango_24
-            MELON -> R.drawable.ic_melon_24
-            BREAD -> R.drawable.ic_bread_24
-            BREAD_ROLL -> R.drawable.ic_bread_roll_24
-            CHEESE -> R.drawable.ic_cheese_24
-            COOKIE -> R.drawable.ic_cookie_24
-            MEAT -> R.drawable.ic_meat_24
-            PASTA -> R.drawable.ic_pasta_24
-            MUSHROOM -> R.drawable.ic_mushroom_24
-            ALMOND -> R.drawable.ic_almond_24
-            BACON -> R.drawable.ic_bacon_24
-            BAGUETTE -> R.drawable.ic_baguette_24
-            BEEF -> R.drawable.ic_beef_24
-            BUTTER -> R.drawable.ic_butter_24
-            CHICKEN_BREAST -> R.drawable.ic_chicken_breasts_24
-            FISH -> R.drawable.ic_fish_24
-            HONEY -> R.drawable.ic_honey_24
-            LENTILS -> R.drawable.ic_lentils_24
-            MAYONNAISE -> R.drawable.ic_mayonnaise_24
-            SAUCE -> R.drawable.ic_sauce_24
-            SAUSAGE -> R.drawable.ic_sausage_24
-            SUGAR -> R.drawable.ic_sugar_24
-            TOILET_PAPER -> R.drawable.ic_toilet_paper_24
-            YOGURT -> R.drawable.ic_yogurt_24
+            APPLE -> R.drawable.ic_apple_64
+            BANANA -> R.drawable.ic_banana_64
+            CHERRY -> R.drawable.ic_cherry_64
+            LEMON -> R.drawable.ic_lemon_64
+            ORANGE -> R.drawable.ic_orange_64
+            PEAR -> R.drawable.ic_pear_64
+            PINEAPPLE -> R.drawable.ic_pineapple_64
+            PLUM -> R.drawable.ic_plum_64
+            STRAWBERRY -> R.drawable.ic_strawberry_64
+            GRAPES -> R.drawable.ic_grapes_64
+            WATERMELON -> R.drawable.ic_watermelon_64
+            RASPBERRY -> R.drawable.ic_raspberry_64
+            PEACH -> R.drawable.ic_peach_64
+            WALNUT -> R.drawable.ic_walnut_64
+            BLACKBERRY -> R.drawable.ic_blackberry_64
+            ASPARAGUS -> R.drawable.ic_asparagus_64
+            AUBERGINE -> R.drawable.ic_aubergine_64
+            AVOCADO -> R.drawable.ic_avocado_64
+            BEANS -> R.drawable.ic_beans_64
+            BEETROOT -> R.drawable.ic_beetroot_64
+            BROCCOLI -> R.drawable.ic_broccoli_64
+            CABBAGE -> R.drawable.ic_cabbage_64
+            CARROT -> R.drawable.ic_carrot_64
+            CAULIFLOWER -> R.drawable.ic_cauliflower_64
+            CHILI_PEPPER -> R.drawable.ic_chili_pepper_64
+            CORN -> R.drawable.ic_corn_64
+            GARLIC -> R.drawable.ic_garlic_64
+            GREEN_BEANS -> R.drawable.ic_green_beans_64
+            GREEN_PEPPER -> R.drawable.ic_green_pepper_64
+            LETTUCE -> R.drawable.ic_lettuce_64
+            OLIVES -> R.drawable.ic_olives_64
+            ONION -> R.drawable.ic_onion_64
+            POTATO -> R.drawable.ic_potato_64
+            PUMPKIN -> R.drawable.ic_pumpkin_64
+            RADISH -> R.drawable.ic_radish_64
+            RED_PEPPER -> R.drawable.ic_red_pepper_64
+            TOMATO -> R.drawable.ic_tomato_64
+            YELLOW_PEPPER -> R.drawable.ic_yellow_pepper_64
+            ZUCCHINI -> R.drawable.ic_zucchini_64
+            EGGS -> R.drawable.ic_eggs_64
+            JUICE -> R.drawable.ic_juice_64
+            MILK -> R.drawable.ic_milk_64
+            WATER -> R.drawable.ic_water_64
+            CUCUMBER -> R.drawable.ic_cucumber_64
+            KIWI -> R.drawable.ic_kiwi_64
+            MANGO -> R.drawable.ic_mango_64
+            MELON -> R.drawable.ic_melon_64
+            BREAD -> R.drawable.ic_bread_64
+            BREAD_ROLL -> R.drawable.ic_bread_roll_64
+            CHEESE -> R.drawable.ic_cheese_64
+            COOKIE -> R.drawable.ic_cookie_64
+            MEAT -> R.drawable.ic_meat_64
+            PASTA -> R.drawable.ic_pasta_64
+            MUSHROOM -> R.drawable.ic_mushroom_64
+            ALMOND -> R.drawable.ic_almond_64
+            BACON -> R.drawable.ic_bacon_64
+            BAGUETTE -> R.drawable.ic_baguette_64
+            BEEF -> R.drawable.ic_beef_64
+            BUTTER -> R.drawable.ic_butter_64
+            CHICKEN_BREAST -> R.drawable.ic_chicken_breasts_64
+            FISH -> R.drawable.ic_fish_64
+            HONEY -> R.drawable.ic_honey_64
+            LENTILS -> R.drawable.ic_lentils_64
+            MAYONNAISE -> R.drawable.ic_mayonnaise_64
+            SAUCE -> R.drawable.ic_sauce_64
+            SAUSAGE -> R.drawable.ic_sausage_64
+            SUGAR -> R.drawable.ic_sugar_64
+            TOILET_PAPER -> R.drawable.ic_toilet_paper_64
+            YOGURT -> R.drawable.ic_yogurt_64
+            KETCHUP -> R.drawable.ic_ketchup_64
 
             else -> R.drawable.ic_item_default_24
         }
@@ -262,5 +264,6 @@ object Icons {
         keywords[SUGAR] = context.resources.getStringArray(R.array.sugar_keywords)
         keywords[TOILET_PAPER] = context.resources.getStringArray(R.array.toilet_paper_keywords)
         keywords[YOGURT] = context.resources.getStringArray(R.array.yogurt_keywords)
+        keywords[KETCHUP] = context.resources.getStringArray(R.array.ketchup_keywords)
     }
 }

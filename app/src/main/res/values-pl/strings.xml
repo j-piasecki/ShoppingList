@@ -473,4 +473,9 @@
         <item>jogurt</item>
         <item>smietan</item>
     </string-array>
+
+    <string-array name="ketchup_keywords">
+        <item>ketchup</item>
+        <item>keczup</item>
+    </string-array>
 </resources>
