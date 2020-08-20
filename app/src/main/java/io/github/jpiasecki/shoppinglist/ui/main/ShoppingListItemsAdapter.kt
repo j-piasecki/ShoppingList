@@ -178,8 +178,7 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
         }
     }
 
-    private fun expandCategory(category: CategoryItem) {
-        val list = currentList.toMutableList()
+    private fun expandCategory(category: CategoryItem, list: MutableList<AdapterItem>): MutableList<AdapterItem> {
         val index = list.indexOfFirst { it.type == VIEW_TYPE_CATEGORY && it.category == category } + 1
 
         if (index > 0) {
@@ -207,13 +206,18 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
             }
 
             collapsedCategories.remove(category)
-            submitList(list)
         }
+
+        return list
     }
 
-    private fun collapseCategory(category: CategoryItem) {
+    private fun expandCategory(category: CategoryItem) {
         val list = currentList.toMutableList()
 
+        submitList(expandCategory(category, list))
+    }
+
+    private fun collapseCategory(category: CategoryItem, list: MutableList<AdapterItem>): MutableList<AdapterItem> {
         //find bounds of this category; items that have that category id, or ids that don't exist in the list and the category is "no category" (null id)
         val startIndex = list.indexOfFirst { it.type == VIEW_TYPE_ITEM && (it.item?.category == category.id || (category.id == null && !shoppingList.hasCategory(it.item?.category))) && it.item?.completed == category.completed }
         val endIndex = list.indexOfLast { it.type == VIEW_TYPE_ITEM && (it.item?.category == category.id || (category.id == null && !shoppingList.hasCategory(it.item?.category))) && it.item?.completed == category.completed } + 1
@@ -225,7 +229,14 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
             list.removeAt(startIndex)
 
         collapsedCategories.add(category)
-        submitList(list)
+
+        return list
+    }
+
+    private fun collapseCategory(category: CategoryItem) {
+        val list = currentList.toMutableList()
+
+        submitList(collapseCategory(category, list))
     }
 
     inner class CategoryViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
