@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.formats.UnifiedNativeAd
 import com.google.android.gms.ads.formats.UnifiedNativeAdView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.checkbox.MaterialCheckBox
 import io.github.jpiasecki.shoppinglist.AdProvider
 import io.github.jpiasecki.shoppinglist.R
@@ -187,8 +188,11 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
                 shoppingList.items.indexOfFirst { (it.category == category.id || (category.id == null && !shoppingList.hasCategory(it.category))) && it.completed == category.completed }
             val endIndex =
                 shoppingList.items.indexOfLast { (it.category == category.id || (category.id == null && !shoppingList.hasCategory(it.category))) && it.completed == category.completed }
+            val itemIndex =
+                list.indexOfFirst { it.type == VIEW_TYPE_ITEM && (it.item?.category == category.id || (category.id == null && !shoppingList.hasCategory(it.item?.category))) && it.item?.completed == category.completed }
 
-            if (startIndex in 0..endIndex) {
+
+            if (itemIndex == -1 && startIndex in 0..endIndex) {
                 val newItems = ArrayList<AdapterItem>()
                 for (i in startIndex..endIndex) {
                     newItems.add(
@@ -222,11 +226,13 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
         val startIndex = list.indexOfFirst { it.type == VIEW_TYPE_ITEM && (it.item?.category == category.id || (category.id == null && !shoppingList.hasCategory(it.item?.category))) && it.item?.completed == category.completed }
         val endIndex = list.indexOfLast { it.type == VIEW_TYPE_ITEM && (it.item?.category == category.id || (category.id == null && !shoppingList.hasCategory(it.item?.category))) && it.item?.completed == category.completed } + 1
 
-        if (startIndex in 1..endIndex)
-            list.subList(startIndex, endIndex).clear()
+        if (startIndex > 0 && endIndex > 0) {
+            if (startIndex in 1..endIndex)
+                list.subList(startIndex, endIndex).clear()
 
-        if (startIndex < list.size && list[startIndex].type == VIEW_TYPE_AD)
-            list.removeAt(startIndex)
+            if (startIndex < list.size && list[startIndex].type == VIEW_TYPE_AD)
+                list.removeAt(startIndex)
+        }
 
         collapsedCategories.add(category)
 
@@ -264,6 +270,11 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
             view.setOnClickListener {
                 onClick(category)
             }
+
+            view.setOnLongClickListener {
+                showExpansionDialog(category)
+                true
+            }
         }
 
         private fun onClick(category: CategoryItem?) {
@@ -276,6 +287,93 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
 
                 view.findViewById<ImageView>(R.id.row_shopping_list_category_collapse).animate().rotation(0f)
             }
+        }
+
+        private fun showExpansionDialog(selected: CategoryItem) {
+            val dialog = BottomSheetDialog(view.context)
+            val view = LayoutInflater.from(view.context).inflate(R.layout.dialog_category_expansion_options, null)
+
+            view.findViewById<View>(R.id.dialog_category_expansion_options_expand_other).setOnClickListener {
+                var list = currentList.toMutableList()
+
+                for (category in list.filter { it.type == VIEW_TYPE_CATEGORY }) {
+                    if (category.category?.id != selected.id) {
+                        list = expandCategory(category.category ?: continue, list)
+                    }
+                }
+
+                submitList(list)
+                dialog.dismiss()
+            }
+
+            view.findViewById<View>(R.id.dialog_category_expansion_options_collapse_other).setOnClickListener {
+                var list = currentList.toMutableList()
+
+                for (category in list.filter { it.type == VIEW_TYPE_CATEGORY }) {
+                    if (category.category?.id != selected.id) {
+                        list = collapseCategory(category.category ?: continue, list)
+                    }
+                }
+
+                submitList(list)
+                dialog.dismiss()
+            }
+
+            view.findViewById<View>(R.id.dialog_category_expansion_options_expand_above).setOnClickListener {
+                var list = currentList.toMutableList()
+
+                for (category in list.filter { it.type == VIEW_TYPE_CATEGORY }) {
+                    if (category.category?.id != selected.id) {
+                        list = expandCategory(category.category ?: continue, list)
+                    } else break
+                }
+
+                submitList(list)
+                dialog.dismiss()
+            }
+
+            view.findViewById<View>(R.id.dialog_category_expansion_options_collapse_above).setOnClickListener {
+                var list = currentList.toMutableList()
+
+                for (category in list.filter { it.type == VIEW_TYPE_CATEGORY }) {
+                    if (category.category?.id != selected.id) {
+                        list = collapseCategory(category.category ?: continue, list)
+                    } else break
+                }
+
+                submitList(list)
+                dialog.dismiss()
+            }
+
+            view.findViewById<View>(R.id.dialog_category_expansion_options_expand_below).setOnClickListener {
+                var list = currentList.toMutableList()
+
+                for (category in list.filter { it.type == VIEW_TYPE_CATEGORY }.reversed()) {
+                    if (category.category?.id != selected.id) {
+                        list = expandCategory(category.category ?: continue, list)
+                    } else break
+                }
+
+                submitList(list)
+                dialog.dismiss()
+            }
+
+            view.findViewById<View>(R.id.dialog_category_expansion_options_collapse_below).setOnClickListener {
+                var list = currentList.toMutableList()
+
+                for (category in list.filter { it.type == VIEW_TYPE_CATEGORY }.reversed()) {
+                    if (category.category?.id != selected.id) {
+                        list = collapseCategory(category.category ?: continue, list)
+                    } else break
+                }
+
+                submitList(list)
+                dialog.dismiss()
+            }
+
+            dialog.setContentView(view)
+            dialog.setCancelable(true)
+            dialog.show()
         }
     }
 

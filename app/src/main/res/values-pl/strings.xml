@@ -103,6 +103,13 @@
     <string name="dialog_import_list_cancel">Anuluj</string>
     <string name="dialog_import_list_save">Dodaj</string>
 
+    <string name="dialog_category_expansion_options_expand_other">Rozwiń pozostałe</string>
+    <string name="dialog_category_expansion_options_collapse_other">Zwiń pozostałe</string>
+    <string name="dialog_category_expansion_options_expand_above">Rozwiń powyżej</string>
+    <string name="dialog_category_expansion_options_collapse_above">Zwiń powyżej</string>
+    <string name="dialog_category_expansion_options_expand_below">Rozwiń poniżej</string>
+    <string name="dialog_category_expansion_options_collapse_below">Zwiń poniżej</string>
+
     <plurals name="unit_no_unit" tools:ignore="MissingQuantity">
         <item quantity="other">Ilość: %1$d</item>
     </plurals>

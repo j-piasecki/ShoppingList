@@ -103,6 +103,13 @@
     <string name="dialog_import_list_cancel">Cancel</string>
     <string name="dialog_import_list_save">Add</string>
 
+    <string name="dialog_category_expansion_options_expand_other">Expand other</string>
+    <string name="dialog_category_expansion_options_collapse_other">Collapse other</string>
+    <string name="dialog_category_expansion_options_expand_above">Expand above</string>
+    <string name="dialog_category_expansion_options_collapse_above">Collapse above</string>
+    <string name="dialog_category_expansion_options_expand_below">Expand below</string>
+    <string name="dialog_category_expansion_options_collapse_below">Collapse below</string>
+
     <plurals name="unit_no_unit">
         <item quantity="other">Quantity: %1$d</item>
     </plurals>

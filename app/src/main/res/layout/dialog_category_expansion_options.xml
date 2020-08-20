@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/dialog_category_expansion_options_expand_other"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="@dimen/dialog_options_item_icon_size"
+            android:layout_height="@dimen/dialog_options_item_icon_size"
+            android:layout_marginStart="@dimen/dialog_options_item_horizontal_padding"
+            android:src="@drawable/ic_expand_other_24"
+            android:tintMode="multiply"
+            android:tint="?android:attr/textColorSecondary"/>
+
+        <TextView
+            android:id="@+id/dialog_category_expansion_options_expand_other_text"
+            android:text="@string/dialog_category_expansion_options_expand_other"
+            android:textSize="@dimen/dialog_options_item_text_size"
+            android:textColor="?android:attr/textColorPrimary"
+            android:paddingBottom="@dimen/dialog_options_item_vertical_padding"
+            android:paddingTop="@dimen/dialog_options_item_vertical_padding"
+            android:paddingStart="@dimen/dialog_options_item_horizontal_padding"
+            android:paddingEnd="@dimen/dialog_options_item_horizontal_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_category_expansion_options_collapse_other"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="@dimen/dialog_options_item_icon_size"
+            android:layout_height="@dimen/dialog_options_item_icon_size"
+            android:layout_marginStart="@dimen/dialog_options_item_horizontal_padding"
+            android:src="@drawable/ic_collapse_other_24"
+            android:tintMode="multiply"
+            android:tint="?android:attr/textColorSecondary"/>
+
+        <TextView
+            android:id="@+id/dialog_category_expansion_options_collapse_other_text"
+            android:text="@string/dialog_category_expansion_options_collapse_other"
+            android:textSize="@dimen/dialog_options_item_text_size"
+            android:textColor="?android:attr/textColorPrimary"
+            android:paddingBottom="@dimen/dialog_options_item_vertical_padding"
+            android:paddingTop="@dimen/dialog_options_item_vertical_padding"
+            android:paddingStart="@dimen/dialog_options_item_horizontal_padding"
+            android:paddingEnd="@dimen/dialog_options_item_horizontal_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_category_expansion_options_expand_above"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="@dimen/dialog_options_item_icon_size"
+            android:layout_height="@dimen/dialog_options_item_icon_size"
+            android:layout_marginStart="@dimen/dialog_options_item_horizontal_padding"
+            android:src="@drawable/ic_expand_above_24"
+            android:tintMode="multiply"
+            android:tint="?android:attr/textColorSecondary"/>
+
+        <TextView
+            android:id="@+id/dialog_category_expansion_options_expand_above_text"
+            android:text="@string/dialog_category_expansion_options_expand_above"
+            android:textSize="@dimen/dialog_options_item_text_size"
+            android:textColor="?android:attr/textColorPrimary"
+            android:paddingBottom="@dimen/dialog_options_item_vertical_padding"
+            android:paddingTop="@dimen/dialog_options_item_vertical_padding"
+            android:paddingStart="@dimen/dialog_options_item_horizontal_padding"
+            android:paddingEnd="@dimen/dialog_options_item_horizontal_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_category_expansion_options_collapse_above"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="@dimen/dialog_options_item_icon_size"
+            android:layout_height="@dimen/dialog_options_item_icon_size"
+            android:layout_marginStart="@dimen/dialog_options_item_horizontal_padding"
+            android:src="@drawable/ic_collapse_above_24"
+            android:tintMode="multiply"
+            android:tint="?android:attr/textColorSecondary"/>
+
+        <TextView
+            android:id="@+id/dialog_category_expansion_options_collapse_above_text"
+            android:text="@string/dialog_category_expansion_options_collapse_above"
+            android:textSize="@dimen/dialog_options_item_text_size"
+            android:textColor="?android:attr/textColorPrimary"
+            android:paddingBottom="@dimen/dialog_options_item_vertical_padding"
+            android:paddingTop="@dimen/dialog_options_item_vertical_padding"
+            android:paddingStart="@dimen/dialog_options_item_horizontal_padding"
+            android:paddingEnd="@dimen/dialog_options_item_horizontal_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_category_expansion_options_expand_below"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="@dimen/dialog_options_item_icon_size"
+            android:layout_height="@dimen/dialog_options_item_icon_size"
+            android:layout_marginStart="@dimen/dialog_options_item_horizontal_padding"
+            android:src="@drawable/ic_expand_below_24"
+            android:tintMode="multiply"
+            android:tint="?android:attr/textColorSecondary"/>
+
+        <TextView
+            android:id="@+id/dialog_category_expansion_options_expand_below_text"
+            android:text="@string/dialog_category_expansion_options_expand_below"
+            android:textSize="@dimen/dialog_options_item_text_size"
+            android:textColor="?android:attr/textColorPrimary"
+            android:paddingBottom="@dimen/dialog_options_item_vertical_padding"
+            android:paddingTop="@dimen/dialog_options_item_vertical_padding"
+            android:paddingStart="@dimen/dialog_options_item_horizontal_padding"
+            android:paddingEnd="@dimen/dialog_options_item_horizontal_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_category_expansion_options_collapse_below"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:layout_width="@dimen/dialog_options_item_icon_size"
+            android:layout_height="@dimen/dialog_options_item_icon_size"
+            android:layout_marginStart="@dimen/dialog_options_item_horizontal_padding"
+            android:src="@drawable/ic_collapse_below_24"
+            android:tintMode="multiply"
+            android:tint="?android:attr/textColorSecondary"/>
+
+        <TextView
+            android:id="@+id/dialog_category_expansion_options_collapse_below_text"
+            android:text="@string/dialog_category_expansion_options_collapse_below"
+            android:textSize="@dimen/dialog_options_item_text_size"
+            android:textColor="?android:attr/textColorPrimary"
+            android:paddingBottom="@dimen/dialog_options_item_vertical_padding"
+            android:paddingTop="@dimen/dialog_options_item_vertical_padding"
+            android:paddingStart="@dimen/dialog_options_item_horizontal_padding"
+            android:paddingEnd="@dimen/dialog_options_item_horizontal_padding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</LinearLayout>
