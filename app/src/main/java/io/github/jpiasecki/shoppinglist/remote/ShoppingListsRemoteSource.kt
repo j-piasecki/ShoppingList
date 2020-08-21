@@ -609,16 +609,13 @@ class ShoppingListsRemoteSource(private val context: Context) {
                     if (value != null && !value.metadata.hasPendingWrites()) {
                         val items = ArrayList<Item>()
 
-                        for (itemDoc in value.documents) {
-                            itemDoc.toObject<Item>()?.copy(id = itemDoc.id)?.let {
+                        for (change in value.documentChanges) {
+                            change.document.toObject<Item>().copy(id = change.document.id).let {
                                 items.add(it)
                             }
                         }
 
                         callback(items)
-
-                        if (Calendar.getInstance().timeInMillis - listenerStart > Values.LISTENER_RESTART_TIMER || value.documents.size >= Values.LISTENER_RESTART_LIMIT)
-                            startListeningForItemsChanges(listId, callback)
                     }
                 }
             }

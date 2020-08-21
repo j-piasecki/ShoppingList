@@ -241,15 +241,15 @@ class ShoppingListFragment : Fragment() {
             }
         }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onDestroy() {
+        super.onDestroy()
 
         viewModel.stopListeningForItemsChanges()
         viewModel.stopListeningForMetadataChanges()
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         if (!isHidden) {
             if (currentList == null) {

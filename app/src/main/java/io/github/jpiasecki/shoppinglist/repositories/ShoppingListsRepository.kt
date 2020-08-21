@@ -589,11 +589,9 @@ class ShoppingListsRepository @Inject constructor(
                                     list.items.add(item)
                                 else
                                     list.items[index] = item
-
-                                list.timestamp = Calendar.getInstance().timeInMillis
                             }
 
-                            shoppingListsDao.insert(list)
+                            shoppingListsDao.updateItems(list.id, Converters().itemListToJson(list.items))
                         }
                     }
                 }

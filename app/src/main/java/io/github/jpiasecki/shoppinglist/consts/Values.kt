@@ -21,9 +21,6 @@ object Values {
 
     const val ITEMS_PER_AD = 10
 
-    const val LISTENER_RESTART_TIMER = 10 * 1000
-    const val LISTENER_RESTART_LIMIT = 3
-
     const val FRAGMENT_LISTS_TAG = "LISTS_FRAGMENT"
     const val FRAGMENT_SHOPPING_LIST_TAG = "SHOPPING_LIST_FRAGMENT"
 

@@ -13,8 +13,8 @@ android {
         applicationId "io.github.jpiasecki.shoppinglist"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 5
-        versionName "1.0.2"
+        versionCode 7
+        versionName "1.0.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
