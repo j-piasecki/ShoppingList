@@ -604,12 +604,7 @@ class ShoppingListsRepository @Inject constructor(
             if (shoppingListsDao.isSynced(listId)) {
                 shoppingListsRemoteSource.startListeningForMetadataChanges(listId) { updatedList ->
                     GlobalScope.launch(Dispatchers.IO) {
-                        shoppingListsDao.getByIdPlain(listId)?.let { list ->
-                            updatedList.items = list.items
-                            updatedList.users = list.users
-
-                            shoppingListsDao.insert(updatedList)
-                        }
+                        shoppingListsDao.updateMetadata(updatedList)
                     }
                 }
             }

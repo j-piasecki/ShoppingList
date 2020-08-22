@@ -67,4 +67,14 @@ interface ShoppingListsDao {
 
     @Query("UPDATE shopping_lists SET items = (:items), timestamp = (:timestamp) WHERE id = (:id)")
     fun updateItems(id: String, items: String, timestamp: Long = Calendar.getInstance().timeInMillis)
+
+    @Transaction
+    fun updateMetadata(list: ShoppingList) {
+        val old = getByIdPlain(list.id) ?: throw Exception("No list with id: ${list.id}")
+
+        list.items = old.items
+        list.users = old.users
+
+        update(list)
+    }
 }
