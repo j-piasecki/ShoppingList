@@ -20,8 +20,9 @@
         <ImageView
             android:id="@+id/row_shopping_list_icon"
             android:src="@drawable/ic_list_default_24"
-            android:layout_width="wrap_content"
+            android:layout_width="32dp"
             android:layout_height="match_parent"
+            android:scaleType="fitStart"
             android:layout_alignParentStart="true"
             android:layout_alignTop="@id/row_shopping_list_name"
             android:layout_alignBottom="@id/row_shopping_list_name"/>
