@@ -60,7 +60,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/activity_add_edit_item_name_layout"
                 app:layout_constraintDimensionRatio="1:1"
-                app:srcCompat="@drawable/ic_item_default_24" />
+                app:srcCompat="@drawable/ic_item_default_64" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/activity_add_edit_item_name_layout"

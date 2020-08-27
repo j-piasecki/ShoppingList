@@ -10,7 +10,7 @@
         android:id="@+id/row_icon_image"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@drawable/ic_item_default_24"
+        android:src="@drawable/ic_item_default_64"
         android:layout_margin="12dp"/>
 
 </LinearLayout>

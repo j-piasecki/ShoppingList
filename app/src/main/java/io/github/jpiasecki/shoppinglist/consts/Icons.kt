@@ -155,13 +155,13 @@ object Icons {
             YOGURT -> R.drawable.ic_yogurt_64
             KETCHUP -> R.drawable.ic_ketchup_64
 
-            else -> R.drawable.ic_item_default_24
+            else -> R.drawable.ic_item_default_64
         }
     }
 
     fun getListIconId(icon: Int): Int {
         if (icon == DEFAULT)
-            return R.drawable.ic_list_default_24
+            return R.drawable.ic_list_default_64
 
         return getItemIconId(icon)
     }
