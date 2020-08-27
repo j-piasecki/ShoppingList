@@ -591,7 +591,12 @@ class ShoppingListsRepository @Inject constructor(
                                     list.items[index] = item
                             }
 
-                            shoppingListsDao.updateItems(list.id, Converters().itemListToJson(list.items))
+                            shoppingListsDao.updateItems(list.id, Converters().itemListToJson(list.items),
+                                if (items.isNotEmpty())
+                                    items.maxBy { it.timestamp }?.timestamp ?: list.timestamp
+                                else
+                                    list.timestamp
+                            )
                         }
                     }
                 }

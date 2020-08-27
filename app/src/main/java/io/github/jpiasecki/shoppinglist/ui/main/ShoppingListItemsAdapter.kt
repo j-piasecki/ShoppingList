@@ -133,7 +133,7 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
         val content = ArrayList<AdapterItem>()
         content.add(AdapterItem(
             VIEW_TYPE_HEADER,
-            header = 0L + (list.owner?.sumBy { it.toInt() } ?: 0) + (list.name?.sumBy { it.toInt() } ?: 0) + (if (list.keepInSync) 1 else 2) + list.icon + list.getAllUsersNoOwner().size
+            header = 0L + (list.owner?.sumBy { it.toInt() } ?: 0) + (list.name?.sumBy { it.toInt() } ?: 0) + (if (list.keepInSync) 1 else 2) + list.icon + list.getAllUsersNoOwner().size + list.items.fold(0.0) { i, item -> i + item.price * item.quantity }.toInt()
         ))
 
         var previousItem: Item? = null
@@ -389,6 +389,29 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
             view.findViewById<ImageView>(R.id.row_shopping_list_header_icon).setImageResource(Icons.getListIconId(shoppingList.icon))
 
             createUserList()
+            setupTotalPrice()
+        }
+
+        private fun setupTotalPrice() {
+            val totalPrice = shoppingList.items.fold(0.0) { i: Double, item: Item ->
+                i + item.price * item.quantity
+            }
+
+            if (totalPrice > 0) {
+                view.findViewById<TextView>(R.id.row_shopping_list_header_total_price_text).visibility = View.VISIBLE
+                view.findViewById<TextView>(R.id.row_shopping_list_header_total_price_value).apply {
+                    visibility = View.VISIBLE
+
+                    text = if (shoppingList.currency == null) {
+                        totalPrice.toString()
+                    } else {
+                        priceFormat.format(totalPrice).toString()
+                    }
+                }
+            } else {
+                view.findViewById<TextView>(R.id.row_shopping_list_header_total_price_text).visibility = View.GONE
+                view.findViewById<TextView>(R.id.row_shopping_list_header_total_price_value).visibility = View.GONE
+            }
         }
 
         private fun createUserList() {
@@ -397,6 +420,13 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
 
             iconsLayout.setOnClickListener {
                 userListClickCallback(shoppingList.id, it)
+            }
+
+            if (shoppingList.keepInSync) {
+                view.findViewById<View>(R.id.row_shopping_list_header_synced_icon)
+                    .setOnClickListener {
+                        userListClickCallback(shoppingList.id, it)
+                    }
             }
 
             val userList = shoppingList.getAllUsersNoOwner()
@@ -460,12 +490,14 @@ class ShoppingListItemsAdapter() : ListAdapter<ShoppingListItemsAdapter.AdapterI
             view.findViewById<ImageView>(R.id.row_shopping_list_item_icon).setImageResource(Icons.getItemIconId(item.icon))
 
             if (item.price > 0) {
+                val price = item.price * item.quantity
+
                 if (shoppingList.currency == null) {
                     view.findViewById<TextView>(R.id.row_shopping_list_item_price).text =
-                        item.price.toString()
+                        price.toString()
                 } else {
                     view.findViewById<TextView>(R.id.row_shopping_list_item_price).text =
-                        priceFormat.format(item.price).toString()
+                        priceFormat.format(price).toString()
                 }
             } else {
                 view.findViewById<TextView>(R.id.row_shopping_list_item_price).text = ""
