@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.bumptech.glide.request.target.CustomTarget
@@ -48,7 +49,11 @@ data class User(
                 )
 
                 if (!Config.isNetworkConnected(context))
-                    callback?.invoke()
+                    try {
+                        callback?.invoke()
+                    } catch (e: Exception) {
+                        Log.w("User", "Exception when invoking callback: ${e.message}")
+                    }
             } catch (e: FileNotFoundException) {}
 
             if (Config.isNetworkConnected(context) && (profilePicture == null || Calendar.getInstance().timeInMillis - timestamp < 10 * 1000)) {
@@ -71,13 +76,21 @@ data class User(
                                 resource.compress(Bitmap.CompressFormat.PNG, 100, stream)
                                 file.writeBytes(stream.toByteArray())
 
-                                callback?.invoke()
+                                try {
+                                    callback?.invoke()
+                                } catch (e: Exception) {
+                                    Log.w("User", "Exception when invoking callback: ${e.message}")
+                                }
                             }
                         })
                 } catch (e: IllegalArgumentException) {}
             }
         } else {
-            callback?.invoke()
+            try {
+                callback?.invoke()
+            } catch (e: Exception) {
+                Log.w("User", "Exception when invoking callback: ${e.message}")
+            }
         }
     }
 }
