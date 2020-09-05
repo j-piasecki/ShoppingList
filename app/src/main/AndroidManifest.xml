@@ -13,17 +13,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.WebViewActivity" />
-        <activity android:name=".ui.editors.SelectIconActivity" />
-        <activity android:name=".ui.editors.ListUsersActivity" />
-        <activity android:name=".ui.SettingsActivity" />
-        <activity android:name=".ui.editors.AddEditListActivity" />
-        <activity android:name=".ui.editors.AddEditItemActivity" />
-        <activity android:name=".ui.main.MainActivity"
-            android:launchMode="singleTask"/>
+        <activity
+            android:name=".ui.WebViewActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.editors.SelectIconActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.editors.ListUsersActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.editors.AddEditListActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.editors.AddEditItemActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.SplashActivity"
-            android:theme="@style/AppTheme.Splash">
+            android:theme="@style/AppTheme.Splash"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
